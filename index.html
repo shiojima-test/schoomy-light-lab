@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v1.1 | スクーミー×Python</title>
+<title>教室の光環境ラボ v1.2 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -90,7 +90,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v1.1</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v1.2</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -98,13 +98,13 @@
 
 <div class="howto">
   <b>このページの使い方（3ステップ）</b><br>
-  <b>STEP1</b> Pythonの基本を「うつして→動かして→変えて」学ぶ →
-  <b>STEP2</b> スクーミー（オレンジボード）で計測した明るさを入れる →
-  <b>STEP3</b> クラス9地点のデータをみんなで分析して考察する
+  <b>STEP1</b> Pythonとデータ分析の基礎を「うつして→動かして→変えて」学ぶ →
+  <b>STEP2</b> スクーミー（オレンジボード）で実際に明るさを計測して入れる →
+  <b>STEP3</b> クラス9地点の実データをみんなで分析して考察する
 </div>
 
 <div class="stepnav">
-  <button id="nav1" class="active" onclick="showStep(1)"><span class="n">STEP 1（1時間目）</span><span class="t">Pythonを学ぶ</span></button>
+  <button id="nav1" class="active" onclick="showStep(1)"><span class="n">STEP 1（1時間目）</span><span class="t">Pythonとデータの基礎</span></button>
   <button id="nav2" onclick="showStep(2)"><span class="n">STEP 2（2時間目）</span><span class="t">計測データを入れる</span></button>
   <button id="nav3" onclick="showStep(3)"><span class="n">STEP 3（3時間目）</span><span class="t">みんなで分析</span></button>
 </div>
@@ -115,7 +115,7 @@
 <div class="steppage active" id="step1">
 
 <section>
-  <h2>Pythonのきほん（レッスン1〜5）</h2>
+  <h2>パート1：Pythonのきほん（レッスン1〜5）</h2>
   <p>やり方：各レッスンの<b>「▶ このコードを試す」を押す → 下のコード欄に入るので「実行」→ 結果を見る → 「変えてみよう」に挑戦</b>。この繰り返しで覚えます。</p>
 
   <div class="lesson">
@@ -170,6 +170,65 @@ else:
     <div class="kaisetsu"><b>解説</b>：<code>if 条件:</code> が成り立てば上、成り立たなければ <code>else:</code> の下が実行される。<code>>=</code> は「以上」。学校環境衛生の基準では教室・黒板の照度は <b>500ルクス以上</b>が望ましいとされている——この判定を自動化するのがSTEP3のミッション。</div>
     <button class="act navy" onclick="setCode('ed1', L5)">▶ このコードを試す</button>
     <div class="challenge"><b>変えてみよう</b>：<code>akarusa</code> の値をいろいろ変えて、表示が切り替わるのを確認しよう。</div>
+  </div>
+</section>
+
+<section>
+  <h2>パート2：データ分析のきほん（レッスン6〜11）</h2>
+  <p>ここからは<b>練習用のセンサーデータ</b>を使って、情報Ⅰ・Ⅱで必要な「データを見る力」を身につけます。各レッスンの最後に<b>「読み取ったこと」を1行書く</b>のを忘れずに（自動保存されます）。</p>
+
+  <div class="lesson">
+    <h3>レッスン6：グラフ化 —— 数字の列を「見える」ようにする</h3>
+    <div class="kaisetsu"><b>解説</b>：180個の数字を眺めても傾向は分からない。<code>plt.plot(values)</code> で折れ線グラフにすると、一瞬で「増えている／減っている／波打っている」が見える。これが<b>可視化</b>（情報Ⅰ：データの活用）。</div>
+    <button class="act navy" onclick="setCode('ed1', L6)">▶ 晴れの日の窓側データをグラフにする</button>
+    <div class="challenge"><b>変えてみよう</b>：FILE を <code>"data/rei_kumori.csv"</code>（曇りの日）に変えて、形の違いを見よう。</div>
+    <div class="fieldlbl">読み取ったこと（グラフから分かった傾向を1行で）<span class="saved" id="sv_yomi6"></span></div>
+    <textarea id="yomi6" class="jp" rows="1" oninput="saveText('yomi6')" placeholder="例：ゆるやかに波打ちながら800前後で推移している"></textarea>
+  </div>
+
+  <div class="lesson">
+    <h3>レッスン7：くらべる —— 2つのデータを重ねる</h3>
+    <div class="kaisetsu"><b>解説</b>：グラフの真価は<b>比較</b>にある。晴れの日と曇りの日を同じグラフに重ねると、差の大きさが一目で分かる。<code>label=</code> と <code>plt.legend()</code> で凡例（どの線がどれか）を付けるのがマナー。</div>
+    <button class="act navy" onclick="setCode('ed1', L7)">▶ 晴れ vs 曇り を重ねてくらべる</button>
+    <div class="challenge"><b>変えてみよう</b>：「何倍明るいか」を print で表示する行を追加しよう（ヒント：レッスン2の割り算）。</div>
+    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi7"></span></div>
+    <textarea id="yomi7" class="jp" rows="1" oninput="saveText('yomi7')" placeholder="例：晴れは曇りの約2倍明るく、変動も大きい"></textarea>
+  </div>
+
+  <div class="lesson">
+    <h3>レッスン8：ばらつき —— 平均が同じでも「別物」</h3>
+    <div class="kaisetsu"><b>解説</b>：データAとBは<b>平均がほぼ同じ500</b>。でもグラフにすると全く違う。安定した照明（A）とチカチカ変動する照明（B）では快適さが違うように、<b>平均だけではデータは語れない</b>。ばらつきの一番簡単な指標が「範囲＝最大−最小」（情報Ⅰ：基礎的な指標。情報Ⅱでは分散・標準偏差に発展）。</div>
+    <button class="act navy" onclick="setCode('ed1', L8)">▶ 平均が同じ2つのデータをくらべる</button>
+    <div class="challenge"><b>変えてみよう</b>：AとBそれぞれの「範囲（max - min）」を print しよう。</div>
+    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi8"></span></div>
+    <textarea id="yomi8" class="jp" rows="1" oninput="saveText('yomi8')" placeholder="例：平均は同じでもBは振れ幅が大きく、範囲で差が数値化できた"></textarea>
+  </div>
+
+  <div class="lesson">
+    <h3>レッスン9：異常値 —— 汚れたデータをそうじする</h3>
+    <div class="kaisetsu"><b>解説</b>：本物のセンサーデータには<b>異常値</b>が混ざる（センサーを手でふさぐと0、通信エラーで9999など）。異常値が混ざると平均が大きく狂う。<code>if 0 &lt; v &lt; 2000:</code> のような条件で「ありえない値」を除いてから計算するのが<b>前処理</b>。STEP2の実測でも必ず役に立つ（情報Ⅰ：データの妥当性・限界／情報Ⅱ：データ処理）。</div>
+    <button class="act navy" onclick="setCode('ed1', L9)">▶ 異常値入りデータで平均の狂いを確かめる</button>
+    <div class="challenge"><b>変えてみよう</b>：除去する条件を変える（例：<code>0 &lt; v &lt; 1000</code>）と結果がどうなる？きびしすぎる条件の危険も考えよう。</div>
+    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi9"></span></div>
+    <textarea id="yomi9" class="jp" rows="1" oninput="saveText('yomi9')" placeholder="例：異常値4個で平均が○○もずれた。そうじ後は約520になった"></textarea>
+  </div>
+
+  <div class="lesson">
+    <h3>レッスン10：シミュレーション —— 計算で「予測」する</h3>
+    <div class="kaisetsu"><b>解説</b>：「ブラインドを閉めると明るさは30%になる」という<b>モデル</b>（仮定）を立てると、実測しなくても予測グラフが計算で作れる。これが<b>モデル化とシミュレーション</b>（情報Ⅰの重要単元）。STEP2で本当に計測して、予測と現実のズレを確かめるのがこの授業のクライマックス。</div>
+    <button class="act navy" onclick="setCode('ed1', L10)">▶ ブラインドを閉めた明るさを予測する</button>
+    <div class="challenge"><b>変えてみよう</b>：割合 <code>0.3</code> を変えて予測を調整しよう。「照明を1本追加（+200）」のモデルも作れる？</div>
+    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi10"></span></div>
+    <textarea id="yomi10" class="jp" rows="1" oninput="saveText('yomi10')" placeholder="例：30%モデルだと平均約240と予測できた。実測で確かめたい"></textarea>
+  </div>
+
+  <div class="lesson">
+    <h3>レッスン11：データ推理ゲーム —— グラフから「何が起きたか」当てる</h3>
+    <div class="kaisetsu"><b>解説</b>：ある教室で計測された「なぞのデータ」が3つある（nazo1〜3）。グラフの形から<b>教室で何が起きたのか</b>を推理しよう。データ分析の最終目標は数値を出すことではなく、<b>現実に何が起きたかを読み取ること</b>。</div>
+    <button class="act navy" onclick="setCode('ed1', L11)">▶ なぞのデータを調べる（nazo1〜3）</button>
+    <div class="challenge"><b>ヒント</b>：急に落ちた？だんだん増えた？周期的に何かが起きてる？　コードの <code>NAZO</code> を書き換えて3つ全部調べよう。</div>
+    <div class="fieldlbl">推理（3つとも書こう）<span class="saved" id="sv_yomi11"></span></div>
+    <textarea id="yomi11" class="jp" rows="2" oninput="saveText('yomi11')" placeholder="例：nazo1=途中で電気を消した／nazo2=朝日が昇ってだんだん明るく／nazo3=…"></textarea>
   </div>
 </section>
 
@@ -324,12 +383,12 @@ print("こんにちは、スクーミー！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v1.1 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v1.2 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v1.1";
+const VERSION = "v1.2";
 let pyodide = null;
 
 // ---------- ステップ切替 ----------
@@ -346,7 +405,7 @@ const urlToken = new URLSearchParams(location.search).get("token");
 window.addEventListener("DOMContentLoaded", () => {
   if (urlToken) document.getElementById("upToken").value = urlToken;
   // 記入欄の復元
-  ["m1h","m1k","m2h","m2k","m3h","m3k"].forEach(id => {
+  ["m1h","m1k","m2h","m2k","m3h","m3k","yomi6","yomi7","yomi8","yomi9","yomi10","yomi11"].forEach(id => {
     const v = localStorage.getItem("lab_" + id);
     if (v) document.getElementById(id).value = v;
   });
@@ -456,6 +515,38 @@ def _show_plot():
         b64 = base64.b64encode(buf.read()).decode()
         js.document.getElementById(_plot_target).innerHTML = '<img src="data:image/png;base64,' + b64 + '">'
         plt.close("all")
+
+# ---- 練習用データを生成して data/ に置く（レッスン6〜11用）----
+import os, random, math
+os.makedirs("data", exist_ok=True)
+random.seed(7)
+def _mk(path, vals):
+    lines = ["timestamp,value"]
+    for i, v in enumerate(vals):
+        lines.append(str(i) + "," + str(max(0, int(v))))
+    with open(path, "w") as f:
+        f.write("\n".join(lines) + "\n")
+N = 180
+# 晴れの日の窓側 / 曇りの日
+_mk("data/rei_hare.csv",  [800 + 60*math.sin(i/25) + random.gauss(0,15) for i in range(N)])
+_mk("data/rei_kumori.csv",[400 + 20*math.sin(i/30) + random.gauss(0,10) for i in range(N)])
+# 平均は同じ・ばらつきが違う A / B
+_mk("data/rei_A.csv", [500 + random.gauss(0,8) for i in range(N)])
+_mk("data/rei_B.csv", [500 + 150*math.sin(i/9) + random.gauss(0,40) for i in range(N)])
+# 異常値入り（0 と 9999 が混入）
+_noise = [520 + random.gauss(0,12) for i in range(N)]
+for _i in (30, 120): _noise[_i] = 0
+for _i in (77, 150): _noise[_i] = 9999
+_mk("data/rei_noise.csv", _noise)
+# なぞデータ: 1=途中で消灯 2=だんだん明るく 3=周期的に何かが影を作る
+_mk("data/nazo1.csv", [(800 if i < 90 else 280) + random.gauss(0,15) for i in range(N)])
+_mk("data/nazo2.csv", [200 + i*3 + random.gauss(0,12) for i in range(N)])
+_nz3 = []
+for i in range(N):
+    v = 600 + random.gauss(0,10)
+    if i % 20 < 3: v = 120 + random.gauss(0,10)
+    _nz3.append(v)
+_mk("data/nazo3.csv", _nz3)
 `);
     await loadAllData();
     renderDash();
@@ -530,6 +621,176 @@ if akarusa >= 500:
     print("明るい（基準クリア）")
 else:
     print("暗い（基準以下）")
+`;
+
+// ---------- パート2: データ分析レッスン ----------
+const L6 = `# レッスン6: グラフ化（晴れの日の窓側センサー）
+import matplotlib.pyplot as plt
+
+FILE = "data/rei_hare.csv"   # 曇りの日は "data/rei_kumori.csv"
+
+values = []
+with open(FILE) as f:
+    next(f)                          # 見出し行をとばす
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(int(v))
+
+print("平均:", round(sum(values) / len(values)))
+
+plt.figure(figsize=(8, 3.5))
+plt.plot(values)
+plt.xlabel("Time (s)")
+plt.ylabel("Brightness")
+plt.grid(True)
+plt.show()
+`;
+
+const L7 = `# レッスン7: 2つのデータを重ねてくらべる
+import matplotlib.pyplot as plt
+
+def yomikomi(path):              # 読み込みを関数にまとめた
+    values = []
+    with open(path) as f:
+        next(f)
+        for line in f:
+            t, v = line.strip().split(",")
+            values.append(int(v))
+    return values
+
+hare   = yomikomi("data/rei_hare.csv")
+kumori = yomikomi("data/rei_kumori.csv")
+
+print("晴れの平均:", round(sum(hare) / len(hare)))
+print("曇りの平均:", round(sum(kumori) / len(kumori)))
+# 変えてみよう: 「何倍明るいか」をここに print しよう
+
+plt.figure(figsize=(8, 3.5))
+plt.plot(hare, label="hare")       # label = 凡例の名前
+plt.plot(kumori, label="kumori")
+plt.legend()                       # 凡例を表示
+plt.xlabel("Time (s)")
+plt.ylabel("Brightness")
+plt.grid(True)
+plt.show()
+`;
+
+const L8 = `# レッスン8: 平均が同じでも「ばらつき」が違う
+import matplotlib.pyplot as plt
+
+def yomikomi(path):
+    values = []
+    with open(path) as f:
+        next(f)
+        for line in f:
+            t, v = line.strip().split(",")
+            values.append(int(v))
+    return values
+
+A = yomikomi("data/rei_A.csv")   # 安定した照明
+B = yomikomi("data/rei_B.csv")   # 変動する照明
+
+print("Aの平均:", round(sum(A) / len(A)))
+print("Bの平均:", round(sum(B) / len(B)))
+# 変えてみよう: 範囲（max - min）をそれぞれ print して、ばらつきを数値でくらべよう
+
+plt.figure(figsize=(8, 3.5))
+plt.plot(A, label="A")
+plt.plot(B, label="B")
+plt.legend()
+plt.grid(True)
+plt.show()
+`;
+
+const L9 = `# レッスン9: 異常値をそうじする（前処理）
+def yomikomi(path):
+    values = []
+    with open(path) as f:
+        next(f)
+        for line in f:
+            t, v = line.strip().split(",")
+            values.append(int(v))
+    return values
+
+values = yomikomi("data/rei_noise.csv")
+
+print("そうじ前の平均:", round(sum(values) / len(values)))
+print("最大:", max(values), " 最小:", min(values), "←ありえない値が混ざってる！")
+
+# 「ありえない値」を除いた新しいリストを作る（if で条件をつける）
+kirei = []
+for v in values:
+    if 0 < v < 2000:          # 0より大きく2000未満だけ通す
+        kirei.append(v)
+
+print("除いた個数:", len(values) - len(kirei))
+print("そうじ後の平均:", round(sum(kirei) / len(kirei)))
+
+import matplotlib.pyplot as plt
+plt.figure(figsize=(8, 3.5))
+plt.plot(values, label="before")
+plt.plot(kirei, label="after")
+plt.legend()
+plt.grid(True)
+plt.show()
+`;
+
+const L10 = `# レッスン10: モデル化とシミュレーション
+# モデル（仮定）:「ブラインドを閉めると明るさは 30% になる」
+import matplotlib.pyplot as plt
+
+def yomikomi(path):
+    values = []
+    with open(path) as f:
+        next(f)
+        for line in f:
+            t, v = line.strip().split(",")
+            values.append(int(v))
+    return values
+
+genzai = yomikomi("data/rei_hare.csv")    # 現在（ブラインド開）の実測
+
+wariai = 0.3                              # ←モデルの割合。変えて予測を調整しよう
+yosou = []
+for v in genzai:
+    yosou.append(v * wariai)              # 計算だけで未来を予測！
+
+print("現在の平均:", round(sum(genzai) / len(genzai)))
+print("予測の平均:", round(sum(yosou) / len(yosou)))
+print("→ STEP2 で実際に計測して、この予測が当たるか確かめよう！")
+
+plt.figure(figsize=(8, 3.5))
+plt.plot(genzai, label="now (open)")
+plt.plot(yosou, label="predicted (closed)")
+plt.legend()
+plt.grid(True)
+plt.show()
+`;
+
+const L11 = `# レッスン11: データ推理ゲーム
+# nazo1, nazo2, nazo3 —— それぞれの教室で「何が起きた」？
+import matplotlib.pyplot as plt
+
+NAZO = "nazo1"        # ← "nazo2", "nazo3" に変えて全部調べよう
+
+values = []
+with open("data/" + NAZO + ".csv") as f:
+    next(f)
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(int(v))
+
+print(NAZO, "の平均:", round(sum(values) / len(values)))
+print("最大:", max(values), " 最小:", min(values))
+
+plt.figure(figsize=(8, 3.5))
+plt.plot(values)
+plt.title(NAZO)
+plt.xlabel("Time (s)")
+plt.ylabel("Brightness")
+plt.grid(True)
+plt.show()
+# グラフの「形」から現実に何が起きたか推理して、記入欄に書こう
 `;
 
 // ---------- ミッションコード ----------
