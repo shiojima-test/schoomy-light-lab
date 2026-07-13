@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v1.4 | スクーミー×Python</title>
+<title>教室の光環境ラボ v1.5 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -90,7 +90,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v1.4</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v1.5</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -175,70 +175,85 @@ else:
 
 <section>
   <h2>パート2：データ分析のきほん（レッスン6〜11）</h2>
-  <p>ここからは<b>練習用のセンサーデータ</b>を使って、「データを見る力」を身につけます。各レッスンの最後に<b>「読み取ったこと」を1行書く</b>のを忘れずに（自動保存されます）。</p>
+  <p>ここからは<b>本物のデータ</b>を使います。国や自治体はさまざまな計測データを社会に公開していて（<b>オープンデータ</b>）、だれでも無料で使えます。今日使うのは気象庁が公開している、<b>甲府（山梨県）で実際に計測された太陽の光のデータ</b>です。</p>
+
+  <h3>今日つかう表（データの正体）</h3>
+  <table style="border-collapse:collapse; width:100%; font-size:12.5px">
+    <tr style="background:#eef6fb"><th style="border:1px solid #ccc;padding:6px">ファイル</th><th style="border:1px solid #ccc;padding:6px">なんのデータ？</th></tr>
+    <tr><td style="border:1px solid #ccc;padding:6px">kofu_hare.csv</td><td style="border:1px solid #ccc;padding:6px">甲府・2026年6月1日（<b>晴れ</b>）の1時間ごとの太陽の光の強さ（全天日射量 MJ/㎡）24時間分</td></tr>
+    <tr><td style="border:1px solid #ccc;padding:6px">kofu_kumori.csv</td><td style="border:1px solid #ccc;padding:6px">甲府・2026年6月4日（<b>くもり</b>）の同じデータ</td></tr>
+    <tr><td style="border:1px solid #ccc;padding:6px">kofu_1gatsu.csv</td><td style="border:1px solid #ccc;padding:6px">甲府・2026年<b>1月</b>の毎日の日照時間（h）31日分</td></tr>
+    <tr><td style="border:1px solid #ccc;padding:6px">kofu_6gatsu.csv</td><td style="border:1px solid #ccc;padding:6px">甲府・2026年<b>6月</b>1〜20日の毎日の日照時間（h）</td></tr>
+    <tr><td style="border:1px solid #ccc;padding:6px">kofu_nazoA〜C.csv</td><td style="border:1px solid #ccc;padding:6px">6月の<b>ある3日間（日付はひみつ）</b>の1時間ごとの日射量 → レッスン11で天気を推理！</td></tr>
+  </table>
+  <p class="note" style="margin-top:6px">出典：気象庁「<a href="https://www.data.jma.go.jp/stats/etrn/index.php" target="_blank">過去の気象データ検索</a>」（甲府地方気象台の観測値）より作成。数値はすべて実測の本物です。</p>
+  <p>各レッスンの最後に<b>「読み取ったこと」を1行書く</b>のを忘れずに（自動保存されます）。</p>
 
   <div class="lesson">
     <h3>レッスン6：グラフ化 —— 数字の列を「見える」ようにする</h3>
-    <div class="kaisetsu"><b>解説</b>：180個の数字を眺めても傾向は分からない。<code>plt.plot(values)</code> で折れ線グラフにすると、一瞬で「増えている／減っている／波打っている」が見える。これが<b>可視化</b>。</div>
-    <button class="act navy" onclick="setCode('ed1', L6)">▶ 晴れの日の窓側データをグラフにする</button>
-    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('rei_hare.csv')">表で見る: rei_hare.csv</button>
-    <div class="challenge"><b>変えてみよう</b>：FILE を <code>"data/rei_kumori.csv"</code>（曇りの日）に変えて、形の違いを見よう。</div>
+    <div class="kaisetsu"><b>解説</b>：使うのは<b>甲府・6月1日（晴れ）の太陽の光の強さ</b>。24個の数字を眺めても傾向は分からないが、<code>plt.plot(values)</code> で折れ線にすると「朝から強くなり昼にピーク、夜は0」が一瞬で見える。これが<b>可視化</b>。</div>
+    <button class="act navy" onclick="setCode('ed1', L6)">▶ 晴れの日の日射データをグラフにする</button>
+    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('kofu_hare.csv')">表で見る: kofu_hare.csv</button>
+    <div class="challenge"><b>変えてみよう</b>：FILE を <code>"data/kofu_kumori.csv"</code>（くもりの6月4日）に変えて、山の高さの違いを見よう。</div>
     <div class="fieldlbl">読み取ったこと（グラフから分かった傾向を1行で）<span class="saved" id="sv_yomi6"></span></div>
-    <textarea id="yomi6" class="jp" rows="1" oninput="saveText('yomi6')" placeholder="例：ゆるやかに波打ちながら800前後で推移している"></textarea>
+    <textarea id="yomi6" class="jp" rows="1" oninput="saveText('yomi6')" placeholder="例：13時ごろが最大3.41で、夜は0。きれいな山の形"></textarea>
   </div>
 
   <div class="lesson">
-    <h3>レッスン7：くらべる —— 2つのデータを重ねる</h3>
-    <div class="kaisetsu"><b>解説</b>：グラフの真価は<b>比較</b>にある。晴れの日と曇りの日を同じグラフに重ねると、差の大きさが一目で分かる。<code>label=</code> と <code>plt.legend()</code> で凡例（どの線がどれか）を付けるのがマナー。</div>
-    <button class="act navy" onclick="setCode('ed1', L7)">▶ 晴れ vs 曇り を重ねてくらべる</button>
-    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('rei_hare.csv')">表で見る: rei_hare.csv</button>
-    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('rei_kumori.csv')">表で見る: rei_kumori.csv</button>
-    <div class="challenge"><b>変えてみよう</b>：「何倍明るいか」を print で表示する行を追加しよう（ヒント：レッスン2の割り算）。</div>
+    <h3>レッスン7：くらべる —— 晴れとくもりを重ねる</h3>
+    <div class="kaisetsu"><b>解説</b>：グラフの真価は<b>比較</b>。晴れ（6/1）とくもり（6/4）を同じグラフに重ねると、天気による光の差が一目で分かる。<code>label=</code> と <code>plt.legend()</code> で凡例（どの線がどれか）を付けるのがマナー。</div>
+    <button class="act navy" onclick="setCode('ed1', L7)">▶ 晴れ vs くもり を重ねてくらべる</button>
+    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('kofu_kumori.csv')">表で見る: kofu_kumori.csv</button>
+    <div class="challenge"><b>変えてみよう</b>：「晴れはくもりの何倍か」を print で表示する行を追加しよう（ヒント：レッスン2の割り算。合計どうしで割るとよい）。</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi7"></span></div>
-    <textarea id="yomi7" class="jp" rows="1" oninput="saveText('yomi7')" placeholder="例：晴れは曇りの約2倍明るく、変動も大きい"></textarea>
+    <textarea id="yomi7" class="jp" rows="1" oninput="saveText('yomi7')" placeholder="例：ピークの高さが晴れ3.4に対しくもり1.8で、約2倍ちがう"></textarea>
   </div>
 
   <div class="lesson">
-    <h3>レッスン8：ばらつき —— 平均が同じでも「別物」</h3>
-    <div class="kaisetsu"><b>解説</b>：データAとBは<b>平均がほぼ同じ500</b>。でもグラフにすると全く違う。安定した照明（A）とチカチカ変動する照明（B）では快適さが違うように、<b>平均だけではデータは語れない</b>。ばらつきの一番簡単な指標が「範囲＝最大−最小」。</div>
-    <button class="act navy" onclick="setCode('ed1', L8)">▶ 平均が同じ2つのデータをくらべる</button>
-    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('rei_A.csv')">表で見る: rei_A.csv</button>
-    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('rei_B.csv')">表で見る: rei_B.csv</button>
-    <div class="challenge"><b>変えてみよう</b>：AとBそれぞれの「範囲（max - min）」を print しよう。</div>
+    <h3>レッスン8：ばらつき —— 「安定して晴れる月」はどっち？</h3>
+    <div class="kaisetsu"><b>解説</b>：甲府の<b>1月</b>と<b>6月（梅雨）</b>、毎日の日照時間をくらべる。平均だけでなく<b>ばらつき</b>を見るのがポイント。ばらつきの一番簡単な指標が「<b>範囲＝最大−最小</b>」。範囲が小さい＝毎日似ている＝安定、範囲が大きい＝日によって全然違う。</div>
+    <button class="act navy" onclick="setCode('ed1', L8)">▶ 1月と6月の日照時間をくらべる</button>
+    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('kofu_1gatsu.csv')">表で見る: kofu_1gatsu.csv</button>
+    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('kofu_6gatsu.csv')">表で見る: kofu_6gatsu.csv</button>
+    <div class="challenge"><b>変えてみよう</b>：範囲（max - min）をそれぞれ print して、どちらの月が「安定して晴れる」か数値で言えるようにしよう。</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi8"></span></div>
-    <textarea id="yomi8" class="jp" rows="1" oninput="saveText('yomi8')" placeholder="例：平均は同じでもBは振れ幅が大きく、範囲で差が数値化できた"></textarea>
+    <textarea id="yomi8" class="jp" rows="1" oninput="saveText('yomi8')" placeholder="例：1月は範囲が小さく安定、6月は0時間の日も12時間の日もあり不安定"></textarea>
   </div>
 
   <div class="lesson">
-    <h3>レッスン9：異常値 —— 汚れたデータをそうじする</h3>
-    <div class="kaisetsu"><b>解説</b>：本物のセンサーデータには<b>異常値</b>が混ざる（センサーを手でふさぐと0、通信エラーで9999など）。異常値が混ざると平均が大きく狂う。<code>if 0 &lt; v &lt; 2000:</code> のような条件で「ありえない値」を除いてから計算するのが<b>前処理</b>。STEP2の実測でも必ず役に立つ。</div>
-    <button class="act navy" onclick="setCode('ed1', L9)">▶ 異常値入りデータで平均の狂いを確かめる</button>
-    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('rei_noise.csv')">表で見る: rei_noise.csv</button>
-    <div class="challenge"><b>変えてみよう</b>：除去する条件を変える（例：<code>0 &lt; v &lt; 1000</code>）と結果がどうなる？きびしすぎる条件の危険も考えよう。</div>
+    <h3>レッスン9：前処理 —— 「夜の0」をどうする？</h3>
+    <div class="kaisetsu"><b>解説</b>：晴れの日（6/1）の平均を24時間分で計算すると、<b>夜の0がたくさん混ざって小さく出る</b>。「昼の光の強さ」を知りたいなら、if文で <code>v &gt; 0</code> のときだけ集めて計算し直す。目的に合わせてデータを整えるのが<b>前処理</b>。本物のデータには欠測（×や--の記号）もあり、そのまま計算すると狂う——STEP2の実測でも必ず使う考え方。</div>
+    <button class="act navy" onclick="setCode('ed1', L9)">▶ 24時間平均と「昼だけ平均」をくらべる</button>
+    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('kofu_hare.csv')">表で見る: kofu_hare.csv</button>
+    <div class="challenge"><b>変えてみよう</b>：条件を <code>v &gt;= 1.0</code>（強い光の時間だけ）にすると平均はどうなる？条件のかけ方で「答え」が変わる危険も考えよう。</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi9"></span></div>
-    <textarea id="yomi9" class="jp" rows="1" oninput="saveText('yomi9')" placeholder="例：異常値4個で平均が○○もずれた。そうじ後は約520になった"></textarea>
+    <textarea id="yomi9" class="jp" rows="1" oninput="saveText('yomi9')" placeholder="例：24時間平均1.16に対し、昼だけ平均は1.86。何を知りたいかで計算が変わる"></textarea>
   </div>
 
   <div class="lesson">
     <h3>レッスン10：シミュレーション —— 計算で「予測」する</h3>
-    <div class="kaisetsu"><b>解説</b>：「ブラインドを閉めると明るさは30%になる」という<b>モデル</b>（仮定）を立てると、実測しなくても予測グラフが計算で作れる。これが<b>モデル化とシミュレーション</b>。STEP2で本当に計測して、予測と現実のズレを確かめるのがこの授業のクライマックス。</div>
-    <button class="act navy" onclick="setCode('ed1', L10)">▶ ブラインドを閉めた明るさを予測する</button>
-    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('rei_hare.csv')">表で見る: rei_hare.csv</button>
-    <div class="challenge"><b>変えてみよう</b>：割合 <code>0.3</code> を変えて予測を調整しよう。「照明を1本追加（+200）」のモデルも作れる？</div>
+    <div class="kaisetsu"><b>解説</b>：「くもりの日の光は晴れの日の30%くらいになる」という<b>モデル</b>（仮定）を立てると、実測しなくても予測グラフが計算で作れる。これが<b>モデル化とシミュレーション</b>。予測と本物のくもりデータ（6/4）を重ねて、モデルの当たり具合を確かめよう。</div>
+    <button class="act navy" onclick="setCode('ed1', L10)">▶ 晴れデータから「くもりの日」を予測する</button>
+    <div class="challenge"><b>変えてみよう</b>：割合 <code>0.3</code> を調整して、本物のくもりに一番近づく割合を探そう。それがあなたの作った「甲府のくもりモデル」！</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi10"></span></div>
-    <textarea id="yomi10" class="jp" rows="1" oninput="saveText('yomi10')" placeholder="例：30%モデルだと平均約240と予測できた。実測で確かめたい"></textarea>
+    <textarea id="yomi10" class="jp" rows="1" oninput="saveText('yomi10')" placeholder="例：0.3より0.4の方が本物に近かった。昼の形は予測とずれる"></textarea>
   </div>
 
   <div class="lesson">
-    <h3>レッスン11：データ推理ゲーム —— グラフから「何が起きたか」当てる</h3>
-    <div class="kaisetsu"><b>解説</b>：ある教室で計測された「なぞのデータ」が3つある（nazo1〜3）。グラフの形から<b>教室で何が起きたのか</b>を推理しよう。データ分析の最終目標は数値を出すことではなく、<b>現実に何が起きたかを読み取ること</b>。</div>
-    <button class="act navy" onclick="setCode('ed1', L11)">▶ なぞのデータを調べる（nazo1〜3）</button>
-    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('nazo1.csv')">表で見る: nazo1.csv</button>
-    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('nazo2.csv')">表で見る: nazo2.csv</button>
-    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('nazo3.csv')">表で見る: nazo3.csv</button>
-    <div class="challenge"><b>ヒント</b>：急に落ちた？だんだん増えた？周期的に何かが起きてる？　コードの <code>NAZO</code> を書き換えて3つ全部調べよう。</div>
+    <h3>レッスン11：データ推理ゲーム —— この日の天気を当てろ</h3>
+    <div class="kaisetsu"><b>解説</b>：<b>6月のある3日間（日付ひみつ）</b>の本物の日射データがある（nazoA〜C）。グラフの形から<b>その日の甲府の天気の変化</b>を推理しよう。「午前は？午後は？急な変化はいつ？」——データ分析の最終目標は数値を出すことではなく、<b>現実に何が起きたかを読み取ること</b>。</div>
+    <button class="act navy" onclick="setCode('ed1', L11)">▶ なぞの日のデータを調べる（nazoA〜C）</button>
+    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('kofu_nazoA.csv')">表で見る: kofu_nazoA.csv</button>
+    <div class="challenge"><b>ヒント</b>：レッスン6の晴れ・レッスン7のくもりの「形」と見くらべる。コードの <code>NAZO</code> を書き換えて3日ぶん全部調べよう。答え（実際の日付と天気）は最後に先生から発表！</div>
     <div class="fieldlbl">推理（3つとも書こう）<span class="saved" id="sv_yomi11"></span></div>
-    <textarea id="yomi11" class="jp" rows="2" oninput="saveText('yomi11')" placeholder="例：nazo1=途中で電気を消した／nazo2=朝日が昇ってだんだん明るく／nazo3=…"></textarea>
+    <textarea id="yomi11" class="jp" rows="2" oninput="saveText('yomi11')" placeholder="例：A=午前は雨っぽくて午後から晴れた／B=一日じゅう雲が厚い／C=…"></textarea>
+  </div>
+
+  <div class="howto" style="margin-top:16px">
+    <b>ここまで使ったのは、気象庁が公開している「本物の」データ。</b><br>
+    でも——<b>「いま、この教室の明るさ」のデータは、世界のどこを探しても公開されていない。</b>
+    欲しければ、自分たちで計測するしかない。そこで登場するのがスクーミー（オレンジボード）です。<br>
+    <button class="act orange" style="margin-top:8px" onclick="showStep(2)">→ STEP2へ：自分たちのデータを計測する</button>
   </div>
 </section>
 
@@ -390,12 +405,12 @@ print("こんにちは、スクーミー！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v1.4 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v1.5 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v1.4";
+const VERSION = "v1.5";
 let pyodide = null;
 
 // ---------- ステップ切替 ----------
@@ -451,7 +466,7 @@ let lastResults = {};
 async function loadAllData() {
   const names = [];
   for (let i = 1; i <= 9; i++) names.push(`demo${i}.csv`, `group${i}.csv`);
-  ["rei_hare","rei_kumori","rei_A","rei_B","rei_noise","nazo1","nazo2","nazo3"].forEach(n => names.push(n + ".csv"));
+  ["kofu_hare","kofu_kumori","kofu_1gatsu","kofu_6gatsu","kofu_nazoA","kofu_nazoB","kofu_nazoC"].forEach(n => names.push(n + ".csv"));
   const results = {};
   await Promise.all(names.map(async n => {
     try { results[n] = await fetchCsv(n); } catch (e) { results[n] = null; }
@@ -618,30 +633,31 @@ else:
     print("暗い（基準以下）")
 `;
 
-// ---------- パート2: データ分析レッスン ----------
-const L6 = `# レッスン6: グラフ化（晴れの日の窓側センサー）
+// ---------- パート2: データ分析レッスン（気象庁 甲府の実データ）----------
+const L6 = `# レッスン6: グラフ化（甲府・6月1日(晴れ) 1時間ごとの日射量）
+# 出典: 気象庁「過去の気象データ検索」
 import matplotlib.pyplot as plt
 
-FILE = "data/rei_hare.csv"   # 曇りの日は "data/rei_kumori.csv"
+FILE = "data/kofu_hare.csv"   # くもりの日は "data/kofu_kumori.csv"
 
 values = []
 with open(FILE) as f:
     next(f)                          # 見出し行をとばす
     for line in f:
         t, v = line.strip().split(",")
-        values.append(int(v))
+        values.append(float(v))      # 小数なので float を使う
 
-print("平均:", round(sum(values) / len(values)))
+print("最大:", max(values), "MJ/m2")
 
 plt.figure(figsize=(8, 3.5))
-plt.plot(values)
-plt.xlabel("Time (s)")
-plt.ylabel("Brightness")
+plt.plot(range(1, 25), values)       # 横軸 = 1〜24時
+plt.xlabel("Hour")
+plt.ylabel("Solar radiation (MJ/m2)")
 plt.grid(True)
 plt.show()
 `;
 
-const L7 = `# レッスン7: 2つのデータを重ねてくらべる
+const L7 = `# レッスン7: 晴れ(6/1) と くもり(6/4) をくらべる
 import matplotlib.pyplot as plt
 
 def yomikomi(path):              # 読み込みを関数にまとめた
@@ -650,27 +666,27 @@ def yomikomi(path):              # 読み込みを関数にまとめた
         next(f)
         for line in f:
             t, v = line.strip().split(",")
-            values.append(int(v))
+            values.append(float(v))
     return values
 
-hare   = yomikomi("data/rei_hare.csv")
-kumori = yomikomi("data/rei_kumori.csv")
+hare   = yomikomi("data/kofu_hare.csv")
+kumori = yomikomi("data/kofu_kumori.csv")
 
-print("晴れの平均:", round(sum(hare) / len(hare)))
-print("曇りの平均:", round(sum(kumori) / len(kumori)))
-# 変えてみよう: 「何倍明るいか」をここに print しよう
+print("晴れの日の合計:", round(sum(hare), 2), "MJ/m2")
+print("くもりの日の合計:", round(sum(kumori), 2), "MJ/m2")
+# 変えてみよう: 「晴れはくもりの何倍か」をここに print しよう
 
 plt.figure(figsize=(8, 3.5))
-plt.plot(hare, label="hare")       # label = 凡例の名前
-plt.plot(kumori, label="kumori")
+plt.plot(range(1, 25), hare, label="hare 6/1")
+plt.plot(range(1, 25), kumori, label="kumori 6/4")
 plt.legend()                       # 凡例を表示
-plt.xlabel("Time (s)")
-plt.ylabel("Brightness")
+plt.xlabel("Hour")
+plt.ylabel("Solar radiation (MJ/m2)")
 plt.grid(True)
 plt.show()
 `;
 
-const L8 = `# レッスン8: 平均が同じでも「ばらつき」が違う
+const L8 = `# レッスン8: 1月と6月、安定して晴れるのはどっち？（毎日の日照時間）
 import matplotlib.pyplot as plt
 
 def yomikomi(path):
@@ -679,59 +695,53 @@ def yomikomi(path):
         next(f)
         for line in f:
             t, v = line.strip().split(",")
-            values.append(int(v))
+            values.append(float(v))
     return values
 
-A = yomikomi("data/rei_A.csv")   # 安定した照明
-B = yomikomi("data/rei_B.csv")   # 変動する照明
+jan = yomikomi("data/kofu_1gatsu.csv")   # 1月・31日分
+jun = yomikomi("data/kofu_6gatsu.csv")   # 6月・20日分（梅雨）
 
-print("Aの平均:", round(sum(A) / len(A)))
-print("Bの平均:", round(sum(B) / len(B)))
-# 変えてみよう: 範囲（max - min）をそれぞれ print して、ばらつきを数値でくらべよう
+print("1月の平均:", round(sum(jan) / len(jan), 1), "時間")
+print("6月の平均:", round(sum(jun) / len(jun), 1), "時間")
+# 変えてみよう: 範囲（max - min）をそれぞれ print して安定性を数値でくらべよう
 
 plt.figure(figsize=(8, 3.5))
-plt.plot(A, label="A")
-plt.plot(B, label="B")
+plt.plot(jan, label="Jan")
+plt.plot(jun, label="Jun")
 plt.legend()
+plt.xlabel("Day")
+plt.ylabel("Sunshine (hours)")
 plt.grid(True)
 plt.show()
 `;
 
-const L9 = `# レッスン9: 異常値をそうじする（前処理）
+const L9 = `# レッスン9: 前処理 —— 「夜の0」をどうする？（晴れの日 6/1）
 def yomikomi(path):
     values = []
     with open(path) as f:
         next(f)
         for line in f:
             t, v = line.strip().split(",")
-            values.append(int(v))
+            values.append(float(v))
     return values
 
-values = yomikomi("data/rei_noise.csv")
+values = yomikomi("data/kofu_hare.csv")
 
-print("そうじ前の平均:", round(sum(values) / len(values)))
-print("最大:", max(values), " 最小:", min(values), "←ありえない値が混ざってる！")
+print("24時間ぜんぶの平均:", round(sum(values) / len(values), 2))
 
-# 「ありえない値」を除いた新しいリストを作る（if で条件をつける）
-kirei = []
+# 「昼の光の強さ」を知りたい → 0より大きい時間だけ集めなおす
+hiru = []
 for v in values:
-    if 0 < v < 2000:          # 0より大きく2000未満だけ通す
-        kirei.append(v)
+    if v > 0:                 # 条件を満たすものだけ通す
+        hiru.append(v)
 
-print("除いた個数:", len(values) - len(kirei))
-print("そうじ後の平均:", round(sum(kirei) / len(kirei)))
-
-import matplotlib.pyplot as plt
-plt.figure(figsize=(8, 3.5))
-plt.plot(values, label="before")
-plt.plot(kirei, label="after")
-plt.legend()
-plt.grid(True)
-plt.show()
+print("昼だけの平均:", round(sum(hiru) / len(hiru), 2))
+print("昼としてカウントした時間数:", len(hiru), "時間")
+# → 何を知りたいかで、データの整え方（前処理）が変わる！
 `;
 
 const L10 = `# レッスン10: モデル化とシミュレーション
-# モデル（仮定）:「ブラインドを閉めると明るさは 30% になる」
+# モデル（仮定）:「くもりの日の光は、晴れの日の 30% になる」
 import matplotlib.pyplot as plt
 
 def yomikomi(path):
@@ -740,52 +750,52 @@ def yomikomi(path):
         next(f)
         for line in f:
             t, v = line.strip().split(",")
-            values.append(int(v))
+            values.append(float(v))
     return values
 
-genzai = yomikomi("data/rei_hare.csv")    # 現在（ブラインド開）の実測
+hare = yomikomi("data/kofu_hare.csv")      # 晴れ(6/1)の実測
 
-wariai = 0.3                              # ←モデルの割合。変えて予測を調整しよう
+wariai = 0.3                               # ←モデルの割合。調整してみよう
 yosou = []
-for v in genzai:
-    yosou.append(v * wariai)              # 計算だけで未来を予測！
+for v in hare:
+    yosou.append(v * wariai)               # 計算だけで「くもりの日」を予測
 
-print("現在の平均:", round(sum(genzai) / len(genzai)))
-print("予測の平均:", round(sum(yosou) / len(yosou)))
-print("→ STEP2 で実際に計測して、この予測が当たるか確かめよう！")
+honmono = yomikomi("data/kofu_kumori.csv") # 本物のくもり(6/4)で答え合わせ
+
+print("予測の合計:", round(sum(yosou), 2), " / 本物の合計:", round(sum(honmono), 2))
 
 plt.figure(figsize=(8, 3.5))
-plt.plot(genzai, label="now (open)")
-plt.plot(yosou, label="predicted (closed)")
+plt.plot(range(1, 25), yosou, label="predicted (model 30%)")
+plt.plot(range(1, 25), honmono, label="real kumori 6/4")
 plt.legend()
+plt.xlabel("Hour")
 plt.grid(True)
 plt.show()
 `;
 
 const L11 = `# レッスン11: データ推理ゲーム
-# nazo1, nazo2, nazo3 —— それぞれの教室で「何が起きた」？
+# nazoA, nazoB, nazoC —— 6月のある日の本物のデータ。天気を推理せよ！
 import matplotlib.pyplot as plt
 
-NAZO = "nazo1"        # ← "nazo2", "nazo3" に変えて全部調べよう
+NAZO = "nazoA"        # ← "nazoB", "nazoC" に変えて全部調べよう
 
 values = []
-with open("data/" + NAZO + ".csv") as f:
+with open("data/kofu_" + NAZO + ".csv") as f:
     next(f)
     for line in f:
         t, v = line.strip().split(",")
-        values.append(int(v))
+        values.append(float(v))
 
-print(NAZO, "の平均:", round(sum(values) / len(values)))
-print("最大:", max(values), " 最小:", min(values))
+print(NAZO, "の最大:", max(values), "MJ/m2")
 
 plt.figure(figsize=(8, 3.5))
-plt.plot(values)
+plt.plot(range(1, 25), values)
 plt.title(NAZO)
-plt.xlabel("Time (s)")
-plt.ylabel("Brightness")
+plt.xlabel("Hour")
+plt.ylabel("Solar radiation (MJ/m2)")
 plt.grid(True)
 plt.show()
-# グラフの「形」から現実に何が起きたか推理して、記入欄に書こう
+# 晴れ(L6)やくもり(L7)の「形」と見くらべて、この日の天気の変化を推理しよう
 `;
 
 // ---------- ミッションコード ----------
