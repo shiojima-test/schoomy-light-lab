@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v1.2 | スクーミー×Python</title>
+<title>教室の光環境ラボ v1.3 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -90,7 +90,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v1.2</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v1.3</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -383,12 +383,12 @@ print("こんにちは、スクーミー！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v1.2 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v1.3 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v1.2";
+const VERSION = "v1.3";
 let pyodide = null;
 
 // ---------- ステップ切替 ----------
@@ -525,7 +525,7 @@ def _mk(path, vals):
     for i, v in enumerate(vals):
         lines.append(str(i) + "," + str(max(0, int(v))))
     with open(path, "w") as f:
-        f.write("\n".join(lines) + "\n")
+        f.write("\\n".join(lines) + "\\n")
 N = 180
 # 晴れの日の窓側 / 曇りの日
 _mk("data/rei_hare.csv",  [800 + 60*math.sin(i/25) + random.gauss(0,15) for i in range(N)])
