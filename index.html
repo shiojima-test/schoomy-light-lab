@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v1.5 | スクーミー×Python</title>
+<title>教室の光環境ラボ v1.6 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -85,12 +85,28 @@
   .saved { font-size: 11px; color: #3AABA8; margin-left: 8px; }
 
   footer { background: linear-gradient(90deg, #1f2a30, #2d3439); color: #F5E4C4; text-align: center; padding: 14px; font-size: 12px; margin-top: 30px; }
+  /* データビューア */
+  .dtabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; }
+  .dtabs button { padding: 8px 12px; border: 2px solid #ccc; border-radius: 8px; background: #fff; cursor: pointer; font-family: inherit; font-size: 13px; }
+  .dtabs button.on { border-color: #E88A0A; background: #fdf3e7; font-weight: bold; }
+  .dviewer { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-start; }
+  .dmeta { font-size: 13px; margin-bottom: 6px; }
+  .dmeta b { font-size: 15px; }
+  .dmeta .fn { font-size: 11px; color: #888; margin-left: 8px; }
+  .dtablewrap { flex: 0 0 220px; }
+  .dtscroll { max-height: 250px; overflow-y: auto; border: 1px solid #ccc; border-radius: 8px; }
+  .dtscroll table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+  .dtscroll th { position: sticky; top: 0; background: #2c4a6e; color: #fff; padding: 5px 10px; text-align: right; }
+  .dtscroll td { border-bottom: 1px solid #eee; padding: 4px 10px; text-align: right; font-family: "Consolas", monospace; }
+  .dtscroll tr:nth-child(even) td { background: #fbfbf8; }
+  .dchart { flex: 1; min-width: 280px; }
+  .dchart svg { width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px; background: #fff; }
   .teacher { border: 1px dashed #999; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #555; margin-top: 20px; background: #fafafa; }
 </style>
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v1.5</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v1.6</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -177,15 +193,16 @@ else:
   <h2>パート2：データ分析のきほん（レッスン6〜11）</h2>
   <p>ここからは<b>本物のデータ</b>を使います。国や自治体はさまざまな計測データを社会に公開していて（<b>オープンデータ</b>）、だれでも無料で使えます。今日使うのは気象庁が公開している、<b>甲府（山梨県）で実際に計測された太陽の光のデータ</b>です。</p>
 
-  <h3>今日つかう表（データの正体）</h3>
-  <table style="border-collapse:collapse; width:100%; font-size:12.5px">
-    <tr style="background:#eef6fb"><th style="border:1px solid #ccc;padding:6px">ファイル</th><th style="border:1px solid #ccc;padding:6px">なんのデータ？</th></tr>
-    <tr><td style="border:1px solid #ccc;padding:6px">kofu_hare.csv</td><td style="border:1px solid #ccc;padding:6px">甲府・2026年6月1日（<b>晴れ</b>）の1時間ごとの太陽の光の強さ（全天日射量 MJ/㎡）24時間分</td></tr>
-    <tr><td style="border:1px solid #ccc;padding:6px">kofu_kumori.csv</td><td style="border:1px solid #ccc;padding:6px">甲府・2026年6月4日（<b>くもり</b>）の同じデータ</td></tr>
-    <tr><td style="border:1px solid #ccc;padding:6px">kofu_1gatsu.csv</td><td style="border:1px solid #ccc;padding:6px">甲府・2026年<b>1月</b>の毎日の日照時間（h）31日分</td></tr>
-    <tr><td style="border:1px solid #ccc;padding:6px">kofu_6gatsu.csv</td><td style="border:1px solid #ccc;padding:6px">甲府・2026年<b>6月</b>1〜20日の毎日の日照時間（h）</td></tr>
-    <tr><td style="border:1px solid #ccc;padding:6px">kofu_nazoA〜C.csv</td><td style="border:1px solid #ccc;padding:6px">6月の<b>ある3日間（日付はひみつ）</b>の1時間ごとの日射量 → レッスン11で天気を推理！</td></tr>
-  </table>
+  <h3>今日つかうデータ（実物がこれ！）</h3>
+  <p>下のボタンで切りかえると、<b>表（本物の数値）</b>と<b>グラフ</b>がすぐ見られます。まずは ☀️晴れ と ☁️くもり を見くらべてみよう。</p>
+  <div class="dtabs" id="dtabs"></div>
+  <div class="dviewer">
+    <div class="dtablewrap">
+      <div class="dmeta" id="dmeta">読み込み中…</div>
+      <div class="dtscroll" id="dtable"></div>
+    </div>
+    <div class="dchart" id="dchart"></div>
+  </div>
   <p class="note" style="margin-top:6px">出典：気象庁「<a href="https://www.data.jma.go.jp/stats/etrn/index.php" target="_blank">過去の気象データ検索</a>」（甲府地方気象台の観測値）より作成。数値はすべて実測の本物です。</p>
   <p>各レッスンの最後に<b>「読み取ったこと」を1行書く</b>のを忘れずに（自動保存されます）。</p>
 
@@ -405,12 +422,12 @@ print("こんにちは、スクーミー！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v1.5 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v1.6 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v1.5";
+const VERSION = "v1.6";
 let pyodide = null;
 
 // ---------- ステップ切替 ----------
@@ -444,6 +461,79 @@ function saveText(id) {
 function markMine() {
   localStorage.setItem("lab_group", document.getElementById("upGroup").value);
   renderDash();
+}
+
+// ---------- データビューア（実物の表とグラフを常時表示） ----------
+const DATASETS = [
+  { key: "kofu_hare.csv",   tab: "☀️ 晴れ 6/1",  title: "☀️ 6月1日（晴れ）の甲府", sub: "1時間ごとの太陽の光の強さ", tcol: "時こく", vcol: "光の強さ", unit: "単位: MJ/㎡（大きいほど強い光）", xlab: "時" },
+  { key: "kofu_kumori.csv", tab: "☁️ くもり 6/4", title: "☁️ 6月4日（くもり）の甲府", sub: "1時間ごとの太陽の光の強さ", tcol: "時こく", vcol: "光の強さ", unit: "単位: MJ/㎡", xlab: "時" },
+  { key: "kofu_1gatsu.csv", tab: "❄️ 1月",       title: "❄️ 2026年1月の甲府", sub: "毎日の日照時間（太陽が出ていた時間）", tcol: "日にち", vcol: "日照時間", unit: "単位: 時間", xlab: "日" },
+  { key: "kofu_6gatsu.csv", tab: "☔ 6月(梅雨)",  title: "☔ 2026年6月1〜20日の甲府", sub: "毎日の日照時間（梅雨の時期）", tcol: "日にち", vcol: "日照時間", unit: "単位: 時間", xlab: "日" },
+  { key: "kofu_nazoA.csv",  tab: "❓ なぞA",     title: "❓ なぞの日A（6月のある日）", sub: "この日の天気は？レッスン11で推理", tcol: "時こく", vcol: "光の強さ", unit: "単位: MJ/㎡", xlab: "時" },
+  { key: "kofu_nazoB.csv",  tab: "❓ なぞB",     title: "❓ なぞの日B（6月のある日）", sub: "この日の天気は？レッスン11で推理", tcol: "時こく", vcol: "光の強さ", unit: "単位: MJ/㎡", xlab: "時" },
+  { key: "kofu_nazoC.csv",  tab: "❓ なぞC",     title: "❓ なぞの日C（6月のある日）", sub: "この日の天気は？レッスン11で推理", tcol: "時こく", vcol: "光の強さ", unit: "単位: MJ/㎡", xlab: "時" },
+];
+let currentDS = 0;
+
+function parseCsv(txt) {
+  const rows = [];
+  const lines = txt.trim().split("\n");
+  for (let i = 1; i < lines.length; i++) {
+    const [t, v] = lines[i].split(",");
+    rows.push([t, parseFloat(v)]);
+  }
+  return rows;
+}
+
+function drawChartSVG(rows, xlab) {
+  const W = 480, H = 230, L = 40, R = 12, T = 14, B = 30;
+  const vals = rows.map(r => r[1]);
+  const maxV = Math.max(...vals, 0.001);
+  const n = vals.length;
+  const x = i => L + (W - L - R) * (n <= 1 ? 0 : i / (n - 1));
+  const y = v => T + (H - T - B) * (1 - v / maxV);
+  let pts = vals.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  // 目盛り: 最初/まん中/最後
+  const mid = Math.floor((n - 1) / 2);
+  const ticks = [0, mid, n - 1].map(i =>
+    `<text x="${x(i)}" y="${H - 8}" font-size="11" text-anchor="middle" fill="#666">${rows[i][0]}${xlab}</text>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+    <line x1="${L}" y1="${T}" x2="${L}" y2="${H - B}" stroke="#bbb"/>
+    <line x1="${L}" y1="${H - B}" x2="${W - R}" y2="${H - B}" stroke="#bbb"/>
+    <text x="${L - 5}" y="${T + 10}" font-size="11" text-anchor="end" fill="#666">${maxV}</text>
+    <text x="${L - 5}" y="${H - B}" font-size="11" text-anchor="end" fill="#666">0</text>
+    <polyline points="${pts}" fill="none" stroke="#3AABA8" stroke-width="2.5"/>
+    ${ticks}
+  </svg>`;
+}
+
+function renderViewer(idx) {
+  currentDS = idx;
+  const ds = DATASETS[idx];
+  // タブ
+  const tabs = document.getElementById("dtabs");
+  tabs.innerHTML = "";
+  DATASETS.forEach((d, i) => {
+    const b = document.createElement("button");
+    b.textContent = d.tab;
+    b.className = i === idx ? "on" : "";
+    b.onclick = () => renderViewer(i);
+    tabs.appendChild(b);
+  });
+  const txt = lastResults[ds.key];
+  const meta = document.getElementById("dmeta");
+  if (!txt) { meta.textContent = "読み込み中…（少し待ってね）"; return; }
+  const rows = parseCsv(txt);
+  meta.innerHTML = `<b>${ds.title}</b><span class="fn">${ds.key}</span><br>${ds.sub}<br><span class="note">${ds.unit}</span>`;
+  // 表（全行）
+  let html = `<table><tr><th>${ds.tcol}</th><th>${ds.vcol}</th></tr>`;
+  for (const [t, v] of rows) html += `<tr><td>${t}</td><td>${v}</td></tr>`;
+  html += "</table>";
+  document.getElementById("dtable").innerHTML = html;
+  // グラフ
+  document.getElementById("dchart").innerHTML =
+    `<p class="note" style="margin:0 0 4px">↓ 同じ数字をグラフにしたもの（この形をPythonで自分でも作れるようになる）</p>`
+    + drawChartSVG(rows, ds.xlab);
 }
 
 // ---------- データ取得 ----------
@@ -511,12 +601,24 @@ async function refreshData() {
   document.getElementById("dashNote3").textContent = "読み込み中…";
   await loadAllData();
   renderDash();
+  renderViewer(currentDS);
   const t = "更新: " + new Date().toLocaleTimeString();
   document.getElementById("dashNote2").textContent = t;
   document.getElementById("dashNote3").textContent = t;
 }
 
 // ---------- Pyodide ----------
+async function initAll() {
+  // ① まずデータを取得して、表・グラフ・マップを即表示（Pythonを待たない）
+  try {
+    await loadAllData();
+    renderDash();
+    renderViewer(0);
+  } catch (e) {}
+  // ② そのあとでPython環境を読み込む
+  initPy();
+}
+
 async function initPy() {
   const st = document.getElementById("pyStatus");
   try {
@@ -550,7 +652,7 @@ def _show_plot():
     st.className = "status err";
   }
 }
-initPy();
+initAll();
 
 async function runCode(edId, outId, plotId) {
   const out = document.getElementById(outId);
