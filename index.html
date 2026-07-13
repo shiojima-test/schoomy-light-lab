@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v1.3 | スクーミー×Python</title>
+<title>教室の光環境ラボ v1.4 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -90,7 +90,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v1.3</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v1.4</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -175,12 +175,13 @@ else:
 
 <section>
   <h2>パート2：データ分析のきほん（レッスン6〜11）</h2>
-  <p>ここからは<b>練習用のセンサーデータ</b>を使って、情報Ⅰ・Ⅱで必要な「データを見る力」を身につけます。各レッスンの最後に<b>「読み取ったこと」を1行書く</b>のを忘れずに（自動保存されます）。</p>
+  <p>ここからは<b>練習用のセンサーデータ</b>を使って、「データを見る力」を身につけます。各レッスンの最後に<b>「読み取ったこと」を1行書く</b>のを忘れずに（自動保存されます）。</p>
 
   <div class="lesson">
     <h3>レッスン6：グラフ化 —— 数字の列を「見える」ようにする</h3>
-    <div class="kaisetsu"><b>解説</b>：180個の数字を眺めても傾向は分からない。<code>plt.plot(values)</code> で折れ線グラフにすると、一瞬で「増えている／減っている／波打っている」が見える。これが<b>可視化</b>（情報Ⅰ：データの活用）。</div>
+    <div class="kaisetsu"><b>解説</b>：180個の数字を眺めても傾向は分からない。<code>plt.plot(values)</code> で折れ線グラフにすると、一瞬で「増えている／減っている／波打っている」が見える。これが<b>可視化</b>。</div>
     <button class="act navy" onclick="setCode('ed1', L6)">▶ 晴れの日の窓側データをグラフにする</button>
+    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('rei_hare.csv')">表で見る: rei_hare.csv</button>
     <div class="challenge"><b>変えてみよう</b>：FILE を <code>"data/rei_kumori.csv"</code>（曇りの日）に変えて、形の違いを見よう。</div>
     <div class="fieldlbl">読み取ったこと（グラフから分かった傾向を1行で）<span class="saved" id="sv_yomi6"></span></div>
     <textarea id="yomi6" class="jp" rows="1" oninput="saveText('yomi6')" placeholder="例：ゆるやかに波打ちながら800前後で推移している"></textarea>
@@ -190,6 +191,8 @@ else:
     <h3>レッスン7：くらべる —— 2つのデータを重ねる</h3>
     <div class="kaisetsu"><b>解説</b>：グラフの真価は<b>比較</b>にある。晴れの日と曇りの日を同じグラフに重ねると、差の大きさが一目で分かる。<code>label=</code> と <code>plt.legend()</code> で凡例（どの線がどれか）を付けるのがマナー。</div>
     <button class="act navy" onclick="setCode('ed1', L7)">▶ 晴れ vs 曇り を重ねてくらべる</button>
+    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('rei_hare.csv')">表で見る: rei_hare.csv</button>
+    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('rei_kumori.csv')">表で見る: rei_kumori.csv</button>
     <div class="challenge"><b>変えてみよう</b>：「何倍明るいか」を print で表示する行を追加しよう（ヒント：レッスン2の割り算）。</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi7"></span></div>
     <textarea id="yomi7" class="jp" rows="1" oninput="saveText('yomi7')" placeholder="例：晴れは曇りの約2倍明るく、変動も大きい"></textarea>
@@ -197,8 +200,10 @@ else:
 
   <div class="lesson">
     <h3>レッスン8：ばらつき —— 平均が同じでも「別物」</h3>
-    <div class="kaisetsu"><b>解説</b>：データAとBは<b>平均がほぼ同じ500</b>。でもグラフにすると全く違う。安定した照明（A）とチカチカ変動する照明（B）では快適さが違うように、<b>平均だけではデータは語れない</b>。ばらつきの一番簡単な指標が「範囲＝最大−最小」（情報Ⅰ：基礎的な指標。情報Ⅱでは分散・標準偏差に発展）。</div>
+    <div class="kaisetsu"><b>解説</b>：データAとBは<b>平均がほぼ同じ500</b>。でもグラフにすると全く違う。安定した照明（A）とチカチカ変動する照明（B）では快適さが違うように、<b>平均だけではデータは語れない</b>。ばらつきの一番簡単な指標が「範囲＝最大−最小」。</div>
     <button class="act navy" onclick="setCode('ed1', L8)">▶ 平均が同じ2つのデータをくらべる</button>
+    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('rei_A.csv')">表で見る: rei_A.csv</button>
+    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('rei_B.csv')">表で見る: rei_B.csv</button>
     <div class="challenge"><b>変えてみよう</b>：AとBそれぞれの「範囲（max - min）」を print しよう。</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi8"></span></div>
     <textarea id="yomi8" class="jp" rows="1" oninput="saveText('yomi8')" placeholder="例：平均は同じでもBは振れ幅が大きく、範囲で差が数値化できた"></textarea>
@@ -206,8 +211,9 @@ else:
 
   <div class="lesson">
     <h3>レッスン9：異常値 —— 汚れたデータをそうじする</h3>
-    <div class="kaisetsu"><b>解説</b>：本物のセンサーデータには<b>異常値</b>が混ざる（センサーを手でふさぐと0、通信エラーで9999など）。異常値が混ざると平均が大きく狂う。<code>if 0 &lt; v &lt; 2000:</code> のような条件で「ありえない値」を除いてから計算するのが<b>前処理</b>。STEP2の実測でも必ず役に立つ（情報Ⅰ：データの妥当性・限界／情報Ⅱ：データ処理）。</div>
+    <div class="kaisetsu"><b>解説</b>：本物のセンサーデータには<b>異常値</b>が混ざる（センサーを手でふさぐと0、通信エラーで9999など）。異常値が混ざると平均が大きく狂う。<code>if 0 &lt; v &lt; 2000:</code> のような条件で「ありえない値」を除いてから計算するのが<b>前処理</b>。STEP2の実測でも必ず役に立つ。</div>
     <button class="act navy" onclick="setCode('ed1', L9)">▶ 異常値入りデータで平均の狂いを確かめる</button>
+    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('rei_noise.csv')">表で見る: rei_noise.csv</button>
     <div class="challenge"><b>変えてみよう</b>：除去する条件を変える（例：<code>0 &lt; v &lt; 1000</code>）と結果がどうなる？きびしすぎる条件の危険も考えよう。</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi9"></span></div>
     <textarea id="yomi9" class="jp" rows="1" oninput="saveText('yomi9')" placeholder="例：異常値4個で平均が○○もずれた。そうじ後は約520になった"></textarea>
@@ -215,8 +221,9 @@ else:
 
   <div class="lesson">
     <h3>レッスン10：シミュレーション —— 計算で「予測」する</h3>
-    <div class="kaisetsu"><b>解説</b>：「ブラインドを閉めると明るさは30%になる」という<b>モデル</b>（仮定）を立てると、実測しなくても予測グラフが計算で作れる。これが<b>モデル化とシミュレーション</b>（情報Ⅰの重要単元）。STEP2で本当に計測して、予測と現実のズレを確かめるのがこの授業のクライマックス。</div>
+    <div class="kaisetsu"><b>解説</b>：「ブラインドを閉めると明るさは30%になる」という<b>モデル</b>（仮定）を立てると、実測しなくても予測グラフが計算で作れる。これが<b>モデル化とシミュレーション</b>。STEP2で本当に計測して、予測と現実のズレを確かめるのがこの授業のクライマックス。</div>
     <button class="act navy" onclick="setCode('ed1', L10)">▶ ブラインドを閉めた明るさを予測する</button>
+    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('rei_hare.csv')">表で見る: rei_hare.csv</button>
     <div class="challenge"><b>変えてみよう</b>：割合 <code>0.3</code> を変えて予測を調整しよう。「照明を1本追加（+200）」のモデルも作れる？</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi10"></span></div>
     <textarea id="yomi10" class="jp" rows="1" oninput="saveText('yomi10')" placeholder="例：30%モデルだと平均約240と予測できた。実測で確かめたい"></textarea>
@@ -226,6 +233,9 @@ else:
     <h3>レッスン11：データ推理ゲーム —— グラフから「何が起きたか」当てる</h3>
     <div class="kaisetsu"><b>解説</b>：ある教室で計測された「なぞのデータ」が3つある（nazo1〜3）。グラフの形から<b>教室で何が起きたのか</b>を推理しよう。データ分析の最終目標は数値を出すことではなく、<b>現実に何が起きたかを読み取ること</b>。</div>
     <button class="act navy" onclick="setCode('ed1', L11)">▶ なぞのデータを調べる（nazo1〜3）</button>
+    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('nazo1.csv')">表で見る: nazo1.csv</button>
+    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('nazo2.csv')">表で見る: nazo2.csv</button>
+    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('nazo3.csv')">表で見る: nazo3.csv</button>
     <div class="challenge"><b>ヒント</b>：急に落ちた？だんだん増えた？周期的に何かが起きてる？　コードの <code>NAZO</code> を書き換えて3つ全部調べよう。</div>
     <div class="fieldlbl">推理（3つとも書こう）<span class="saved" id="sv_yomi11"></span></div>
     <textarea id="yomi11" class="jp" rows="2" oninput="saveText('yomi11')" placeholder="例：nazo1=途中で電気を消した／nazo2=朝日が昇ってだんだん明るく／nazo3=…"></textarea>
@@ -317,7 +327,6 @@ print("こんにちは、スクーミー！")</textarea>
 <section class="mission">
   <div class="mhead">ミッション1：教室の明るさに「差」はあるか？</div>
   <div class="mbody">
-    <span class="mtag">情報Ⅰ データの活用</span><span class="mtag">家庭科 住環境</span>
     <p><b>ねらい</b>：計測データを平均・最大・最小で要約し、9地点をくらべて教室の明るさの傾向を数値でつかむ。</p>
     <div class="fieldlbl">① 仮説（計測する前の直感を書く）<span class="saved" id="sv_m1h"></span></div>
     <textarea id="m1h" class="jp" rows="2" placeholder="例：窓側は廊下側の2倍くらい明るいと思う。一番明るいのは4班（窓側まん中）だと思う。" oninput="saveText('m1h')"></textarea>
@@ -335,7 +344,6 @@ print("こんにちは、スクーミー！")</textarea>
 <section class="mission">
   <div class="mhead">ミッション2：学校環境衛生基準で教室を「診断」する</div>
   <div class="mbody">
-    <span class="mtag">情報Ⅰ アルゴリズムとプログラム</span><span class="mtag">建築・住環境の基準</span>
     <p><b>ねらい</b>：条件分岐（if）で判断を自動化する。基準は2つ——<b>照度500ルクス以上</b>が望ましい／<b>最大照度と最小照度の比は20:1以内</b>が望ましい（学校環境衛生基準）。</p>
     <div class="fieldlbl">① 仮説<span class="saved" id="sv_m2h"></span></div>
     <textarea id="m2h" class="jp" rows="2" placeholder="例：この教室は20:1はクリアしていると思う。でも廊下側は500を下回っていると思う。" oninput="saveText('m2h')"></textarea>
@@ -353,7 +361,6 @@ print("こんにちは、スクーミー！")</textarea>
 <section class="mission">
   <div class="mhead">ミッション3（発展）：ブラインド・照明の効果を数値で証明する</div>
   <div class="mbody">
-    <span class="mtag">家庭科 ホームプロジェクト</span><span class="mtag">直感（仮説）×計測</span>
     <p><b>ねらい</b>：条件を変えて計測し、効果を「◆倍」と定量的に示す。住まいの採光デザイン（ブラインド・カーテン・照明）の改善提案につなげる。</p>
     <p><b>やり方</b>：① 条件A（例：ブラインド閉）で計測→STEP2でアップロード→平均をメモ ② 条件B（例：ブラインド開）で計測→もう一度アップロード→平均をメモ ③ 下の欄で比較。</p>
     <div class="fieldlbl">① 仮説（条件Bは条件Aの何倍になる？）<span class="saved" id="sv_m3h"></span></div>
@@ -383,12 +390,12 @@ print("こんにちは、スクーミー！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v1.3 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v1.4 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v1.3";
+const VERSION = "v1.4";
 let pyodide = null;
 
 // ---------- ステップ切替 ----------
@@ -444,6 +451,7 @@ let lastResults = {};
 async function loadAllData() {
   const names = [];
   for (let i = 1; i <= 9; i++) names.push(`demo${i}.csv`, `group${i}.csv`);
+  ["rei_hare","rei_kumori","rei_A","rei_B","rei_noise","nazo1","nazo2","nazo3"].forEach(n => names.push(n + ".csv"));
   const results = {};
   await Promise.all(names.map(async n => {
     try { results[n] = await fetchCsv(n); } catch (e) { results[n] = null; }
@@ -516,37 +524,6 @@ def _show_plot():
         js.document.getElementById(_plot_target).innerHTML = '<img src="data:image/png;base64,' + b64 + '">'
         plt.close("all")
 
-# ---- 練習用データを生成して data/ に置く（レッスン6〜11用）----
-import os, random, math
-os.makedirs("data", exist_ok=True)
-random.seed(7)
-def _mk(path, vals):
-    lines = ["timestamp,value"]
-    for i, v in enumerate(vals):
-        lines.append(str(i) + "," + str(max(0, int(v))))
-    with open(path, "w") as f:
-        f.write("\\n".join(lines) + "\\n")
-N = 180
-# 晴れの日の窓側 / 曇りの日
-_mk("data/rei_hare.csv",  [800 + 60*math.sin(i/25) + random.gauss(0,15) for i in range(N)])
-_mk("data/rei_kumori.csv",[400 + 20*math.sin(i/30) + random.gauss(0,10) for i in range(N)])
-# 平均は同じ・ばらつきが違う A / B
-_mk("data/rei_A.csv", [500 + random.gauss(0,8) for i in range(N)])
-_mk("data/rei_B.csv", [500 + 150*math.sin(i/9) + random.gauss(0,40) for i in range(N)])
-# 異常値入り（0 と 9999 が混入）
-_noise = [520 + random.gauss(0,12) for i in range(N)]
-for _i in (30, 120): _noise[_i] = 0
-for _i in (77, 150): _noise[_i] = 9999
-_mk("data/rei_noise.csv", _noise)
-# なぞデータ: 1=途中で消灯 2=だんだん明るく 3=周期的に何かが影を作る
-_mk("data/nazo1.csv", [(800 if i < 90 else 280) + random.gauss(0,15) for i in range(N)])
-_mk("data/nazo2.csv", [200 + i*3 + random.gauss(0,12) for i in range(N)])
-_nz3 = []
-for i in range(N):
-    v = 600 + random.gauss(0,10)
-    if i % 20 < 3: v = 120 + random.gauss(0,10)
-    _nz3.append(v)
-_mk("data/nazo3.csv", _nz3)
 `);
     await loadAllData();
     renderDash();
@@ -588,6 +565,24 @@ function setCode(edId, code) {
   document.getElementById(edId).value = code;
   const sec = edId === "ed1" ? "editorSec1" : "editorSec3";
   document.getElementById(sec).scrollIntoView({ behavior: "smooth" });
+}
+
+// 練習データの中身を表として表示する
+function showData(name) {
+  let txt;
+  try {
+    txt = pyodide ? pyodide.FS.readFile("data/" + name, { encoding: "utf8" }) : null;
+  } catch (e) { txt = null; }
+  const out = document.getElementById("out1");
+  document.getElementById("plot1").innerHTML = "";
+  if (!txt) { out.textContent = "まだ読み込み中です。少し待ってからもう一度押してください。"; return; }
+  const lines = txt.trim().split("\n");
+  const head = lines.slice(0, 16).join("\n");
+  out.textContent = "data/" + name + " の中身（先頭15行 / 全" + (lines.length - 1) + "行）\n"
+    + "──────────────────────\n" + head + "\n……（続く）\n"
+    + "──────────────────────\n"
+    + "GitHubでも見られます: https://github.com/shiojima-test/schoomy-light-lab/blob/main/data/" + name;
+  document.getElementById("editorSec1").scrollIntoView({ behavior: "smooth" });
 }
 
 // ---------- レッスンコード ----------
