@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>教室の光環境ラボ v1.0 | スクーミー×Python</title>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Meiryo, "Hiragino Kaku Gothic ProN", sans-serif; background: #f7f5f0; color: #1f2a30; }
+  /* ブランドヘッダー */
+  header { background: linear-gradient(90deg, #1f2a30, #2d3439); color: #fff; padding: 18px 24px; }
+  header h1 { font-size: 20px; font-weight: bold; }
+  header .ver { font-size: 12px; color: #F5E4C4; margin-left: 8px; }
+  .subbar { display: flex; height: 6px; }
+  .subbar .c1 { width: 30.5%; background: #3AABA8; }
+  .subbar .c2 { width: 45.7%; background: #F5E4C4; }
+  .subbar .c3 { width: 8.4%;  background: #E88A0A; }
+  .subbar .c4 { width: 15.5%; background: #2E8EC4; }
+  main { max-width: 1100px; margin: 0 auto; padding: 20px 16px 60px; }
+  section { background: #fff; border-radius: 10px; padding: 18px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(31,42,48,.08); }
+  h2 { font-size: 16px; color: #1a3a5c; border-left: 5px solid #3AABA8; padding-left: 10px; margin-bottom: 12px; }
+  h3 { font-size: 14px; margin: 10px 0 6px; color: #2c4a6e; }
+  p, li, label { font-size: 13px; line-height: 1.7; }
+  .status { padding: 8px 12px; border-radius: 6px; font-size: 13px; margin-bottom: 12px; background: #F5E4C4; }
+  .status.ok { background: #d9efee; }
+  .status.err { background: #fde3d0; }
+  select, input[type=text], input[type=password] { font-size: 13px; padding: 6px 8px; border: 1px solid #ccc; border-radius: 6px; font-family: Meiryo, sans-serif; }
+  button { font-size: 13px; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-family: Meiryo, sans-serif; font-weight: bold; }
+  button.primary { background: #3AABA8; color: #fff; }
+  button.orange { background: #E88A0A; color: #fff; }
+  button.blue { background: #2E8EC4; color: #fff; }
+  button:disabled { background: #bbb; cursor: not-allowed; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+  textarea { width: 100%; font-family: "Consolas", "Courier New", monospace; font-size: 13px; border: 1px solid #ccc; border-radius: 6px; padding: 10px; line-height: 1.5; }
+  #editor { height: 300px; background: #fbfbf8; }
+  #output { background: #1f2a30; color: #d9efee; padding: 12px; border-radius: 6px; font-family: "Consolas", monospace; font-size: 13px; white-space: pre-wrap; min-height: 60px; max-height: 300px; overflow: auto; margin-top: 10px; }
+  #plot img { max-width: 100%; border: 1px solid #ddd; border-radius: 6px; margin-top: 10px; }
+  .templates { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .templates button { background: #2c4a6e; color: #fff; font-weight: normal; font-size: 12px; }
+  .grid9 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-width: 420px; margin: 8px 0; }
+  .cell { border: 1px solid #ccc; border-radius: 6px; padding: 8px; text-align: center; font-size: 12px; background: #fbfbf8; }
+  .cell.done { background: #d9efee; border-color: #3AABA8; }
+  .note { font-size: 12px; color: #666; }
+  footer { background: linear-gradient(90deg, #1f2a30, #2d3439); color: #F5E4C4; text-align: center; padding: 14px; font-size: 12px; margin-top: 30px; }
+  .missionbox { border: 1px dashed #E88A0A; border-radius: 8px; padding: 10px 14px; margin: 8px 0; }
+  .missionbox b { color: #E88A0A; }
+</style>
+</head>
+<body>
+<header>
+  <h1>教室の光環境ラボ<span class="ver">v1.0</span></h1>
+</header>
+<div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
+
+<main>
+
+<!-- ================= 進捗ダッシュボード ================= -->
+<section>
+  <h2>班データの状況</h2>
+  <p>オレンジボードで計測した明るさデータ（group1〜9）。緑＝アップロード済み（実測データに更新済み）。</p>
+  <div class="grid9" id="dash"></div>
+  <button class="blue" onclick="refreshData()">データを再読み込み</button>
+  <span class="note" id="dashNote"></span>
+</section>
+
+<!-- ================= Python 学習エリア ================= -->
+<section>
+  <h2>Pythonでプログラミング</h2>
+  <div id="pyStatus" class="status">Python環境を読み込んでいます…（初回は30秒ほどかかります）</div>
+
+  <h3>お手本コードを呼び出す</h3>
+  <div class="templates">
+    <button onclick="setTemplate('t1')">① 読み込み・平均/最大/最小</button>
+    <button onclick="setTemplate('t2')">② 折れ線グラフ</button>
+    <button onclick="setTemplate('t3')">③ 9班くらべ（棒グラフ）</button>
+    <button onclick="setTemplate('t4')">④ 適/不適の判定（20:1）</button>
+  </div>
+
+  <div class="toolbar">
+    <label>使うデータ:
+      <select id="dataKind">
+        <option value="demo">デモ</option>
+        <option value="group">実測</option>
+      </select>
+      <select id="dataNum">
+        <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+        <option>6</option><option>7</option><option>8</option><option>9</option>
+      </select>班
+    </label>
+    <span class="note">→ お手本コード内の FILE を書き換えます</span>
+  </div>
+
+  <textarea id="editor" spellcheck="false"># ここにPythonのコードを書いて「実行」を押そう
+print("こんにちは、スクーミー！")</textarea>
+  <div class="toolbar" style="margin-top:10px">
+    <button class="primary" id="runBtn" onclick="runCode()" disabled>▶ 実行</button>
+  </div>
+  <div id="output">（ここに結果が表示されます）</div>
+  <div id="plot"></div>
+
+  <h3>ミッション</h3>
+  <div class="missionbox"><b>★</b> 自分の班のデータの平均・最大・最小を求めよう（お手本①）</div>
+  <div class="missionbox"><b>★★</b> 明るさの変化を折れ線グラフにして、変化の理由を考えよう（お手本②）</div>
+  <div class="missionbox"><b>★★★</b> 9地点の平均をくらべて、教室の明るさマップを説明しよう（お手本③）</div>
+  <div class="missionbox"><b>★★★★</b> 学校環境衛生基準では最大照度と最小照度の比は <b>20:1</b> を超えないことが望ましい。maxlux・minlux を計算し「適正/不適」を表示するプログラムを完成させよう（お手本④）</div>
+</section>
+
+<!-- ================= データ投入 ================= -->
+<section>
+  <h2>計測データをアップロード</h2>
+  <p>スクーミーブロックエディタのシリアル出力をコピーして貼り付けてください。<br>
+     形式は「数値だけの行」でも「時刻,数値」でもOK（自動で timestamp,value 形式に変換します）。</p>
+  <div class="toolbar">
+    <label>班: <select id="upGroup">
+      <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+      <option>6</option><option>7</option><option>8</option><option>9</option>
+    </select></label>
+    <label>アップロードキー: <input type="password" id="upToken" placeholder="先生から配布" size="24"></label>
+  </div>
+  <textarea id="upData" rows="6" placeholder="512&#10;530&#10;498&#10;…（シリアル出力を貼り付け）"></textarea>
+  <div class="toolbar" style="margin-top:8px">
+    <button class="orange" onclick="uploadData()">アップロード</button>
+    <span class="note" id="upNote"></span>
+  </div>
+</section>
+
+</main>
+
+<footer>教室の光環境ラボ v1.0 ｜ SchooMy</footer>
+
+<script>
+const OWNER = "shiojima-test";
+const REPO  = "schoomy-light-lab";
+const VERSION = "v1.0";
+
+// URLパラメータ ?token= があればアップロードキー欄に自動入力
+const urlToken = new URLSearchParams(location.search).get("token");
+if (urlToken) window.addEventListener("DOMContentLoaded", () => { document.getElementById("upToken").value = urlToken; });
+
+// ================= データ取得 =================
+// トークンがあればContents API(即時反映)、なければ相対パス(GitHub Pages)
+async function fetchCsv(name) {
+  const token = document.getElementById("upToken").value.trim();
+  if (token) {
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/data/${name}?ref=main`, {
+      headers: { "Authorization": "Bearer " + token, "Accept": "application/vnd.github.raw" },
+      cache: "no-store"
+    });
+    if (!r.ok) throw new Error(`${name}: ${r.status}`);
+    return await r.text();
+  } else {
+    const r = await fetch(`data/${name}?v=${Date.now()}`, { cache: "no-store" });
+    if (!r.ok) throw new Error(`${name}: ${r.status}`);
+    return await r.text();
+  }
+}
+
+let pyodide = null;
+
+async function loadAllData() {
+  const names = [];
+  for (let i = 1; i <= 9; i++) { names.push(`demo${i}.csv`, `group${i}.csv`); }
+  const results = {};
+  await Promise.all(names.map(async n => {
+    try { results[n] = await fetchCsv(n); } catch (e) { results[n] = null; }
+  }));
+  // Pyodideの仮想ファイルシステムへ書き込み → 生徒は普通の open() で読める
+  if (pyodide) {
+    try { pyodide.FS.mkdir("data"); } catch (e) {}
+    for (const [n, txt] of Object.entries(results)) {
+      if (txt !== null) pyodide.FS.writeFile("data/" + n, txt);
+    }
+  }
+  return results;
+}
+
+// ================= ダッシュボード =================
+async function refreshData() {
+  document.getElementById("dashNote").textContent = "読み込み中…";
+  const results = await loadAllData();
+  const dash = document.getElementById("dash");
+  dash.innerHTML = "";
+  for (let i = 1; i <= 9; i++) {
+    const g = results[`group${i}.csv`];
+    const d = results[`demo${i}.csv`];
+    const isUpdated = g !== null && d !== null && g !== d; // デモと異なる=実測投入済み
+    const div = document.createElement("div");
+    div.className = "cell" + (isUpdated ? " done" : "");
+    const rows = g ? Math.max(0, g.trim().split("\n").length - 1) : 0;
+    div.innerHTML = `<b>${i}班</b><br>${isUpdated ? "実測済 " + rows + "行" : "未計測(デモ)"}`;
+    dash.appendChild(div);
+  }
+  document.getElementById("dashNote").textContent = "更新: " + new Date().toLocaleTimeString();
+}
+
+// ================= Pyodide =================
+async function initPy() {
+  const st = document.getElementById("pyStatus");
+  try {
+    pyodide = await loadPyodide();
+    st.textContent = "グラフ機能を読み込んでいます…";
+    await pyodide.loadPackage("matplotlib");
+    await pyodide.runPythonAsync(`
+import matplotlib
+matplotlib.use("AGG")
+import matplotlib.pyplot as plt
+import io, base64, js
+
+def _show_plot():
+    if plt.get_fignums():
+        buf = io.BytesIO()
+        plt.savefig(buf, format="png", dpi=100, bbox_inches="tight")
+        buf.seek(0)
+        b64 = base64.b64encode(buf.read()).decode()
+        js.document.getElementById("plot").innerHTML = '<img src="data:image/png;base64,' + b64 + '">'
+        plt.close("all")
+    else:
+        js.document.getElementById("plot").innerHTML = ""
+`);
+    await loadAllData();
+    st.textContent = "Python 準備OK！ お手本コードを選ぶか、自由に書いて実行してみよう。";
+    st.className = "status ok";
+    document.getElementById("runBtn").disabled = false;
+    refreshData();
+  } catch (e) {
+    st.textContent = "読み込みに失敗しました: " + e;
+    st.className = "status err";
+  }
+}
+initPy();
+
+async function runCode() {
+  const out = document.getElementById("output");
+  document.getElementById("plot").innerHTML = "";
+  out.textContent = "実行中…";
+  const code = document.getElementById("editor").value;
+  try {
+    // print出力をキャプチャ
+    pyodide.runPython(`
+import sys, io
+_buf = io.StringIO()
+sys.stdout = _buf
+sys.stderr = _buf
+`);
+    await pyodide.runPythonAsync(code);
+    pyodide.runPython("_show_plot()");
+    const text = pyodide.runPython("sys.stdout = sys.__stdout__; sys.stderr = sys.__stderr__; _buf.getvalue()");
+    out.textContent = text || "（出力なし）";
+  } catch (e) {
+    pyodide.runPython("sys.stdout = sys.__stdout__; sys.stderr = sys.__stderr__");
+    // エラーメッセージの最後の数行だけ表示（生徒向け）
+    const lines = String(e).trim().split("\n");
+    out.textContent = "エラーが出ました:\n" + lines.slice(-3).join("\n");
+  }
+}
+
+// ================= お手本コード =================
+function currentFile() {
+  return document.getElementById("dataKind").value + document.getElementById("dataNum").value + ".csv";
+}
+
+const TEMPLATES = {
+t1: () => `# ① データを読み込んで 平均・最大・最小 を求める
+FILE = "data/${currentFile()}"
+
+values = []                     # 明るさの値を入れるリスト
+with open(FILE) as f:
+    next(f)                     # 1行目(見出し)をとばす
+    for line in f:              # 1行ずつ繰り返し
+        t, v = line.strip().split(",")
+        values.append(int(v))   # 数値にしてリストへ
+
+print("データの数:", len(values))
+print("平均:", sum(values) / len(values))
+print("最大:", max(values))
+print("最小:", min(values))`,
+
+t2: () => `# ② 明るさの変化を折れ線グラフにする
+import matplotlib.pyplot as plt
+
+FILE = "data/${currentFile()}"
+
+values = []
+with open(FILE) as f:
+    next(f)
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(int(v))
+
+plt.figure(figsize=(8, 4))
+plt.plot(values)
+plt.xlabel("Time (s)")
+plt.ylabel("Brightness")
+plt.title(FILE)
+plt.grid(True)
+plt.show()   # グラフを表示`,
+
+t3: () => `# ③ 9つの地点の平均をくらべる（棒グラフ）
+import matplotlib.pyplot as plt
+
+KIND = "demo"   # 実測データなら "group" に変える
+
+averages = []
+for i in range(1, 10):          # 1〜9班を繰り返し
+    values = []
+    with open(f"data/{KIND}{i}.csv") as f:
+        next(f)
+        for line in f:
+            t, v = line.strip().split(",")
+            values.append(int(v))
+    avg = sum(values) / len(values)
+    averages.append(avg)
+    print(i, "班の平均:", round(avg))
+
+plt.figure(figsize=(8, 4))
+plt.bar(range(1, 10), averages, color="#3AABA8")
+plt.xlabel("Group (A-I)")
+plt.ylabel("Average Brightness")
+plt.grid(axis="y")
+plt.show()`,
+
+t4: () => `# ④ 学校環境衛生基準: 最大照度と最小照度の比は 20:1 まで
+# 9地点それぞれの平均を求め、その最大(maxlux)と最小(minlux)で判定する
+KIND = "demo"   # 実測データなら "group" に変える
+
+averages = []
+for i in range(1, 10):
+    values = []
+    with open(f"data/{KIND}{i}.csv") as f:
+        next(f)
+        for line in f:
+            t, v = line.strip().split(",")
+            values.append(int(v))
+    averages.append(sum(values) / len(values))
+
+maxlux = max(averages)
+minlux = min(averages)
+print("maxlux =", round(maxlux))
+print("minlux =", round(minlux))
+print("比率 =", round(maxlux / minlux, 2), ": 1")
+
+if maxlux / minlux <= 20:
+    print("適正")
+else:
+    print("不適")`
+};
+
+function setTemplate(key) {
+  document.getElementById("editor").value = TEMPLATES[key]();
+}
+
+// ================= アップロード =================
+function normalizeCsv(raw) {
+  // 貼り付けデータを timestamp,value 形式に正規化
+  const lines = raw.trim().split(/\r?\n/).map(l => l.trim()).filter(l => l);
+  const rows = [];
+  let idx = 0;
+  for (const line of lines) {
+    if (/^timestamp/i.test(line)) continue;          // 見出し行は除去
+    const parts = line.split(/[,\t]/).map(s => s.trim());
+    if (parts.length >= 2 && parts[1] !== "" && !isNaN(Number(parts[1]))) {
+      rows.push(`${parts[0]},${Math.round(Number(parts[1]))}`);
+    } else if (!isNaN(Number(parts[0])) && parts[0] !== "") {
+      rows.push(`${idx},${Math.round(Number(parts[0]))}`);  // 数値のみ→連番秒
+    }
+    idx++;
+  }
+  if (rows.length === 0) return null;
+  return "timestamp,value\n" + rows.join("\n") + "\n";
+}
+
+async function uploadData() {
+  const note = document.getElementById("upNote");
+  const g = document.getElementById("upGroup").value;
+  const token = document.getElementById("upToken").value.trim();
+  const raw = document.getElementById("upData").value;
+  if (!token) { note.textContent = "アップロードキーを入力してください"; return; }
+  const csv = normalizeCsv(raw);
+  if (!csv) { note.textContent = "データが読み取れません。貼り付け内容を確認してください"; return; }
+  const rowCount = csv.trim().split("\n").length - 1;
+  note.textContent = `${rowCount}行を ${g}班 として送信中…`;
+
+  const path = `data/group${g}.csv`;
+  const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`;
+  const headers = { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json" };
+  try {
+    // 現在のsha取得 → PUT（二重防止: sha必須で競合検知）
+    const cur = await fetch(api + "?ref=main", { headers, cache: "no-store" });
+    if (!cur.ok) throw new Error("現状取得に失敗 " + cur.status);
+    const sha = (await cur.json()).sha;
+    const put = await fetch(api, {
+      method: "PUT", headers,
+      body: JSON.stringify({
+        message: `${g}班 計測データ更新 (${rowCount}行) ${VERSION}`,
+        content: btoa(unescape(encodeURIComponent(csv))),
+        sha: sha, branch: "main"
+      })
+    });
+    if (!put.ok) throw new Error("送信失敗 " + put.status);
+    const commit = (await put.json()).commit.sha.substring(0, 7);
+    note.textContent = `✅ ${g}班 アップロード完了（${rowCount}行 / commit ${commit}）`;
+    document.getElementById("upData").value = "";
+    await refreshData();
+  } catch (e) {
+    note.textContent = "❌ 失敗: " + e.message + "（キーが正しいか確認してください）";
+  }
+}
+</script>
+</body>
+</html>
