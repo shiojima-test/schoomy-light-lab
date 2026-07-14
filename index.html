@@ -218,7 +218,6 @@ print(madogawa / rokagawa)   # 何倍か</pre>
     </div>
     <textarea class="upData1" rows="4" placeholder="CSVファイルを選ぶか、シリアル出力をここに貼り付け"></textarea>
     <div class="toolbar">
-      <input type="password" class="upTokenSel" placeholder="アップロードキー（URLに付いていれば自動入力）" size="30" onchange="syncToken(this.value)">
       <button class="act orange" onclick="uploadData(1)">アップロード</button>
       <span class="note upNote1"></span>
     </div>
@@ -316,7 +315,6 @@ print(madogawa / rokagawa)   # 何倍か</pre>
     </div>
     <textarea class="upData2" rows="4" placeholder="CSVファイルを選ぶか、シリアル出力をここに貼り付け"></textarea>
     <div class="toolbar">
-      <input type="password" class="upTokenSel" placeholder="アップロードキー（URLに付いていれば自動入力）" size="30" onchange="syncToken(this.value)">
       <button class="act orange" onclick="uploadData(2)">アップロード</button>
       <span class="note upNote2"></span>
     </div>
@@ -412,7 +410,6 @@ print(madogawa / rokagawa)   # 何倍か</pre>
     </div>
     <textarea class="upData3" rows="4" placeholder="CSVファイルを選ぶか、シリアル出力をここに貼り付け"></textarea>
     <div class="toolbar">
-      <input type="password" class="upTokenSel" placeholder="アップロードキー（URLに付いていれば自動入力）" size="30" onchange="syncToken(this.value)">
       <button class="act orange" onclick="uploadData(3)">アップロード</button>
       <span class="note upNote3"></span>
     </div>
@@ -463,7 +460,7 @@ print(madogawa / rokagawa)   # 何倍か</pre>
 </div>
 </div>
 <div class="teacher">
-  <b>先生用メモ</b>：アップロードキーは URL末尾に <code>?token=キー</code> を付けて配布すると自動入力されます。記入欄の内容は各自の端末に自動保存。授業前のリセットは data/group1〜9.csv を demo と同じ内容に戻してください。
+  <b>先生用メモ</b>：アップロードはGAS中継経由（生徒はキー入力不要）。記入欄の内容は各自の端末に自動保存。授業前のリセットは data/group1〜9.csv を demo と同じ内容に戻してください。
 </div>
 
 </div>
@@ -475,7 +472,8 @@ print(madogawa / rokagawa)   # 何倍か</pre>
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v2.3";
+const VERSION = "v2.4";
+const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
 
 // ---------- ステップ切替 ----------
@@ -488,9 +486,7 @@ function showStep(n) {
 }
 
 // ---------- URLトークン・記入欄の復元 ----------
-const urlToken = new URLSearchParams(location.search).get("token");
 window.addEventListener("DOMContentLoaded", () => {
-  if (urlToken) document.querySelectorAll(".upTokenSel").forEach(s => s.value = urlToken);
   ["m1h","m1k","yomi6","yomi7","yomiS6","yomiS7","yomi8","yomi9","yomi10"].forEach(id => {
     const v = localStorage.getItem("lab_" + id);
     if (v) document.getElementById(id).value = v;
@@ -552,18 +548,19 @@ function renderViewer(idx) {
 
 // ---------- データ取得 ----------
 async function fetchCsv(name) {
-  const token = currentToken();
-  if (token) {
-    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/data/${name}?ref=main`, {
-      headers: { "Authorization": "Bearer " + token, "Accept": "application/vnd.github.raw" },
-      cache: "no-store" });
-    if (!r.ok) throw new Error(`${name}: ${r.status}`);
-    return await r.text();
-  } else {
-    const r = await fetch(`data/${name}?v=${Date.now()}`, { cache: "no-store" });
-    if (!r.ok) throw new Error(`${name}: ${r.status}`);
-    return await r.text();
+  // group系はGAS経由で最新を取得（アップ直後も即反映）。オープンデータ等は相対パスで十分
+  if (/^group[1-9]\.csv$/.test(name)) {
+    try {
+      const r = await fetch(`${GAS_URL}?file=${name}`, { cache: "no-store" });
+      if (r.ok) {
+        const t = await r.text();
+        if (t && !t.trim().startsWith("{")) return t;   // JSONはエラー応答
+      }
+    } catch (e) { /* フォールバックへ */ }
   }
+  const r = await fetch(`data/${name}?v=${Date.now()}`, { cache: "no-store" });
+  if (!r.ok) throw new Error(`${name}: ${r.status}`);
+  return await r.text();
 }
 
 let lastResults = {};
@@ -1044,13 +1041,6 @@ function syncGroup(v) {
   document.querySelectorAll(".upGroupSel").forEach(s => s.value = v);
   renderDash();
 }
-function syncToken(v) {
-  document.querySelectorAll(".upTokenSel").forEach(s => s.value = v);
-}
-function currentToken() {
-  const el = document.querySelector(".upTokenSel");
-  return el ? el.value.trim() : "";
-}
 
 function S8(other) {
   const kind = kindNow();
@@ -1196,37 +1186,27 @@ function loadFile(input, step) {
 async function uploadData(step) {
   const note = document.querySelector(".upNote" + step);
   const g = document.querySelector(".upGroupSel").value;
-  const token = currentToken();
   const raw = document.querySelector(".upData" + step).value;
-  if (!token) { note.textContent = "⚠ アップロードキーを入力してください（先生から配布）"; return; }
   const norm = normalizeCsv(raw);
-  if (!norm) { note.textContent = "⚠ データが読み取れません。数値の行が入っているか確認してください"; return; }
+  if (!norm) { note.textContent = "⚠ データが読み取れません。CSVファイルを選ぶか、数値の行を貼り付けてください"; return; }
   const csv = norm.csv;
   const rowCount = csv.trim().split("\n").length - 1;
   const skipMsg = norm.skipped > 0 ? `（乱れた${norm.skipped}行は自動でそうじ）` : "";
   note.textContent = `${rowCount}行を ${g}班 として送信中…${skipMsg}`;
-
-  const path = `data/group${g}.csv`;
-  const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`;
-  const headers = { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json" };
   try {
-    const cur = await fetch(api + "?ref=main", { headers, cache: "no-store" });
-    if (!cur.ok) throw new Error("現状取得に失敗 " + cur.status);
-    const sha = (await cur.json()).sha;
-    const put = await fetch(api, {
-      method: "PUT", headers,
-      body: JSON.stringify({
-        message: `${g}班 計測データ更新 (${rowCount}行) ${VERSION}`,
-        content: btoa(unescape(encodeURIComponent(csv))),
-        sha: sha, branch: "main" })
+    const res = await fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },  // プリフライト回避
+      body: JSON.stringify({ group: g, csv: csv })
     });
-    if (!put.ok) throw new Error("送信失敗 " + put.status);
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || "送信失敗");
     note.textContent = `✅ ${g}班 アップロード完了！（${rowCount}行${skipMsg}）マップが緑になったか確認しよう`;
     syncGroup(g);
     document.querySelector(".upData" + step).value = "";
     await refreshData();
   } catch (e) {
-    note.textContent = "❌ 失敗: " + e.message + "（キーが正しいか先生に確認）";
+    note.textContent = "❌ 失敗: " + e.message + "（もう一度お試しください）";
   }
 }
 </script>
