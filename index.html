@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v1.8 | スクーミー×Python</title>
+<title>教室の光環境ラボ v1.9 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -99,14 +99,12 @@
   .dtscroll th { position: sticky; top: 0; background: #2c4a6e; color: #fff; padding: 5px 10px; text-align: right; }
   .dtscroll td { border-bottom: 1px solid #eee; padding: 4px 10px; text-align: right; font-family: "Consolas", monospace; }
   .dtscroll tr:nth-child(even) td { background: #fbfbf8; }
-  .dchart { flex: 1; min-width: 280px; }
-  .dchart svg { width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px; background: #fff; }
   .teacher { border: 1px dashed #999; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #555; margin-top: 20px; background: #fafafa; }
 </style>
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v1.8</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v1.9</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -194,14 +192,13 @@ else:
   <p>ここからは<b>本物のデータ</b>を使います。国や自治体はさまざまな計測データを社会に公開していて（<b>オープンデータ</b>）、だれでも無料で使えます。今日使うのは気象庁が公開している、<b>甲府（山梨県）で実際に計測された太陽の光のデータ</b>です。</p>
 
   <h3>今日つかうデータ（実物がこれ！）</h3>
-  <p>下のボタンで切りかえると、<b>表（本物の数値）</b>と<b>グラフ</b>がすぐ見られます。まずは ☀️晴れ と ☁️くもり を見くらべてみよう。</p>
+  <p>下のボタンで切りかえると<b>表（本物の数値）</b>が見られます。この数字の列を、これから<b>自分のPythonでグラフに変えていきます</b>。</p>
   <div class="dtabs" id="dtabs"></div>
   <div class="dviewer">
     <div class="dtablewrap">
       <div class="dmeta" id="dmeta">読み込み中…</div>
       <div class="dtscroll" id="dtable"></div>
     </div>
-    <div class="dchart" id="dchart"></div>
   </div>
   <p class="note" style="margin-top:6px">出典：気象庁「<a href="https://www.data.jma.go.jp/stats/etrn/index.php" target="_blank">過去の気象データ検索</a>」（甲府地方気象台の観測値）より作成。数値はすべて実測の本物です。</p>
   <p>各レッスンの最後に<b>「読み取ったこと」を1行書く</b>のを忘れずに（自動保存されます）。</p>
@@ -382,12 +379,12 @@ print("こんにちは、スクーミー！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v1.8 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v1.9 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v1.8";
+const VERSION = "v1.9";
 let pyodide = null;
 
 // ---------- ステップ切替 ----------
@@ -440,28 +437,6 @@ function parseCsv(txt) {
   return rows;
 }
 
-function drawChartSVG(rows, xlab) {
-  const W = 480, H = 230, L = 40, R = 12, T = 14, B = 30;
-  const vals = rows.map(r => r[1]);
-  const maxV = Math.max(...vals, 0.001);
-  const n = vals.length;
-  const x = i => L + (W - L - R) * (n <= 1 ? 0 : i / (n - 1));
-  const y = v => T + (H - T - B) * (1 - v / maxV);
-  let pts = vals.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
-  // 目盛り: 最初/まん中/最後
-  const mid = Math.floor((n - 1) / 2);
-  const ticks = [0, mid, n - 1].map(i =>
-    `<text x="${x(i)}" y="${H - 8}" font-size="11" text-anchor="middle" fill="#666">${rows[i][0]}${xlab}</text>`).join("");
-  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
-    <line x1="${L}" y1="${T}" x2="${L}" y2="${H - B}" stroke="#bbb"/>
-    <line x1="${L}" y1="${H - B}" x2="${W - R}" y2="${H - B}" stroke="#bbb"/>
-    <text x="${L - 5}" y="${T + 10}" font-size="11" text-anchor="end" fill="#666">${maxV}</text>
-    <text x="${L - 5}" y="${H - B}" font-size="11" text-anchor="end" fill="#666">0</text>
-    <polyline points="${pts}" fill="none" stroke="#3AABA8" stroke-width="2.5"/>
-    ${ticks}
-  </svg>`;
-}
-
 function renderViewer(idx) {
   currentDS = idx;
   const ds = DATASETS[idx];
@@ -485,10 +460,6 @@ function renderViewer(idx) {
   for (const [t, v] of rows) html += `<tr><td>${t}</td><td>${v}</td></tr>`;
   html += "</table>";
   document.getElementById("dtable").innerHTML = html;
-  // グラフ
-  document.getElementById("dchart").innerHTML =
-    `<p class="note" style="margin:0 0 4px">↓ 同じ数字をグラフにしたもの（この形をPythonで自分でも作れるようになる）</p>`
-    + drawChartSVG(rows, ds.xlab);
 }
 
 // ---------- データ取得 ----------
