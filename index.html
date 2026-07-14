@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v3.1 | スクーミー×Python</title>
+<title>教室の光環境ラボ v3.2 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -107,7 +107,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v3.1</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v3.2</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -269,7 +269,7 @@ for v in values:
 
   <div class="lesson sc">
     <h3>🍊 体験3：ifで自動判定</h3>
-    <div class="kaisetsu"><b>やること</b>：平均が「ある数以上なら明るい／未満なら暗い」を <code>if</code> で判定しよう。しきい値は自分で決めてOK。<code>___</code> を埋めよう。</div>
+    <div class="kaisetsu"><b>やること</b>：<b>各データを1つずつ</b>、<code>for</code>＋<code>if</code>で「◯以上なら明るい／未満なら暗い」と判定しよう（レッスン5と同じ形）。しきい値の <code>___</code> を自分で決めよう。</div>
     <button class="act navy" onclick="setCode('ed1', S3())">▶ ひな形を入れる</button>
     <div class="challenge"><b>ヒント</b>：レッスン5の <code>if v &gt;= 500:</code> と同じ書き方。</div>
   </div>
@@ -487,12 +487,12 @@ for v in values:
 
 </main>
 
-<footer>教室の光環境ラボ v3.1 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v3.2 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v3.1";
+const VERSION = "v3.2";
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
 
@@ -859,7 +859,7 @@ print("平均:", ___)                  # ← sum(values) / len(values)
 function S3() {
   const name = selPart[1];
   if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
-  return `# 体験3: if で自動判定
+  return `# 体験3: 各データを1つずつ if で判定（レッスン5を参考に）
 FILE = "data/uploads/${name}.csv"
 
 values = []
@@ -869,13 +869,11 @@ with open(FILE) as f:
         t, v = line.strip().split(",")
         values.append(float(v))
 
-heikin = sum(values) / len(values)
-print("平均:", round(heikin, 2))
-
-if heikin >= ___:                    # ← しきい値を自分で決めよう
-    print("明るい")
-else:
-    print("暗い")
+for v in values:                     # 1件ずつ取り出して
+    if v >= ___:                     # ← しきい値を自分で決めよう
+        print(v, "明るい")
+    else:
+        print(v, "暗い")
 `;
 }
 
