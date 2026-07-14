@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v1.10 | スクーミー×Python</title>
+<title>教室の光環境ラボ v1.11 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -104,7 +104,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v1.10</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v1.11</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -250,8 +250,8 @@ print("こんにちは、スクーミー！")</textarea>
   <h2>計測データの入れ方（4ステップ）</h2>
   <ol class="bignum">
     <li><b>スクーミーブロックエディタ</b>で「明るさセンサーの値を1秒ごとに出力」するプログラムを作り、3分間計測する</li>
-    <li>シリアルモニタに出た数値を<b>全部コピー</b>する</li>
-    <li>下の入力欄に<b>貼り付けて</b>、自分の<b>班</b>を選ぶ</li>
+    <li>出力を<b>CSVファイルとして保存</b>（またはシリアルモニタの数値を全部コピー）</li>
+    <li>保存したCSVファイルを<b>「ファイルを選ぶ」で読み込む</b>（貼り付けでもOK）→ 自分の<b>班</b>を選ぶ</li>
     <li><b>「アップロード」を押す</b> → 下の教室マップで自分の班が緑になれば成功！</li>
   </ol>
   <p class="note">貼り付けは「数値だけの行」でも「時刻,数値」でもOK。自動で整えます。</p>
@@ -265,7 +265,11 @@ print("こんにちは、スクーミー！")</textarea>
     </label>
     <label>アップロードキー（先生から）: <input type="password" id="upToken" placeholder="URLに付いていれば自動入力" size="22"></label>
   </div>
-  <textarea id="upData" rows="7" placeholder="512&#10;530&#10;498&#10;…（コピーしたシリアル出力をここに貼り付け）"></textarea>
+  <div class="toolbar">
+    <label class="act blue" style="display:inline-block; cursor:pointer;">📄 CSVファイルを選ぶ<input type="file" id="upFile" accept=".csv,.txt" style="display:none" onchange="loadFile(this)"></label>
+    <span class="note">またはシリアル出力を下に貼り付け</span>
+  </div>
+  <textarea id="upData" rows="7" placeholder="保存したCSVファイルを上のボタンで選ぶか、シリアル出力をここに貼り付け&#10;（例）&#10;133341.948,53.15&#10;133341.948,53.94&#10;…"></textarea>
   <div class="toolbar">
     <button class="act orange" onclick="uploadData()">アップロード</button>
     <span class="note" id="upNote"></span>
@@ -379,12 +383,12 @@ print("こんにちは、スクーミー！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v1.10 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v1.11 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v1.10";
+const VERSION = "v1.11";
 let pyodide = null;
 
 // ---------- ステップ切替 ----------
@@ -860,6 +864,21 @@ function normalizeCsv(raw) {
   }
   if (rows.length === 0) return null;
   return { csv: "timestamp,value\n" + rows.join("\n") + "\n", skipped: skipped };
+}
+
+function loadFile(input) {
+  const f = input.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    document.getElementById("upData").value = reader.result;
+    const norm = normalizeCsv(reader.result);
+    document.getElementById("upNote").textContent = norm
+      ? `📄 ${f.name} を読み込みました（有効${norm.csv.trim().split("\n").length - 1}行）。班を確認して「アップロード」を押そう`
+      : "⚠ このファイルからデータを読み取れませんでした";
+  };
+  reader.readAsText(f);
+  input.value = "";
 }
 
 async function uploadData() {
