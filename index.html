@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v2.2 | スクーミー×Python</title>
+<title>教室の光環境ラボ v2.3 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -88,6 +88,8 @@
   .cell.mine { outline: 3px solid #E88A0A; }
   .roomlabel { font-size: 11px; color: #666; text-align: center; }
 
+  .uploadbox { border: 2px solid #E88A0A; border-radius: 10px; padding: 12px 16px; margin-bottom: 14px; background: #fffdf8; }
+  .uploadbox h3 { margin-top: 0; color: #E88A0A; }
   /* 左右2分割レイアウト */
   .split { display: flex; gap: 14px; align-items: flex-start; }
   .paneL { width: 46%; position: sticky; top: 10px; }
@@ -105,7 +107,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v2.2</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v2.3</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -141,7 +143,18 @@ print("こんにちは、スクーミー！")</textarea>
 <div class="paneR">
 <section>
   <h2>パート1：Pythonの基本 レッスン1〜5（用意したデータ）</h2>
-  <p>やり方：各レッスンの<b>「▶ このコードを試す」→ 下のコード欄で「実行」→ 結果を見る → 「変えてみよう」に挑戦</b>。</p>
+  <p>やり方：各レッスンの<b>「▶ このコードを試す」→ 左のコード欄で「実行」→ 結果を見る → 「変えてみよう」に挑戦</b>。ここではグラフは作らず、表示・計算・集計（最大/最小/平均）・判定までを学びます。</p>
+  <div class="toolbar">
+    <label>レッスン3〜5で使うデータ:
+      <select id="p1data" onchange="reloadP1()">
+        <option value="kofu_6gatsu.csv">甲府・6月の日照時間（20日分）</option>
+        <option value="kofu_1gatsu.csv">甲府・1月の日照時間（31日分）</option>
+        <option value="kofu_hare.csv">甲府・晴れの日の日射量（24時間）</option>
+        <option value="kofu_kumori.csv">甲府・くもりの日の日射量（24時間）</option>
+      </select>
+    </label>
+    <span class="note">オープンデータ（気象庁）。選ぶとレッスンのコードのファイル名が変わります</span>
+  </div>
 
   <div class="lesson">
     <h3>レッスン1：print（表示する）</h3>
@@ -164,61 +177,73 @@ print(madogawa / rokagawa)   # 何倍か</pre>
   </div>
 
   <div class="lesson">
-    <h3>レッスン3：リスト（値をまとめて入れる）</h3>
-    <pre>values = [512, 530, 498, 505, 521]
-print("データの数:", len(values))
-print("平均:", sum(values) / len(values))
-print("最大:", max(values), " 最小:", min(values))</pre>
-    <div class="kaisetsu"><b>解説</b>：<code>[ ]</code> がリスト。たくさんの数をまとめて扱える。<code>len</code>＝個数、<code>sum</code>＝合計、<code>max/min</code>＝最大/最小。</div>
-    <button class="act navy" onclick="setCode('ed1', L3)">▶ このコードを試す</button>
-    <div class="challenge"><b>変えてみよう</b>：リストに値を2つ追加して、平均がどう変わるか見てみよう。</div>
+    <h3>レッスン3：リスト（オープンデータを読んで集計）</h3>
+    <div class="kaisetsu"><b>解説</b>：上で選んだ<b>本物のオープンデータCSV</b>を読み込んでリストにし、<code>len</code>（個数）・<code>sum</code>（合計）・<code>max/min</code>（最大/最小）・平均を求める。<code>[ ]</code> がリスト、たくさんの数をまとめて扱える。</div>
+    <button class="act navy" onclick="setCode('ed1', L3())">▶ このコードを試す</button>
+    <div class="challenge"><b>変えてみよう</b>：上のドロップダウンでデータを変えて、最大・最小・平均がどう変わるか見よう。</div>
   </div>
 
   <div class="lesson">
     <h3>レッスン4：for（くり返す）</h3>
-    <pre>values = [512, 530, 498]
-for v in values:
-    print("計測値:", v)</pre>
-    <div class="kaisetsu"><b>解説</b>：<code>for v in values:</code> は「リストから1つずつ取り出して <code>v</code> と呼び、字下げした行をくり返す」。<b>字下げ（スペース4つ）が必須</b>。</div>
-    <button class="act navy" onclick="setCode('ed1', L4)">▶ このコードを試す</button>
+    <div class="kaisetsu"><b>解説</b>：<code>for v in values:</code> は「リストから1つずつ取り出して <code>v</code> と呼び、字下げした行をくり返す」。選んだオープンデータを1つずつ表示してみる。<b>字下げ（スペース4つ）が必須</b>。</div>
+    <button class="act navy" onclick="setCode('ed1', L4())">▶ このコードを試す</button>
     <div class="challenge"><b>変えてみよう</b>：くり返しの中で <code>v * 2</code> を表示してみよう。</div>
   </div>
 
   <div class="lesson">
     <h3>レッスン5：if（条件で分ける）</h3>
-    <pre>akarusa = 450
-if akarusa >= 500:
-    print("明るい")
-else:
-    print("暗い")</pre>
-    <div class="kaisetsu"><b>解説</b>：<code>if 条件:</code> が成り立てば上、成り立たなければ <code>else:</code> の下が実行される。<code>>=</code> は「以上」。</div>
-    <button class="act navy" onclick="setCode('ed1', L5)">▶ このコードを試す</button>
-    <div class="challenge"><b>変えてみよう</b>：<code>akarusa</code> の値をいろいろ変えて、表示が切り替わるのを確認しよう。</div>
+    <div class="kaisetsu"><b>解説</b>：<code>if 条件:</code> が成り立てば上、成り立たなければ <code>else:</code> の下が実行される。選んだデータの平均を、しきい値で判定してみる。<code>>=</code> は「以上」。</div>
+    <button class="act navy" onclick="setCode('ed1', L5())">▶ このコードを試す</button>
+    <div class="challenge"><b>変えてみよう</b>：しきい値を変えて、判定が切り替わるのを確認しよう。</div>
   </div>
 </section>
 
 <section>
   <h2 class="p2">パート2：スクーミーのデータで体験 レッスン1〜5</h2>
-  <p>ここからの数値は、<b>スクーミー（オレンジボード）の明るさセンサーが実際に計測した本物の値</b>です（13時33分〜、教室で計測）。同じ文法を本物のデータでやってみよう。</p>
+  <p>今度は<b>自分たちで計測したデータ</b>で、パート1と同じ文法をやってみよう。まず計測してアップロードしよう。</p>
+  <div class="uploadbox" id="uploadbox1">
+    <h3>① まず計測データをアップロード</h3>
+    <ol class="bignum">
+      <li>スクーミーで明るさを計測し、<b>CSVで保存</b>（またはシリアル出力をコピー）</li>
+      <li><b>「CSVファイルを選ぶ」</b>で読み込む（貼り付けでもOK）→ <b>班</b>を選ぶ → <b>「アップロード」</b></li>
+    </ol>
+    <div class="toolbar">
+      <label>自分の班:
+        <select class="upGroupSel" onchange="syncGroup(this.value)">
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          <option>6</option><option>7</option><option>8</option><option>9</option>
+        </select>
+      </label>
+      <label class="act blue" style="display:inline-block; cursor:pointer;">📄 CSVファイルを選ぶ<input type="file" accept=".csv,.txt" style="display:none" onchange="loadFile(this, 1)"></label>
+    </div>
+    <textarea class="upData1" rows="4" placeholder="CSVファイルを選ぶか、シリアル出力をここに貼り付け"></textarea>
+    <div class="toolbar">
+      <input type="password" class="upTokenSel" placeholder="アップロードキー（URLに付いていれば自動入力）" size="30" onchange="syncToken(this.value)">
+      <button class="act orange" onclick="uploadData(1)">アップロード</button>
+      <span class="note upNote1"></span>
+    </div>
+    <p class="note">アップすると、下の体験レッスンで「自分の班のデータ」が使えるようになります。</p>
+  </div>
+
 
   <div class="lesson sc">
     <h3>🍊 体験1〜2：センサーの値を表示・計算する（print・変数）</h3>
     <div class="kaisetsu"><b>やること</b>：スクーミーが計測した<b>CSVファイル</b>を読み込み、中の値を変数に入れて差と「何倍か」を計算する。小数もそのまま計算できる。</div>
-    <button class="act navy" onclick="setCode('ed1', S12)">▶ このコードを試す</button>
+    <button class="act navy" onclick="setCode('ed1', S12())">▶ このコードを試す</button>
     <div class="challenge"><b>変えてみよう</b>：値を10倍したら？（<code>*</code> がかけ算）</div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験3〜4：計測値のリストをまとめて処理（リスト・for）</h3>
     <div class="kaisetsu"><b>やること</b>：スクーミーのCSVを読み込んでリストにし、<b>個数・平均・最大・最小</b>を出す。forで最初の5個を表示。（グラフはSTEP2から）</div>
-    <button class="act navy" onclick="setCode('ed1', S34)">▶ このコードを試す</button>
+    <button class="act navy" onclick="setCode('ed1', S34())">▶ このコードを試す</button>
     <div class="challenge"><b>変えてみよう</b>：平均を <code>round(○○, 2)</code> で小数2桁に丸めてみよう。</div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験5：明るさを自動判定（if）</h3>
     <div class="kaisetsu"><b>やること</b>：CSVの平均値が「40以上なら明るい／未満なら暗い」を自動判定。STEP3で教室全体を診断する練習になる。</div>
-    <button class="act navy" onclick="setCode('ed1', S5)">▶ このコードを試す</button>
+    <button class="act navy" onclick="setCode('ed1', S5())">▶ このコードを試す</button>
     <div class="challenge"><b>変えてみよう</b>：しきい値の50を変えると判定はどう変わる？　forと組み合わせて8個ぜんぶ判定できる？</div>
   </div>
 </section>
@@ -273,21 +298,45 @@ else:
 
 <section>
   <h2 class="p2">パート2：スクーミーのデータで体験 レッスン6〜7</h2>
-  <p><b>スクーミーの明るさセンサーが実際に記録したデータ</b>（🍊タブで表が見られます。約81秒間・4985行！）で同じことをやってみよう。</p>
+  <p><b>自分たちで計測したデータ</b>で、グラフ化と比較をやってみよう。まず計測してアップロードしよう。</p>
+  <div class="uploadbox" id="uploadbox2">
+    <h3>① まず計測データをアップロード</h3>
+    <ol class="bignum">
+      <li>スクーミーで明るさを計測し、<b>CSVで保存</b>（またはシリアル出力をコピー）</li>
+      <li><b>「CSVファイルを選ぶ」</b>で読み込む（貼り付けでもOK）→ <b>班</b>を選ぶ → <b>「アップロード」</b></li>
+    </ol>
+    <div class="toolbar">
+      <label>自分の班:
+        <select class="upGroupSel" onchange="syncGroup(this.value)">
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          <option>6</option><option>7</option><option>8</option><option>9</option>
+        </select>
+      </label>
+      <label class="act blue" style="display:inline-block; cursor:pointer;">📄 CSVファイルを選ぶ<input type="file" accept=".csv,.txt" style="display:none" onchange="loadFile(this, 2)"></label>
+    </div>
+    <textarea class="upData2" rows="4" placeholder="CSVファイルを選ぶか、シリアル出力をここに貼り付け"></textarea>
+    <div class="toolbar">
+      <input type="password" class="upTokenSel" placeholder="アップロードキー（URLに付いていれば自動入力）" size="30" onchange="syncToken(this.value)">
+      <button class="act orange" onclick="uploadData(2)">アップロード</button>
+      <span class="note upNote2"></span>
+    </div>
+    <p class="note">アップすると、下の体験レッスンで「自分の班のデータ」が使えるようになります。</p>
+  </div>
+
 
   <div class="lesson sc">
-    <h3>🍊 体験6：センサーの記録をグラフ化する</h3>
-    <div class="kaisetsu"><b>やること</b>：4985行の計測記録を読み込んで折れ線に。数千行でも書くコードは24行のときと<b>まったく同じ</b>——それがプログラムの力。</div>
-    <button class="act navy" onclick="setCode('ed2', S6)">▶ スクーミーの実測をグラフにする</button>
+    <h3>🍊 体験6：自分の班の記録をグラフ化する</h3>
+    <div class="kaisetsu"><b>やること</b>：アップロードした自分の班の計測記録を読み込んで折れ線グラフに。何行でも書くコードは同じ——それがプログラムの力。</div>
+    <button class="act navy" onclick="setCode('ed2', S6())">▶ 自分の班のデータをグラフにする</button>
     <div class="challenge"><b>変えてみよう</b>：グラフから「センサーの前で何かが動いた瞬間」は見つかる？</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomiS6"></span></div>
     <textarea id="yomiS6" class="jp" rows="1" oninput="saveText('yomiS6')" placeholder="例：ほぼ53前後で安定。ときどき小さく揺れる"></textarea>
   </div>
 
   <div class="lesson sc">
-    <h3>🍊 体験7：教室の「窓側」と「廊下側」をくらべる</h3>
-    <div class="kaisetsu"><b>やること</b>：スクーミーで用意した教室2地点のサンプル（窓側＝demo1／廊下側＝demo3）を重ねて、場所による明るさの差を見る。STEP3でやる9地点比較の予告編。</div>
-    <button class="act navy" onclick="setCode('ed2', S7)">▶ 窓側 vs 廊下側 を重ねる</button>
+    <h3>🍊 体験7：自分の班と別の班をくらべる</h3>
+    <div class="kaisetsu"><b>やること</b>：自分の班のデータと、別の班のデータを重ねて、場所による明るさの差を見る。STEP3でやる9地点比較の予告編。（別の班のデータもアップ済みである必要があります）</div>
+    <button class="act navy" onclick="setCode('ed2', S7())">▶ 自分の班 vs 別の班 を重ねる</button>
     <div class="challenge"><b>変えてみよう</b>：demo5（教室のまん中）も3本目として重ねてみよう。</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomiS7"></span></div>
     <textarea id="yomiS7" class="jp" rows="1" oninput="saveText('yomiS7')" placeholder="例：窓側は廊下側の2倍以上明るい"></textarea>
@@ -346,29 +395,27 @@ else:
 <section>
   <h2 class="p2">パート2：スクーミーのデータで体験 —— 9チームのデータをぜんぶ使う！</h2>
 
-  <h3>まず：自分の班のデータを入れる</h3>
-  <ol class="bignum">
-    <li>スクーミーブロックエディタで明るさを計測し、<b>CSVファイルとして保存</b>（またはシリアル出力をコピー）</li>
-    <li>下の<b>「CSVファイルを選ぶ」</b>で読み込む（貼り付けでもOK）</li>
-    <li>自分の<b>班</b>を選んで<b>「アップロード」</b> → 教室マップの自分のマスが緑になれば成功！</li>
-  </ol>
-  <div class="toolbar">
-    <label>自分の班:
-      <select id="upGroup" onchange="markMine()">
-        <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-        <option>6</option><option>7</option><option>8</option><option>9</option>
-      </select>
-    </label>
-    <label>アップロードキー（先生から）: <input type="password" id="upToken" placeholder="URLに付いていれば自動入力" size="22"></label>
-  </div>
-  <div class="toolbar">
-    <label class="act blue" style="display:inline-block; cursor:pointer;">📄 CSVファイルを選ぶ<input type="file" id="upFile" accept=".csv,.txt" style="display:none" onchange="loadFile(this)"></label>
-    <span class="note">またはシリアル出力を下に貼り付け</span>
-  </div>
-  <textarea id="upData" rows="5" placeholder="保存したCSVファイルを上のボタンで選ぶか、シリアル出力をここに貼り付け&#10;（例）&#10;133341.948,53.15&#10;133341.948,53.94"></textarea>
-  <div class="toolbar">
-    <button class="act orange" onclick="uploadData()">アップロード</button>
-    <span class="note" id="upNote"></span>
+  <div class="uploadbox" id="uploadbox3">
+    <h3>① まず：自分の班のデータを入れる（9班ぶん集める）</h3>
+    <ol class="bignum">
+      <li>スクーミーで計測し、<b>CSVで保存</b>（またはシリアル出力をコピー）</li>
+      <li><b>「CSVファイルを選ぶ」</b>で読み込む → <b>班</b>を選ぶ → <b>「アップロード」</b> → 下のマップが緑に</li>
+    </ol>
+    <div class="toolbar">
+      <label>自分の班:
+        <select class="upGroupSel" onchange="syncGroup(this.value)">
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          <option>6</option><option>7</option><option>8</option><option>9</option>
+        </select>
+      </label>
+      <label class="act blue" style="display:inline-block; cursor:pointer;">📄 CSVファイルを選ぶ<input type="file" accept=".csv,.txt" style="display:none" onchange="loadFile(this, 3)"></label>
+    </div>
+    <textarea class="upData3" rows="4" placeholder="CSVファイルを選ぶか、シリアル出力をここに貼り付け"></textarea>
+    <div class="toolbar">
+      <input type="password" class="upTokenSel" placeholder="アップロードキー（URLに付いていれば自動入力）" size="30" onchange="syncToken(this.value)">
+      <button class="act orange" onclick="uploadData(3)">アップロード</button>
+      <span class="note upNote3"></span>
+    </div>
   </div>
 
   <h3>教室マップ（9チームの状況）</h3>
@@ -423,12 +470,12 @@ else:
 
 </main>
 
-<footer>教室の光環境ラボ v2.2 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v2.3 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v2.2";
+const VERSION = "v2.3";
 let pyodide = null;
 
 // ---------- ステップ切替 ----------
@@ -443,13 +490,13 @@ function showStep(n) {
 // ---------- URLトークン・記入欄の復元 ----------
 const urlToken = new URLSearchParams(location.search).get("token");
 window.addEventListener("DOMContentLoaded", () => {
-  if (urlToken) document.getElementById("upToken").value = urlToken;
+  if (urlToken) document.querySelectorAll(".upTokenSel").forEach(s => s.value = urlToken);
   ["m1h","m1k","yomi6","yomi7","yomiS6","yomiS7","yomi8","yomi9","yomi10"].forEach(id => {
     const v = localStorage.getItem("lab_" + id);
     if (v) document.getElementById(id).value = v;
   });
   const g = localStorage.getItem("lab_group");
-  if (g) document.getElementById("upGroup").value = g;
+  if (g) document.querySelectorAll(".upGroupSel").forEach(s => s.value = g);
 });
 
 function saveText(id) {
@@ -457,10 +504,7 @@ function saveText(id) {
   const sv = document.getElementById("sv_" + id);
   if (sv) { sv.textContent = "保存しました"; setTimeout(() => sv.textContent = "", 1500); }
 }
-function markMine() {
-  localStorage.setItem("lab_group", document.getElementById("upGroup").value);
-  renderDash();
-}
+
 
 // ---------- データビューア（表のみ） ----------
 const DATASETS = [
@@ -468,7 +512,6 @@ const DATASETS = [
   { key: "kofu_kumori.csv", tab: "☁️ くもり 6/4", title: "☁️ 6月4日（くもり）の甲府", sub: "1時間ごとの太陽の光の強さ", tcol: "時こく", vcol: "光の強さ", unit: "単位: MJ/㎡" },
   { key: "kofu_1gatsu.csv", tab: "❄️ 1月",       title: "❄️ 2026年1月の甲府", sub: "毎日の日照時間（STEP3で使用）", tcol: "日にち", vcol: "日照時間", unit: "単位: 時間" },
   { key: "kofu_6gatsu.csv", tab: "☔ 6月(梅雨)",  title: "☔ 2026年6月1〜20日の甲府", sub: "毎日の日照時間（STEP3で使用）", tcol: "日にち", vcol: "日照時間", unit: "単位: 時間" },
-  { key: "schoomy_sample.csv", tab: "🍊 スクーミー実測", title: "🍊 スクーミーの明るさセンサー実測", sub: "13:33〜13:35に教室で計測した本物の記録（4985行）", tcol: "時こく", vcol: "明るさ", unit: "単位: センサー値" },
 ];
 let currentDS = 0;
 
@@ -509,7 +552,7 @@ function renderViewer(idx) {
 
 // ---------- データ取得 ----------
 async function fetchCsv(name) {
-  const token = document.getElementById("upToken").value.trim();
+  const token = currentToken();
   if (token) {
     const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/data/${name}?ref=main`, {
       headers: { "Authorization": "Bearer " + token, "Accept": "application/vnd.github.raw" },
@@ -527,7 +570,7 @@ let lastResults = {};
 async function loadAllData() {
   const names = [];
   for (let i = 1; i <= 9; i++) names.push(`demo${i}.csv`, `group${i}.csv`);
-  ["kofu_hare","kofu_kumori","kofu_1gatsu","kofu_6gatsu","schoomy_sample"].forEach(n => names.push(n + ".csv"));
+  ["kofu_hare","kofu_kumori","kofu_1gatsu","kofu_6gatsu"].forEach(n => names.push(n + ".csv"));
   const results = {};
   await Promise.all(names.map(async n => {
     try { results[n] = await fetchCsv(n); } catch (e) { results[n] = null; }
@@ -639,6 +682,13 @@ _plot_target = "${plotId}"
   }
 }
 
+function reloadP1() {
+  const ed = document.getElementById("ed1").value;
+  if (ed.includes("レッスン3")) setCode("ed1", L3());
+  else if (ed.includes("レッスン4")) setCode("ed1", L4());
+  else if (ed.includes("レッスン5")) setCode("ed1", L5());
+}
+
 function setCode(edId, code) {
   document.getElementById(edId).value = code;
   if (window.innerWidth <= 950) {
@@ -662,32 +712,72 @@ rokagawa = 300     # 廊下側の明るさ
 print("差:", madogawa - rokagawa)
 print("何倍か:", madogawa / rokagawa)
 `;
-const L3 = `# レッスン3: リスト
-values = [512, 530, 498, 505, 521]
+function p1file() {
+  const el = document.getElementById("p1data");
+  return el ? el.value : "kofu_6gatsu.csv";
+}
+function L3() {
+  return `# レッスン3: オープンデータCSVを読んで集計する
+FILE = "data/${p1file()}"
+
+values = []
+with open(FILE) as f:
+    next(f)                          # 見出し行をとばす
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(float(v))      # 数値にしてリストへ
+
 print("データの数:", len(values))
-print("合計:", sum(values))
-print("平均:", sum(values) / len(values))
+print("合計:", round(sum(values), 2))
+print("平均:", round(sum(values) / len(values), 2))
 print("最大:", max(values), " 最小:", min(values))
 `;
-const L4 = `# レッスン4: for（くり返し）
-values = [512, 530, 498]
-for v in values:
-    print("計測値:", v)
+}
+function L4() {
+  return `# レッスン4: for でオープンデータを1つずつ表示
+FILE = "data/${p1file()}"
+
+values = []
+with open(FILE) as f:
+    next(f)
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(float(v))
+
+for v in values:                     # リストから1つずつ取り出す
+    print("値:", v)
 `;
-const L5 = `# レッスン5: if（条件で分ける）
-akarusa = 450
-if akarusa >= 500:
-    print("明るい")
+}
+function L5() {
+  return `# レッスン5: if で「平均が大きいか小さいか」を判定
+FILE = "data/${p1file()}"
+
+values = []
+with open(FILE) as f:
+    next(f)
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(float(v))
+
+heikin = sum(values) / len(values)
+print("平均:", round(heikin, 2))
+
+if heikin >= 5:
+    print("多い（よく晴れた）")
 else:
-    print("暗い")
+    print("少ない")
+
+# 変えてみよう: しきい値 5 を変える
 `;
+}
 
 // ============================================================
 // STEP1 パート2（スクーミーの実測値で体験）
 // ============================================================
-const S12 = `# 体験1〜2: スクーミーが計測したCSVから、値を読んで計算する
-# schoomy_sample.csv = オレンジボードが教室で計測した本物の記録
-FILE = "data/schoomy_sample.csv"
+function S12() {
+  const g = myGroup();
+  return `# 体験1〜2: 自分の班(${g}班)のCSVから、値を読んで計算する
+FILE = "data/group${g}.csv"
 
 values = []
 with open(FILE) as f:
@@ -696,15 +786,17 @@ with open(FILE) as f:
         t, v = line.strip().split(",")
         values.append(float(v))
 
-sokutei1 = values[0]                 # 1番目の計測値
-sokutei2 = values[2]                 # 3番目の計測値
-print("1番目:", sokutei1)
-print("3番目:", sokutei2)
-print("差:", round(sokutei2 - sokutei1, 2))
-print("何倍か:", round(sokutei2 / sokutei1, 3))
+print("計測した数:", len(values))
+a = values[0]                        # 1番目の計測値
+b = values[len(values)//2]           # まん中の計測値
+print("1番目:", a, " まん中:", b)
+print("差:", round(b - a, 2))
 `;
-const S34 = `# 体験3〜4: スクーミーのCSVを読み込んで 最大・最小・平均 を出す
-FILE = "data/schoomy_sample.csv"
+}
+function S34() {
+  const g = myGroup();
+  return `# 体験3〜4: 自分の班(${g}班)のCSVを読んで 最大・最小・平均 を出す
+FILE = "data/group${g}.csv"
 
 values = []
 with open(FILE) as f:
@@ -718,12 +810,14 @@ print("平均:", round(sum(values) / len(values), 2))
 print("最大:", max(values))
 print("最小:", min(values))
 
-# 最初の5個だけ表示してみる
-for v in values[:5]:
+for v in values[:5]:                 # 最初の5個だけ表示
     print("計測値:", v)
 `;
-const S5 = `# 体験5: スクーミーのCSVの平均を、しきい値で自動判定
-FILE = "data/schoomy_sample.csv"
+}
+function S5() {
+  const g = myGroup();
+  return `# 体験5: 自分の班(${g}班)の平均を、しきい値で自動判定
+FILE = "data/group${g}.csv"
 
 values = []
 with open(FILE) as f:
@@ -735,13 +829,14 @@ with open(FILE) as f:
 heikin = sum(values) / len(values)
 print("平均:", round(heikin, 2))
 
-if heikin >= 40:
-    print("明るい")
+if heikin >= 500:
+    print("明るい（基準クリア）")
 else:
-    print("暗い")
+    print("暗い（基準以下）")
 
-# 変えてみよう: しきい値40を変える / 1つずつ判定するにはforと組み合わせる
+# 変えてみよう: しきい値を変える / for と if で1つずつ判定する
 `;
+}
 
 // ============================================================
 // STEP2 パート1（気象庁の公開データ）
@@ -799,10 +894,12 @@ plt.show()
 // ============================================================
 // STEP2 パート2（スクーミーのデータで体験）
 // ============================================================
-const S6 = `# 体験6: スクーミーの実測記録（4985行）をグラフ化
+function S6() {
+  const g = myGroup();
+  return `# 体験6: 自分の班(${g}班)の記録をグラフ化
 import matplotlib.pyplot as plt
 
-FILE = "data/schoomy_sample.csv"
+FILE = "data/group${g}.csv"
 
 values = []
 with open(FILE) as f:
@@ -811,7 +908,7 @@ with open(FILE) as f:
         t, v = line.strip().split(",")
         values.append(float(v))
 
-print("データの数:", len(values), "行（約81秒間の記録）")
+print("データの数:", len(values), "個")
 print("平均:", round(sum(values) / len(values), 2))
 
 plt.figure(figsize=(8, 3.5))
@@ -821,7 +918,11 @@ plt.ylabel("Brightness")
 plt.grid(True)
 plt.show()
 `;
-const S7 = `# 体験7: 教室の 窓側(demo1) と 廊下側(demo3) をくらべる
+}
+function S7() {
+  const me = myGroup();
+  const other = (me === "1") ? "2" : "1";
+  return `# 体験7: 自分の班(${me}班) と ${other}班 をくらべる
 import matplotlib.pyplot as plt
 
 def yomikomi(path):
@@ -833,20 +934,20 @@ def yomikomi(path):
             values.append(float(v))
     return values
 
-madogawa = yomikomi("data/demo1.csv")   # 窓側のサンプル
-rokagawa = yomikomi("data/demo3.csv")   # 廊下側のサンプル
+jibun = yomikomi("data/group${me}.csv")
+aite  = yomikomi("data/group${other}.csv")
 
-print("窓側の平均:", round(sum(madogawa) / len(madogawa)))
-print("廊下側の平均:", round(sum(rokagawa) / len(rokagawa)))
-# 変えてみよう: 何倍ちがう？ demo5(まん中)も重ねてみよう
+print("自分の班の平均:", round(sum(jibun) / len(jibun), 2))
+print("相手の班の平均:", round(sum(aite) / len(aite), 2))
 
 plt.figure(figsize=(8, 3.5))
-plt.plot(madogawa, label="madogawa (demo1)")
-plt.plot(rokagawa, label="rokagawa (demo3)")
+plt.plot(jibun, label="group ${me}")
+plt.plot(aite, label="group ${other}")
 plt.legend()
 plt.grid(True)
 plt.show()
 `;
+}
 
 // ============================================================
 // STEP3 パート1（用意したデータで「くらべる」応用）
@@ -935,8 +1036,21 @@ else:
 // ============================================================
 // STEP3 パート2（9チームの実測データ）
 // ============================================================
-function kindNow() { return document.getElementById("useDemo").checked ? "demo" : "group"; }
+function kindNow() { const el = document.getElementById("useDemo"); return (el && el.checked) ? "demo" : "group"; }
 function myGroup() { return localStorage.getItem("lab_group") || "1"; }
+// 複数のアップロード欄（班選択・キー）を同期
+function syncGroup(v) {
+  localStorage.setItem("lab_group", v);
+  document.querySelectorAll(".upGroupSel").forEach(s => s.value = v);
+  renderDash();
+}
+function syncToken(v) {
+  document.querySelectorAll(".upTokenSel").forEach(s => s.value = v);
+}
+function currentToken() {
+  const el = document.querySelector(".upTokenSel");
+  return el ? el.value.trim() : "";
+}
 
 function S8(other) {
   const kind = kindNow();
@@ -1064,14 +1178,14 @@ function normalizeCsv(raw) {
   return { csv: "timestamp,value\n" + rows.join("\n") + "\n", skipped: skipped };
 }
 
-function loadFile(input) {
+function loadFile(input, step) {
   const f = input.files[0];
   if (!f) return;
   const reader = new FileReader();
   reader.onload = () => {
-    document.getElementById("upData").value = reader.result;
+    document.querySelector(".upData" + step).value = reader.result;
     const norm = normalizeCsv(reader.result);
-    document.getElementById("upNote").textContent = norm
+    document.querySelector(".upNote" + step).textContent = norm
       ? `📄 ${f.name} を読み込みました（有効${norm.csv.trim().split("\n").length - 1}行）。班を確認して「アップロード」を押そう`
       : "⚠ このファイルからデータを読み取れませんでした";
   };
@@ -1079,11 +1193,11 @@ function loadFile(input) {
   input.value = "";
 }
 
-async function uploadData() {
-  const note = document.getElementById("upNote");
-  const g = document.getElementById("upGroup").value;
-  const token = document.getElementById("upToken").value.trim();
-  const raw = document.getElementById("upData").value;
+async function uploadData(step) {
+  const note = document.querySelector(".upNote" + step);
+  const g = document.querySelector(".upGroupSel").value;
+  const token = currentToken();
+  const raw = document.querySelector(".upData" + step).value;
   if (!token) { note.textContent = "⚠ アップロードキーを入力してください（先生から配布）"; return; }
   const norm = normalizeCsv(raw);
   if (!norm) { note.textContent = "⚠ データが読み取れません。数値の行が入っているか確認してください"; return; }
@@ -1108,8 +1222,8 @@ async function uploadData() {
     });
     if (!put.ok) throw new Error("送信失敗 " + put.status);
     note.textContent = `✅ ${g}班 アップロード完了！（${rowCount}行${skipMsg}）マップが緑になったか確認しよう`;
-    localStorage.setItem("lab_group", g);
-    document.getElementById("upData").value = "";
+    syncGroup(g);
+    document.querySelector(".upData" + step).value = "";
     await refreshData();
   } catch (e) {
     note.textContent = "❌ 失敗: " + e.message + "（キーが正しいか先生に確認）";
