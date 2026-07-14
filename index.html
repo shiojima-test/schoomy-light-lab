@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v1.7 | スクーミー×Python</title>
+<title>教室の光環境ラボ v1.8 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -106,7 +106,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v1.7</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v1.8</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -190,7 +190,7 @@ else:
 </section>
 
 <section>
-  <h2>パート2：データ分析のきほん（レッスン6〜11）</h2>
+  <h2>パート2：データ分析のきほん（レッスン6・7）</h2>
   <p>ここからは<b>本物のデータ</b>を使います。国や自治体はさまざまな計測データを社会に公開していて（<b>オープンデータ</b>）、だれでも無料で使えます。今日使うのは気象庁が公開している、<b>甲府（山梨県）で実際に計測された太陽の光のデータ</b>です。</p>
 
   <h3>今日つかうデータ（実物がこれ！）</h3>
@@ -224,46 +224,6 @@ else:
     <div class="challenge"><b>変えてみよう</b>：「晴れはくもりの何倍か」を print で表示する行を追加しよう（ヒント：レッスン2の割り算。合計どうしで割るとよい）。</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi7"></span></div>
     <textarea id="yomi7" class="jp" rows="1" oninput="saveText('yomi7')" placeholder="例：ピークの高さが晴れ3.4に対しくもり1.8で、約2倍ちがう"></textarea>
-  </div>
-
-  <div class="lesson">
-    <h3>レッスン8：ばらつき —— 「安定して晴れる月」はどっち？</h3>
-    <div class="kaisetsu"><b>解説</b>：甲府の<b>1月</b>と<b>6月（梅雨）</b>、毎日の日照時間をくらべる。平均だけでなく<b>ばらつき</b>を見るのがポイント。ばらつきの一番簡単な指標が「<b>範囲＝最大−最小</b>」。範囲が小さい＝毎日似ている＝安定、範囲が大きい＝日によって全然違う。</div>
-    <button class="act navy" onclick="setCode('ed1', L8)">▶ 1月と6月の日照時間をくらべる</button>
-    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('kofu_1gatsu.csv')">表で見る: kofu_1gatsu.csv</button>
-    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('kofu_6gatsu.csv')">表で見る: kofu_6gatsu.csv</button>
-    <div class="challenge"><b>変えてみよう</b>：範囲（max - min）をそれぞれ print して、どちらの月が「安定して晴れる」か数値で言えるようにしよう。</div>
-    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi8"></span></div>
-    <textarea id="yomi8" class="jp" rows="1" oninput="saveText('yomi8')" placeholder="例：1月は範囲が小さく安定、6月は0時間の日も12時間の日もあり不安定"></textarea>
-  </div>
-
-  <div class="lesson">
-    <h3>レッスン9：前処理 —— 「夜の0」をどうする？</h3>
-    <div class="kaisetsu"><b>解説</b>：晴れの日（6/1）の平均を24時間分で計算すると、<b>夜の0がたくさん混ざって小さく出る</b>。「昼の光の強さ」を知りたいなら、if文で <code>v &gt; 0</code> のときだけ集めて計算し直す。目的に合わせてデータを整えるのが<b>前処理</b>。本物のデータには欠測（×や--の記号）もあり、そのまま計算すると狂う——STEP2の実測でも必ず使う考え方。</div>
-    <button class="act navy" onclick="setCode('ed1', L9)">▶ 24時間平均と「昼だけ平均」をくらべる</button>
-    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('kofu_hare.csv')">表で見る: kofu_hare.csv</button>
-    <div class="challenge"><b>変えてみよう</b>：条件を <code>v &gt;= 1.0</code>（強い光の時間だけ）にすると平均はどうなる？条件のかけ方で「答え」が変わる危険も考えよう。</div>
-    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi9"></span></div>
-    <textarea id="yomi9" class="jp" rows="1" oninput="saveText('yomi9')" placeholder="例：24時間平均1.16に対し、昼だけ平均は1.86。何を知りたいかで計算が変わる"></textarea>
-  </div>
-
-  <div class="lesson">
-    <h3>レッスン10：シミュレーション —— 計算で「予測」する</h3>
-    <div class="kaisetsu"><b>解説</b>：「くもりの日の光は晴れの日の30%くらいになる」という<b>モデル</b>（仮定）を立てると、実測しなくても予測グラフが計算で作れる。これが<b>モデル化とシミュレーション</b>。予測と本物のくもりデータ（6/4）を重ねて、モデルの当たり具合を確かめよう。</div>
-    <button class="act navy" onclick="setCode('ed1', L10)">▶ 晴れデータから「くもりの日」を予測する</button>
-    <div class="challenge"><b>変えてみよう</b>：割合 <code>0.3</code> を調整して、本物のくもりに一番近づく割合を探そう。それがあなたの作った「甲府のくもりモデル」！</div>
-    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi10"></span></div>
-    <textarea id="yomi10" class="jp" rows="1" oninput="saveText('yomi10')" placeholder="例：0.3より0.4の方が本物に近かった。昼の形は予測とずれる"></textarea>
-  </div>
-
-  <div class="lesson">
-    <h3>レッスン11：データ推理ゲーム —— この日の天気を当てろ</h3>
-    <div class="kaisetsu"><b>解説</b>：<b>6月のある3日間（日付ひみつ）</b>の本物の日射データがある（nazoA〜C）。グラフの形から<b>その日の甲府の天気の変化</b>を推理しよう。「午前は？午後は？急な変化はいつ？」——データ分析の最終目標は数値を出すことではなく、<b>現実に何が起きたかを読み取ること</b>。</div>
-    <button class="act navy" onclick="setCode('ed1', L11)">▶ なぞの日のデータを調べる（nazoA〜C）</button>
-    <button class="act" style="background:#eee;color:#2c4a6e;font-weight:normal" onclick="showData('kofu_nazoA.csv')">表で見る: kofu_nazoA.csv</button>
-    <div class="challenge"><b>ヒント</b>：レッスン6の晴れ・レッスン7のくもりの「形」と見くらべる。コードの <code>NAZO</code> を書き換えて3日ぶん全部調べよう。答え（実際の日付と天気）は最後に先生から発表！</div>
-    <div class="fieldlbl">推理（3つとも書こう）<span class="saved" id="sv_yomi11"></span></div>
-    <textarea id="yomi11" class="jp" rows="2" oninput="saveText('yomi11')" placeholder="例：A=午前は雨っぽくて午後から晴れた／B=一日じゅう雲が厚い／C=…"></textarea>
   </div>
 
   <div class="howto" style="margin-top:16px">
@@ -422,12 +382,12 @@ print("こんにちは、スクーミー！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v1.7 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v1.8 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v1.7";
+const VERSION = "v1.8";
 let pyodide = null;
 
 // ---------- ステップ切替 ----------
@@ -444,7 +404,7 @@ const urlToken = new URLSearchParams(location.search).get("token");
 window.addEventListener("DOMContentLoaded", () => {
   if (urlToken) document.getElementById("upToken").value = urlToken;
   // 記入欄の復元
-  ["m1h","m1k","m2h","m2k","m3h","m3k","yomi6","yomi7","yomi8","yomi9","yomi10","yomi11"].forEach(id => {
+  ["m1h","m1k","m2h","m2k","m3h","m3k","yomi6","yomi7"].forEach(id => {
     const v = localStorage.getItem("lab_" + id);
     if (v) document.getElementById(id).value = v;
   });
@@ -467,11 +427,6 @@ function markMine() {
 const DATASETS = [
   { key: "kofu_hare.csv",   tab: "☀️ 晴れ 6/1",  title: "☀️ 6月1日（晴れ）の甲府", sub: "1時間ごとの太陽の光の強さ", tcol: "時こく", vcol: "光の強さ", unit: "単位: MJ/㎡（大きいほど強い光）", xlab: "時" },
   { key: "kofu_kumori.csv", tab: "☁️ くもり 6/4", title: "☁️ 6月4日（くもり）の甲府", sub: "1時間ごとの太陽の光の強さ", tcol: "時こく", vcol: "光の強さ", unit: "単位: MJ/㎡", xlab: "時" },
-  { key: "kofu_1gatsu.csv", tab: "❄️ 1月",       title: "❄️ 2026年1月の甲府", sub: "毎日の日照時間（太陽が出ていた時間）", tcol: "日にち", vcol: "日照時間", unit: "単位: 時間", xlab: "日" },
-  { key: "kofu_6gatsu.csv", tab: "☔ 6月(梅雨)",  title: "☔ 2026年6月1〜20日の甲府", sub: "毎日の日照時間（梅雨の時期）", tcol: "日にち", vcol: "日照時間", unit: "単位: 時間", xlab: "日" },
-  { key: "kofu_nazoA.csv",  tab: "❓ なぞA",     title: "❓ なぞの日A（6月のある日）", sub: "この日の天気は？レッスン11で推理", tcol: "時こく", vcol: "光の強さ", unit: "単位: MJ/㎡", xlab: "時" },
-  { key: "kofu_nazoB.csv",  tab: "❓ なぞB",     title: "❓ なぞの日B（6月のある日）", sub: "この日の天気は？レッスン11で推理", tcol: "時こく", vcol: "光の強さ", unit: "単位: MJ/㎡", xlab: "時" },
-  { key: "kofu_nazoC.csv",  tab: "❓ なぞC",     title: "❓ なぞの日C（6月のある日）", sub: "この日の天気は？レッスン11で推理", tcol: "時こく", vcol: "光の強さ", unit: "単位: MJ/㎡", xlab: "時" },
 ];
 let currentDS = 0;
 
@@ -556,7 +511,7 @@ let lastResults = {};
 async function loadAllData() {
   const names = [];
   for (let i = 1; i <= 9; i++) names.push(`demo${i}.csv`, `group${i}.csv`);
-  ["kofu_hare","kofu_kumori","kofu_1gatsu","kofu_6gatsu","kofu_nazoA","kofu_nazoB","kofu_nazoC"].forEach(n => names.push(n + ".csv"));
+  ["kofu_hare","kofu_kumori"].forEach(n => names.push(n + ".csv"));
   const results = {};
   await Promise.all(names.map(async n => {
     try { results[n] = await fetchCsv(n); } catch (e) { results[n] = null; }
@@ -786,118 +741,6 @@ plt.xlabel("Hour")
 plt.ylabel("Solar radiation (MJ/m2)")
 plt.grid(True)
 plt.show()
-`;
-
-const L8 = `# レッスン8: 1月と6月、安定して晴れるのはどっち？（毎日の日照時間）
-import matplotlib.pyplot as plt
-
-def yomikomi(path):
-    values = []
-    with open(path) as f:
-        next(f)
-        for line in f:
-            t, v = line.strip().split(",")
-            values.append(float(v))
-    return values
-
-jan = yomikomi("data/kofu_1gatsu.csv")   # 1月・31日分
-jun = yomikomi("data/kofu_6gatsu.csv")   # 6月・20日分（梅雨）
-
-print("1月の平均:", round(sum(jan) / len(jan), 1), "時間")
-print("6月の平均:", round(sum(jun) / len(jun), 1), "時間")
-# 変えてみよう: 範囲（max - min）をそれぞれ print して安定性を数値でくらべよう
-
-plt.figure(figsize=(8, 3.5))
-plt.plot(jan, label="Jan")
-plt.plot(jun, label="Jun")
-plt.legend()
-plt.xlabel("Day")
-plt.ylabel("Sunshine (hours)")
-plt.grid(True)
-plt.show()
-`;
-
-const L9 = `# レッスン9: 前処理 —— 「夜の0」をどうする？（晴れの日 6/1）
-def yomikomi(path):
-    values = []
-    with open(path) as f:
-        next(f)
-        for line in f:
-            t, v = line.strip().split(",")
-            values.append(float(v))
-    return values
-
-values = yomikomi("data/kofu_hare.csv")
-
-print("24時間ぜんぶの平均:", round(sum(values) / len(values), 2))
-
-# 「昼の光の強さ」を知りたい → 0より大きい時間だけ集めなおす
-hiru = []
-for v in values:
-    if v > 0:                 # 条件を満たすものだけ通す
-        hiru.append(v)
-
-print("昼だけの平均:", round(sum(hiru) / len(hiru), 2))
-print("昼としてカウントした時間数:", len(hiru), "時間")
-# → 何を知りたいかで、データの整え方（前処理）が変わる！
-`;
-
-const L10 = `# レッスン10: モデル化とシミュレーション
-# モデル（仮定）:「くもりの日の光は、晴れの日の 30% になる」
-import matplotlib.pyplot as plt
-
-def yomikomi(path):
-    values = []
-    with open(path) as f:
-        next(f)
-        for line in f:
-            t, v = line.strip().split(",")
-            values.append(float(v))
-    return values
-
-hare = yomikomi("data/kofu_hare.csv")      # 晴れ(6/1)の実測
-
-wariai = 0.3                               # ←モデルの割合。調整してみよう
-yosou = []
-for v in hare:
-    yosou.append(v * wariai)               # 計算だけで「くもりの日」を予測
-
-honmono = yomikomi("data/kofu_kumori.csv") # 本物のくもり(6/4)で答え合わせ
-
-print("予測の合計:", round(sum(yosou), 2), " / 本物の合計:", round(sum(honmono), 2))
-
-plt.figure(figsize=(8, 3.5))
-plt.plot(range(1, len(yosou) + 1), yosou, label="predicted (model 30%)")
-plt.plot(range(1, len(honmono) + 1), honmono, label="real kumori 6/4")
-plt.legend()
-plt.xlabel("Hour")
-plt.grid(True)
-plt.show()
-`;
-
-const L11 = `# レッスン11: データ推理ゲーム
-# nazoA, nazoB, nazoC —— 6月のある日の本物のデータ。天気を推理せよ！
-import matplotlib.pyplot as plt
-
-NAZO = "nazoA"        # ← "nazoB", "nazoC" に変えて全部調べよう
-
-values = []
-with open("data/kofu_" + NAZO + ".csv") as f:
-    next(f)
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(float(v))
-
-print(NAZO, "の最大:", max(values), "MJ/m2")
-
-plt.figure(figsize=(8, 3.5))
-plt.plot(range(1, len(values) + 1), values)
-plt.title(NAZO)
-plt.xlabel("Hour")
-plt.ylabel("Solar radiation (MJ/m2)")
-plt.grid(True)
-plt.show()
-# 晴れ(L6)やくもり(L7)の「形」と見くらべて、この日の天気の変化を推理しよう
 `;
 
 // ---------- ミッションコード ----------
