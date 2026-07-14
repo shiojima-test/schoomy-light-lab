@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v3.0 | スクーミー×Python</title>
+<title>教室の光環境ラボ v3.1 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -107,7 +107,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v3.0</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v3.1</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -142,18 +142,18 @@ print("こんにちは、スクーミー！")</textarea>
 </div>
 <div class="paneR">
 <section>
-  <h2>パート1：Pythonの基本 レッスン1〜5（用意したデータ）</h2>
-  <p>やり方：各レッスンの<b>「▶ このコードを試す」→ 左のコード欄で「実行」→ 結果を見る → 「変えてみよう」に挑戦</b>。ここではグラフは作らず、表示・計算・集計（最大/最小/平均）・判定までを学びます。</p>
+  <h2>パート1：Pythonの基本 レッスン1〜7（用意したデータ）</h2>
+  <p>やり方：各レッスンの<b>「▶ このコードを試す」→ 左のコード欄で「実行」→ 結果を見る → 「変えてみよう」に挑戦</b>。レッスン1〜5は文法、6〜7でCSVファイルを扱います（グラフはSTEP2から）。</p>
   <div class="toolbar">
-    <label>レッスン3〜5で使うデータ:
-      <select id="p1data" onchange="reloadP1()">
+    <label>レッスン6〜7で使うデータ:
+      <select id="p1data">
         <option value="kofu_6gatsu.csv">甲府・6月の日照時間（20日分）</option>
         <option value="kofu_1gatsu.csv">甲府・1月の日照時間（31日分）</option>
         <option value="kofu_hare.csv">甲府・晴れの日の日射量（24時間）</option>
         <option value="kofu_kumori.csv">甲府・くもりの日の日射量（24時間）</option>
       </select>
     </label>
-    <span class="note">オープンデータ（気象庁）。選ぶとレッスンのコードのファイル名が変わります</span>
+    <span class="note">オープンデータ（気象庁）。選ぶとレッスン6〜7のファイル名が変わります</span>
   </div>
 
   <div class="lesson">
@@ -162,7 +162,7 @@ print("こんにちは、スクーミー！")</textarea>
 print(500)</pre>
     <div class="kaisetsu"><b>解説</b>：<code>print( )</code> はカッコの中身を画面に表示する命令。文字は <code>" "</code> で囲む。数字はそのまま書く。</div>
     <button class="act navy" onclick="setCode('ed1', L1)">▶ このコードを試す</button>
-    <div class="challenge"><b>変えてみよう</b>：自分の班の番号と「〇班です」を表示してみよう。</div>
+    <div class="challenge"><b>変えてみよう</b>：自分の名前を表示してみよう。</div>
   </div>
 
   <div class="lesson">
@@ -177,29 +177,55 @@ print(madogawa / rokagawa)   # 何倍か</pre>
   </div>
 
   <div class="lesson">
-    <h3>レッスン3：リスト（オープンデータを読んで集計）</h3>
-    <div class="kaisetsu"><b>解説</b>：上で選んだ<b>本物のオープンデータCSV</b>を読み込んでリストにし、<code>len</code>（個数）・<code>sum</code>（合計）・<code>max/min</code>（最大/最小）・平均を求める。<code>[ ]</code> がリスト、たくさんの数をまとめて扱える。</div>
-    <button class="act navy" onclick="setCode('ed1', L3())">▶ このコードを試す</button>
-    <div class="challenge"><b>変えてみよう</b>：上のドロップダウンでデータを変えて、最大・最小・平均がどう変わるか見よう。</div>
+    <h3>レッスン3：リスト（値をまとめて入れる）</h3>
+    <pre>values = [512, 530, 498, 505, 521]
+print(values)        # リスト全体を表示
+print(values[0])     # 1件だけ取り出す（0番目）</pre>
+    <div class="kaisetsu"><b>解説</b>：<code>[ ]</code> がリスト。たくさんの値をまとめて入れられる。<code>values[0]</code> のように番号（0から）で1件だけ取り出せる。</div>
+    <button class="act navy" onclick="setCode('ed1', L3)">▶ このコードを試す</button>
+    <div class="challenge"><b>変えてみよう</b>：<code>values[2]</code> は何番目の値？　いろいろ変えて確かめよう。</div>
   </div>
 
   <div class="lesson">
-    <h3>レッスン4：for（くり返す）</h3>
-    <div class="kaisetsu"><b>解説</b>：<code>for v in values:</code> は「リストから1つずつ取り出して <code>v</code> と呼び、字下げした行をくり返す」。選んだオープンデータを1つずつ表示してみる。<b>字下げ（スペース4つ）が必須</b>。</div>
-    <button class="act navy" onclick="setCode('ed1', L4())">▶ このコードを試す</button>
-    <div class="challenge"><b>変えてみよう</b>：くり返しの中で <code>v * 2</code> を表示してみよう。</div>
+    <h3>レッスン4：for（1件ずつ取り出す）</h3>
+    <pre>values = [512, 530, 498, 505, 521]
+for v in values:
+    print(v)         # 1件ずつ、一気に表示</pre>
+    <div class="kaisetsu"><b>解説</b>：<code>for v in values:</code> は「リストから1つずつ取り出して <code>v</code> と呼び、字下げした行をくり返す」。5件が一気に表示される。<b>字下げ（スペース4つ）が必須</b>。</div>
+    <button class="act navy" onclick="setCode('ed1', L4)">▶ このコードを試す</button>
+    <div class="challenge"><b>変えてみよう</b>：<code>print(v * 2)</code> にすると？</div>
   </div>
 
   <div class="lesson">
-    <h3>レッスン5：if（条件で分ける）</h3>
-    <div class="kaisetsu"><b>解説</b>：<code>if 条件:</code> が成り立てば上、成り立たなければ <code>else:</code> の下が実行される。選んだデータの平均を、しきい値で判定してみる。<code>>=</code> は「以上」。</div>
-    <button class="act navy" onclick="setCode('ed1', L5())">▶ このコードを試す</button>
-    <div class="challenge"><b>変えてみよう</b>：しきい値を変えて、判定が切り替わるのを確認しよう。</div>
+    <h3>レッスン5：if（1件ずつ判定する）</h3>
+    <pre>values = [512, 530, 498, 505, 521]
+for v in values:
+    if v >= 500:
+        print(v, "明るい")
+    else:
+        print(v, "暗い")</pre>
+    <div class="kaisetsu"><b>解説</b>：レッスン4のforの中にif文を入れると、<b>1件ずつ判定</b>できる。<code>>=</code> は「以上」。500以上かどうかで表示が分かれる。</div>
+    <button class="act navy" onclick="setCode('ed1', L5)">▶ このコードを試す</button>
+    <div class="challenge"><b>変えてみよう</b>：しきい値の500を変えると、判定はどう変わる？</div>
+  </div>
+
+  <div class="lesson">
+    <h3>レッスン6：CSVファイルを読み込んで表示する</h3>
+    <div class="kaisetsu"><b>解説</b>：ここから<b>本物のオープンデータCSV</b>（上で選んだファイル）を扱う。ファイルを開いて、1行ずつ読み、値をリストに入れて表示する。レッスン3〜4のリスト・forがここで生きる。</div>
+    <button class="act navy" onclick="setCode('ed1', L6())">▶ このコードを試す</button>
+    <div class="challenge"><b>変えてみよう</b>：上のドロップダウンでデータを変えて、中身がどう変わるか見よう。</div>
+  </div>
+
+  <div class="lesson">
+    <h3>レッスン7：CSVのデータで 個数・合計・最大・最小・平均</h3>
+    <div class="kaisetsu"><b>解説</b>：読み込んだリストから <code>len</code>（個数）・<code>sum</code>（合計）・<code>max/min</code>（最大/最小）・平均を求める。データ分析の基本の集計。</div>
+    <button class="act navy" onclick="setCode('ed1', L7())">▶ このコードを試す</button>
+    <div class="challenge"><b>変えてみよう</b>：データを変えて、平均がどう変わるか比べよう。</div>
   </div>
 </section>
 
 <section>
-  <h2 class="p2">パート2：スクーミーのデータで体験 レッスン1〜5</h2>
+  <h2 class="p2">パート2：スクーミーのデータで体験 体験1〜3</h2>
   <p>今度は<b>自分たちで計測したデータ</b>で、パート1と同じ文法をやってみよう。まず計測してアップロードしよう。</p>
   <div class="uploadbox" id="uploadbox1">
     <h3>① 計測データをアップロード（各班1人）</h3>
@@ -228,24 +254,24 @@ print(madogawa / rokagawa)   # 何倍か</pre>
   </div>
 
   <div class="lesson sc">
-    <h3>🍊 体験1〜2：センサーの値を表示・計算する（print・変数）</h3>
-    <div class="kaisetsu"><b>やること</b>：スクーミーが計測した<b>CSVファイル</b>を読み込み、中の値を変数に入れて差と「何倍か」を計算する。小数もそのまま計算できる。</div>
-    <button class="act navy" onclick="setCode('ed1', S12())">▶ このコードを試す</button>
-    <div class="challenge"><b>変えてみよう</b>：値を10倍したら？（<code>*</code> がかけ算）</div>
+    <h3>🍊 体験1：CSVを読み込んで表示する（レッスン6を参考に）</h3>
+    <div class="kaisetsu"><b>やること</b>：<b>レッスン6</b>を思い出して、自分の班のCSVを読み込み、<code>print(values)</code> で表示しよう。<br>下の「▶ ひな形を入れる」で骨組みが入ります。<b><code>___</code> の部分を自分で書いて</b>完成させよう。</div>
+    <button class="act navy" onclick="setCode('ed1', S1())">▶ ひな形を入れる</button>
+    <div class="challenge"><b>ヒント</b>：レッスン6の <code>values.append(float(v))</code> と同じ。</div>
   </div>
 
   <div class="lesson sc">
-    <h3>🍊 体験3〜4：計測値のリストをまとめて処理（リスト・for）</h3>
-    <div class="kaisetsu"><b>やること</b>：スクーミーのCSVを読み込んでリストにし、<b>個数・平均・最大・最小</b>を出す。forで最初の5個を表示。（グラフはSTEP2から）</div>
-    <button class="act navy" onclick="setCode('ed1', S34())">▶ このコードを試す</button>
-    <div class="challenge"><b>変えてみよう</b>：平均を <code>round(○○, 2)</code> で小数2桁に丸めてみよう。</div>
+    <h3>🍊 体験2：個数・合計・最大・最小・平均（レッスン7を参考に）</h3>
+    <div class="kaisetsu"><b>やること</b>：<b>レッスン7</b>を参考に、読み込んだデータの <code>len</code>・<code>sum</code>・<code>max</code>・<code>min</code>・平均を出そう。<code>___</code> を自分で埋めよう。</div>
+    <button class="act navy" onclick="setCode('ed1', S2())">▶ ひな形を入れる</button>
+    <div class="challenge"><b>ヒント</b>：平均は <code>sum(values) / len(values)</code>。</div>
   </div>
 
   <div class="lesson sc">
-    <h3>🍊 体験5：明るさを自動判定（if）</h3>
-    <div class="kaisetsu"><b>やること</b>：CSVの平均値が「40以上なら明るい／未満なら暗い」を自動判定。STEP3で教室全体を診断する練習になる。</div>
-    <button class="act navy" onclick="setCode('ed1', S5())">▶ このコードを試す</button>
-    <div class="challenge"><b>変えてみよう</b>：しきい値の50を変えると判定はどう変わる？　forと組み合わせて8個ぜんぶ判定できる？</div>
+    <h3>🍊 体験3：ifで自動判定</h3>
+    <div class="kaisetsu"><b>やること</b>：平均が「ある数以上なら明るい／未満なら暗い」を <code>if</code> で判定しよう。しきい値は自分で決めてOK。<code>___</code> を埋めよう。</div>
+    <button class="act navy" onclick="setCode('ed1', S3())">▶ ひな形を入れる</button>
+    <div class="challenge"><b>ヒント</b>：レッスン5の <code>if v &gt;= 500:</code> と同じ書き方。</div>
   </div>
 </section>
 </div>
@@ -268,7 +294,7 @@ print(madogawa / rokagawa)   # 何倍か</pre>
 </div>
 <div class="paneR">
 <section>
-  <h2>パート1：データ分析の基本 レッスン6〜7（用意したデータ）</h2>
+  <h2>パート1：データ分析の基本 レッスン8〜9（用意したデータ）</h2>
   <p>ここでは<b>公開されている本物のデータ</b>を使います。気象庁が公開している、<b>甲府（山梨県）で実際に計測された太陽の光のデータ</b>です。</p>
 
   <h3>今日つかうデータ（実物がこれ！）</h3>
@@ -279,18 +305,18 @@ print(madogawa / rokagawa)   # 何倍か</pre>
   <p class="note" style="margin-top:6px">出典：気象庁「<a href="https://www.data.jma.go.jp/stats/etrn/index.php" target="_blank">過去の気象データ検索</a>」（甲府地方気象台の観測値）より作成。🍊はスクーミーの実測。</p>
 
   <div class="lesson" style="margin-top:12px">
-    <h3>レッスン6：グラフ化 —— 数字の列を「見える」ようにする</h3>
+    <h3>レッスン8：グラフ化 —— 数字の列を「見える」ようにする</h3>
     <div class="kaisetsu"><b>解説</b>：使うのは<b>甲府・6月1日（晴れ）の太陽の光の強さ</b>。24個の数字を眺めても傾向は分からないが、<code>plt.plot(values)</code> で折れ線にすると「朝から強くなり昼にピーク、夜は0」が一瞬で見える。これが<b>可視化</b>。</div>
-    <button class="act navy" onclick="setCode('ed2', L6)">▶ 晴れの日をグラフにする</button>
+    <button class="act navy" onclick="setCode('ed2', L8)">▶ 晴れの日をグラフにする</button>
     <div class="challenge"><b>変えてみよう</b>：FILE を <code>"data/kofu_kumori.csv"</code>（くもりの6月4日）に変えて、山の高さの違いを見よう。</div>
     <div class="fieldlbl">読み取ったこと（1行で）<span class="saved" id="sv_yomi6"></span></div>
     <textarea id="yomi6" class="jp" rows="1" oninput="saveText('yomi6')" placeholder="例：13時ごろが最大で、夜は0。きれいな山の形"></textarea>
   </div>
 
   <div class="lesson">
-    <h3>レッスン7：くらべる —— 2つを重ねる</h3>
+    <h3>レッスン9：くらべる —— 2つを重ねる</h3>
     <div class="kaisetsu"><b>解説</b>：グラフの真価は<b>比較</b>。晴れ（6/1）とくもり（6/4）を同じグラフに重ねると差が一目で分かる。<code>label=</code> と <code>plt.legend()</code> で凡例を付けるのがマナー。</div>
-    <button class="act navy" onclick="setCode('ed2', L7)">▶ 晴れ vs くもり を重ねる</button>
+    <button class="act navy" onclick="setCode('ed2', L9)">▶ 晴れ vs くもり を重ねる</button>
     <div class="challenge"><b>変えてみよう</b>：「晴れはくもりの何倍か」を print で表示する行を追加しよう（合計どうしで割る）。</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi7"></span></div>
     <textarea id="yomi7" class="jp" rows="1" oninput="saveText('yomi7')" placeholder="例：晴れの山はくもりの約2倍高い"></textarea>
@@ -298,7 +324,7 @@ print(madogawa / rokagawa)   # 何倍か</pre>
 </section>
 
 <section>
-  <h2 class="p2">パート2：スクーミーのデータで体験 レッスン6〜7</h2>
+  <h2 class="p2">パート2：スクーミーのデータで体験 レッスン8〜9</h2>
   <p><b>自分たちで計測したデータ</b>で、グラフ化と比較をやってみよう。まず計測してアップロードしよう。</p>
   <div class="uploadbox" id="uploadbox2">
     <h3>① 計測データをアップロード（各班1人）</h3>
@@ -364,30 +390,30 @@ print(madogawa / rokagawa)   # 何倍か</pre>
 </div>
 <div class="paneR">
 <section>
-  <h2>パート1：データ分析の応用 レッスン8〜10（用意したデータ）——「くらべる」を極める</h2>
+  <h2>パート1：データ分析の応用 レッスン10〜12（用意したデータ）——「くらべる」を極める</h2>
 
   <div class="lesson">
-    <h3>レッスン8：どちらが安定？ —— ばらつきを数値にする</h3>
+    <h3>レッスン10：どちらが安定？ —— ばらつきを数値にする</h3>
     <div class="kaisetsu"><b>解説</b>：甲府の<b>1月</b>と<b>6月（梅雨）</b>、毎日の日照時間をくらべる。平均だけでなく<b>範囲＝最大−最小</b>を出すと「安定して晴れる月」が数値で言える。範囲が小さい＝毎日似ている＝安定。</div>
-    <button class="act navy" onclick="setCode('ed3', L8)">▶ 1月と6月をくらべる</button>
+    <button class="act navy" onclick="setCode('ed3', L12)">▶ 1月と6月をくらべる</button>
     <div class="challenge"><b>変えてみよう</b>：範囲（max - min）をそれぞれ print して、どちらが安定か数値で言おう。</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi8"></span></div>
     <textarea id="yomi8" class="jp" rows="1" oninput="saveText('yomi8')" placeholder="例：1月は毎日安定して晴れ、6月は0時間の日も12時間の日もある"></textarea>
   </div>
 
   <div class="lesson">
-    <h3>レッスン9：たくさんのファイルをforで一気に処理する</h3>
+    <h3>レッスン11：たくさんのファイルをforで一気に処理する</h3>
     <div class="kaisetsu"><b>解説</b>：ファイルが増えても、<b>ファイル名のリストをforで回せば</b>何個でも一気に処理できる。これがSTEP3パート2で「9チーム分を一発で比較」する鍵になる。</div>
-    <button class="act navy" onclick="setCode('ed3', L9)">▶ 2つのファイルをforで処理する</button>
+    <button class="act navy" onclick="setCode('ed3', L11)">▶ 2つのファイルをforで処理する</button>
     <div class="challenge"><b>変えてみよう</b>：ファイル名リストに <code>"kofu_1gatsu"</code> と <code>"kofu_6gatsu"</code> を追加して4つ一気に処理しよう。</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi9"></span></div>
     <textarea id="yomi9" class="jp" rows="1" oninput="saveText('yomi9')" placeholder="例：ファイルが何個あってもコードは同じ長さだった"></textarea>
   </div>
 
   <div class="lesson">
-    <h3>レッスン10：棒グラフと「比率」で判定する</h3>
+    <h3>レッスン12：棒グラフと「比率」で判定する</h3>
     <div class="kaisetsu"><b>解説</b>：比較の仕上げ。複数の平均を<b>棒グラフ</b>（<code>plt.bar</code>）で並べ、<b>最大÷最小の比率</b>を計算して「差が大きすぎないか」をifで自動判定する。学校の教室には「最大照度と最小照度の比は<b>20:1以内</b>が望ましい」という基準（学校環境衛生基準）があり、STEP3パート2でこの判定を本番で使う。</div>
-    <button class="act navy" onclick="setCode('ed3', L10)">▶ 棒グラフ＋比率judge</button>
+    <button class="act navy" onclick="setCode('ed3', L12)">▶ 棒グラフ＋比率judge</button>
     <div class="challenge"><b>変えてみよう</b>：判定のしきい値 <code>20</code> を <code>2</code> に変えると結果はどうなる？</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi10"></span></div>
     <textarea id="yomi10" class="jp" rows="1" oninput="saveText('yomi10')" placeholder="例：比率という1つの数字で「差の大きさ」を判定できた"></textarea>
@@ -429,14 +455,14 @@ print(madogawa / rokagawa)   # 何倍か</pre>
 
   <div class="lesson sc" style="margin-top:12px">
     <h3>🍊 体験8：自分の班と、となりの班をくらべる</h3>
-    <div class="kaisetsu"><b>やること</b>：上で選んだデータのうち、最初の2つを重ねて比較＋範囲を見る（レッスン8の応用）。</div>
+    <div class="kaisetsu"><b>やること</b>：上で選んだデータのうち、最初の2つを重ねて比較＋範囲を見る（レッスン10の応用）。</div>
     <button class="act navy" onclick="setCode('ed3', S8())">▶ 選んだ2つをくらべる</button>
     <div class="challenge"><b>変えてみよう</b>：上のチェックを変えると、コードに入るデータも変わる。</div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験9：9チームぜんぶをforで一気に読む</h3>
-    <div class="kaisetsu"><b>やること</b>：レッスン9の「forで一気に読む」を、選んだデータぜんぶに適用。各データの平均が一発で出る。</div>
+    <div class="kaisetsu"><b>やること</b>：レッスン11の「forで一気に読む」を、選んだデータぜんぶに適用。各データの平均が一発で出る。</div>
     <button class="act navy" onclick="setCode('ed3', S9())">▶ 選んだデータの平均を一気に出す</button>
     <div class="challenge"><b>変えてみよう</b>：平均といっしょに最大・最小も表示しよう。</div>
   </div>
@@ -461,12 +487,12 @@ print(madogawa / rokagawa)   # 何倍か</pre>
 
 </main>
 
-<footer>教室の光環境ラボ v3.0 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v3.1 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v3.0";
+const VERSION = "v3.1";
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
 
@@ -705,12 +731,7 @@ _plot_target = "${plotId}"
   }
 }
 
-function reloadP1() {
-  const ed = document.getElementById("ed1").value;
-  if (ed.includes("レッスン3")) setCode("ed1", L3());
-  else if (ed.includes("レッスン4")) setCode("ed1", L4());
-  else if (ed.includes("レッスン5")) setCode("ed1", L5());
-}
+
 
 function setCode(edId, code) {
   document.getElementById(edId).value = code;
@@ -735,72 +756,90 @@ rokagawa = 300     # 廊下側の明るさ
 print("差:", madogawa - rokagawa)
 print("何倍か:", madogawa / rokagawa)
 `;
+
+const L3 = `# レッスン3: リスト（全体表示と1件抽出）
+values = [512, 530, 498, 505, 521]
+print(values)        # リスト全体
+print(values[0])     # 1件だけ（0番目）
+`;
+const L4 = `# レッスン4: for で1件ずつ取り出す
+values = [512, 530, 498, 505, 521]
+for v in values:
+    print(v)
+`;
+const L5 = `# レッスン5: for + if で1件ずつ判定
+values = [512, 530, 498, 505, 521]
+for v in values:
+    if v >= 500:
+        print(v, "明るい")
+    else:
+        print(v, "暗い")
+`;
+
+function L6() {
+  return `# レッスン6: CSVファイルを読み込んで表示する
+FILE = "data/${p1file()}"
+
+values = []
+with open(FILE) as f:
+    next(f)                          # 1行目（見出し）をとばす
+    for line in f:                   # 1行ずつ読む
+        t, v = line.strip().split(",")
+        values.append(float(v))      # 値をリストに追加
+
+print(values)                        # 読み込んだ全部
+`;
+}
+
+function L7() {
+  return `# レッスン7: 個数・合計・最大・最小・平均
+FILE = "data/${p1file()}"
+
+values = []
+with open(FILE) as f:
+    next(f)
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(float(v))
+
+print("個数:", len(values))
+print("合計:", round(sum(values), 2))
+print("最大:", max(values))
+print("最小:", min(values))
+print("平均:", round(sum(values) / len(values), 2))
+`;
+}
 function p1file() {
   const el = document.getElementById("p1data");
   return el ? el.value : "kofu_6gatsu.csv";
 }
-function L3() {
-  return `# レッスン3: オープンデータCSVを読んで集計する
-FILE = "data/${p1file()}"
 
-values = []
-with open(FILE) as f:
-    next(f)                          # 見出し行をとばす
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(float(v))      # 数値にしてリストへ
 
-print("データの数:", len(values))
-print("合計:", round(sum(values), 2))
-print("平均:", round(sum(values) / len(values), 2))
-print("最大:", max(values), " 最小:", min(values))
-`;
-}
-function L4() {
-  return `# レッスン4: for でオープンデータを1つずつ表示
-FILE = "data/${p1file()}"
 
-values = []
-with open(FILE) as f:
-    next(f)
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(float(v))
-
-for v in values:                     # リストから1つずつ取り出す
-    print("値:", v)
-`;
-}
-function L5() {
-  return `# レッスン5: if で「平均が大きいか小さいか」を判定
-FILE = "data/${p1file()}"
-
-values = []
-with open(FILE) as f:
-    next(f)
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(float(v))
-
-heikin = sum(values) / len(values)
-print("平均:", round(heikin, 2))
-
-if heikin >= 5:
-    print("多い（よく晴れた）")
-else:
-    print("少ない")
-
-# 変えてみよう: しきい値 5 を変える
-`;
-}
 
 // ============================================================
 // STEP1 パート2（スクーミーの実測値で体験）
 // ============================================================
-function S12() {
+function S1() {
   const name = selPart[1];
   if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
-  return `# 体験1〜2: 選んだデータ「${name}」から値を読んで計算
+  return `# 体験1: CSVを読み込んで表示する（レッスン6を参考に）
+FILE = "data/uploads/${name}.csv"
+
+values = []
+with open(FILE) as f:
+    next(f)                          # 見出しをとばす
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(___)           # ← レッスン6を参考に。float(v) を入れよう
+
+print(___)                           # ← values を表示しよう
+`;
+}
+function S2() {
+  const name = selPart[1];
+  if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
+  return `# 体験2: 個数・合計・最大・最小・平均（レッスン7を参考に）
 FILE = "data/uploads/${name}.csv"
 
 values = []
@@ -810,38 +849,17 @@ with open(FILE) as f:
         t, v = line.strip().split(",")
         values.append(float(v))
 
-print("計測した数:", len(values))
-a = values[0]
-b = values[len(values)//2]
-print("1番目:", a, " まん中:", b)
-print("差:", round(b - a, 2))
+print("個数:", len(values))
+print("合計:", ___)                  # ← sum を使おう
+print("最大:", ___)                  # ← max を使おう
+print("最小:", ___)                  # ← min を使おう
+print("平均:", ___)                  # ← sum(values) / len(values)
 `;
 }
-function S34() {
+function S3() {
   const name = selPart[1];
   if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
-  return `# 体験3〜4: 選んだデータ「${name}」の 最大・最小・平均
-FILE = "data/uploads/${name}.csv"
-
-values = []
-with open(FILE) as f:
-    next(f)
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(float(v))
-
-print("データの数:", len(values), "個")
-print("平均:", round(sum(values) / len(values), 2))
-print("最大:", max(values), " 最小:", min(values))
-
-for v in values[:5]:
-    print("計測値:", v)
-`;
-}
-function S5() {
-  const name = selPart[1];
-  if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
-  return `# 体験5: 選んだデータ「${name}」の平均を判定
+  return `# 体験3: if で自動判定
 FILE = "data/uploads/${name}.csv"
 
 values = []
@@ -854,17 +872,17 @@ with open(FILE) as f:
 heikin = sum(values) / len(values)
 print("平均:", round(heikin, 2))
 
-if heikin >= 500:
-    print("明るい（基準クリア）")
+if heikin >= ___:                    # ← しきい値を自分で決めよう
+    print("明るい")
 else:
-    print("暗い（基準以下）")
+    print("暗い")
 `;
 }
 
 // ============================================================
 // STEP2 パート1（気象庁の公開データ）
 // ============================================================
-const L6 = `# レッスン6: グラフ化（甲府・6月1日(晴れ) 1時間ごとの日射量）
+const L8 = `# レッスン8: グラフ化（甲府・6月1日(晴れ) 1時間ごとの日射量）
 # 出典: 気象庁「過去の気象データ検索」
 import matplotlib.pyplot as plt
 
@@ -886,7 +904,7 @@ plt.ylabel("Solar radiation (MJ/m2)")
 plt.grid(True)
 plt.show()
 `;
-const L7 = `# レッスン7: 晴れ(6/1) と くもり(6/4) をくらべる
+const L9 = `# レッスン9: 晴れ(6/1) と くもり(6/4) をくらべる
 import matplotlib.pyplot as plt
 
 def yomikomi(path):              # 読み込みを関数にまとめた
@@ -981,7 +999,7 @@ plt.show()
 // ============================================================
 // STEP3 パート1（用意したデータで「くらべる」応用）
 // ============================================================
-const L8 = `# レッスン8: 1月と6月、どちらが「安定して晴れる」？
+const L10 = `# レッスン10: 1月と6月、どちらが「安定して晴れる」？
 import matplotlib.pyplot as plt
 
 def yomikomi(path):
@@ -1009,7 +1027,7 @@ plt.ylabel("Sunshine (hours)")
 plt.grid(True)
 plt.show()
 `;
-const L9 = `# レッスン9: ファイル名のリストをforで回して、一気に処理する
+const L11 = `# レッスン11: ファイル名のリストをforで回して、一気に処理する
 def yomikomi(path):
     values = []
     with open(path) as f:
@@ -1028,7 +1046,7 @@ for name in file_list:
 
 # 変えてみよう: file_list に "kofu_1gatsu", "kofu_6gatsu" を追加
 `;
-const L10 = `# レッスン10: 棒グラフ + 比率で判定する
+const L12 = `# レッスン12: 棒グラフ + 比率で判定する
 import matplotlib.pyplot as plt
 
 def yomikomi(path):
