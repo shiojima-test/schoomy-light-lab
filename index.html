@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v2.1 | スクーミー×Python</title>
+<title>教室の光環境ラボ v2.2 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -105,7 +105,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v2.1</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v2.2</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -203,21 +203,21 @@ else:
 
   <div class="lesson sc">
     <h3>🍊 体験1〜2：センサーの値を表示・計算する（print・変数）</h3>
-    <div class="kaisetsu"><b>やること</b>：センサーが返した2つの値（53.15 と 53.94）を変数に入れて、差と「何倍か」を計算する。小数もそのまま計算できる。</div>
+    <div class="kaisetsu"><b>やること</b>：スクーミーが計測した<b>CSVファイル</b>を読み込み、中の値を変数に入れて差と「何倍か」を計算する。小数もそのまま計算できる。</div>
     <button class="act navy" onclick="setCode('ed1', S12)">▶ このコードを試す</button>
     <div class="challenge"><b>変えてみよう</b>：値を10倍したら？（<code>*</code> がかけ算）</div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験3〜4：計測値のリストをまとめて処理（リスト・for）</h3>
-    <div class="kaisetsu"><b>やること</b>：センサーの連続計測値8個をリストに入れて、個数・平均・最大・最小を出し、forで1つずつ表示する。</div>
+    <div class="kaisetsu"><b>やること</b>：スクーミーのCSVを読み込んでリストにし、<b>個数・平均・最大・最小</b>を出す。forで最初の5個を表示。（グラフはSTEP2から）</div>
     <button class="act navy" onclick="setCode('ed1', S34)">▶ このコードを試す</button>
     <div class="challenge"><b>変えてみよう</b>：平均を <code>round(○○, 2)</code> で小数2桁に丸めてみよう。</div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験5：明るさを自動判定（if）</h3>
-    <div class="kaisetsu"><b>やること</b>：センサー値が「50以上なら明るい／未満なら暗い」を自動判定。STEP3で教室全体を診断する練習になる。</div>
+    <div class="kaisetsu"><b>やること</b>：CSVの平均値が「40以上なら明るい／未満なら暗い」を自動判定。STEP3で教室全体を診断する練習になる。</div>
     <button class="act navy" onclick="setCode('ed1', S5)">▶ このコードを試す</button>
     <div class="challenge"><b>変えてみよう</b>：しきい値の50を変えると判定はどう変わる？　forと組み合わせて8個ぜんぶ判定できる？</div>
   </div>
@@ -423,12 +423,12 @@ else:
 
 </main>
 
-<footer>教室の光環境ラボ v2.1 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v2.2 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v2.1";
+const VERSION = "v2.2";
 let pyodide = null;
 
 // ---------- ステップ切替 ----------
@@ -685,35 +685,62 @@ else:
 // ============================================================
 // STEP1 パート2（スクーミーの実測値で体験）
 // ============================================================
-const S12 = `# 体験1〜2: スクーミーのセンサーが返した本物の値で計算
-# （13時33分、教室で計測）
-sokutei1 = 53.15    # 1回目の計測値
-sokutei2 = 53.94    # 2回目の計測値
+const S12 = `# 体験1〜2: スクーミーが計測したCSVから、値を読んで計算する
+# schoomy_sample.csv = オレンジボードが教室で計測した本物の記録
+FILE = "data/schoomy_sample.csv"
 
-print("1回目:", sokutei1)
-print("2回目:", sokutei2)
-print("差:", sokutei2 - sokutei1)
-print("何倍か:", sokutei2 / sokutei1)
+values = []
+with open(FILE) as f:
+    next(f)                          # 見出し行をとばす
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(float(v))
+
+sokutei1 = values[0]                 # 1番目の計測値
+sokutei2 = values[2]                 # 3番目の計測値
+print("1番目:", sokutei1)
+print("3番目:", sokutei2)
+print("差:", round(sokutei2 - sokutei1, 2))
+print("何倍か:", round(sokutei2 / sokutei1, 3))
 `;
-const S34 = `# 体験3〜4: センサーの連続計測値（本物）をリストで処理
-values = [53.15, 53.15, 53.94, 53.94, 53.15, 53.15, 53.94, 53.54]
+const S34 = `# 体験3〜4: スクーミーのCSVを読み込んで 最大・最小・平均 を出す
+FILE = "data/schoomy_sample.csv"
 
-print("データの数:", len(values))
-print("平均:", sum(values) / len(values))
-print("最大:", max(values), " 最小:", min(values))
+values = []
+with open(FILE) as f:
+    next(f)
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(float(v))      # 1つずつリストへ（for）
 
-for v in values:
+print("データの数:", len(values), "個")
+print("平均:", round(sum(values) / len(values), 2))
+print("最大:", max(values))
+print("最小:", min(values))
+
+# 最初の5個だけ表示してみる
+for v in values[:5]:
     print("計測値:", v)
 `;
-const S5 = `# 体験5: センサー値を自動判定
-sokutei = 53.15     # スクーミーの計測値
+const S5 = `# 体験5: スクーミーのCSVの平均を、しきい値で自動判定
+FILE = "data/schoomy_sample.csv"
 
-if sokutei >= 50:
+values = []
+with open(FILE) as f:
+    next(f)
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(float(v))
+
+heikin = sum(values) / len(values)
+print("平均:", round(heikin, 2))
+
+if heikin >= 40:
     print("明るい")
 else:
     print("暗い")
 
-# 変えてみよう: しきい値を変える / forで8個ぜんぶ判定する
+# 変えてみよう: しきい値40を変える / 1つずつ判定するにはforと組み合わせる
 `;
 
 // ============================================================
