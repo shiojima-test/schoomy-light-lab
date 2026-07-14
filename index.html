@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v2.4 | スクーミー×Python</title>
+<title>教室の光環境ラボ v2.5 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -107,7 +107,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v2.4</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v2.5</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -224,6 +224,14 @@ print(madogawa / rokagawa)   # 何倍か</pre>
     <p class="note">アップすると、下の体験レッスンで「自分の班のデータ」が使えるようになります。</p>
   </div>
 
+  <div class="toolbar" style="background:#eef6fb; border-radius:8px; padding:10px 14px; margin:12px 0;">
+    <b style="color:#2c4a6e;">あなたの班を選ぶ:</b>
+    <select class="upGroupSel" onchange="syncGroup(this.value)" style="font-size:15px; padding:8px 12px;">
+      <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+      <option>6</option><option>7</option><option>8</option><option>9</option>
+    </select>
+    <span class="note">班のデータをアップするのは9人（各班1人）。残りのメンバーも、自分の班を選べば同じデータで体験できます</span>
+  </div>
 
   <div class="lesson sc">
     <h3>🍊 体験1〜2：センサーの値を表示・計算する（print・変数）</h3>
@@ -321,10 +329,18 @@ print(madogawa / rokagawa)   # 何倍か</pre>
     <p class="note">アップすると、下の体験レッスンで「自分の班のデータ」が使えるようになります。</p>
   </div>
 
+  <div class="toolbar" style="background:#eef6fb; border-radius:8px; padding:10px 14px; margin:12px 0;">
+    <b style="color:#2c4a6e;">あなたの班を選ぶ:</b>
+    <select class="upGroupSel" onchange="syncGroup(this.value)" style="font-size:15px; padding:8px 12px;">
+      <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+      <option>6</option><option>7</option><option>8</option><option>9</option>
+    </select>
+    <span class="note">自分の班を選んで、体験6〜7を自分の班のデータで</span>
+  </div>
 
   <div class="lesson sc">
     <h3>🍊 体験6：自分の班の記録をグラフ化する</h3>
-    <div class="kaisetsu"><b>やること</b>：アップロードした自分の班の計測記録を読み込んで折れ線グラフに。何行でも書くコードは同じ——それがプログラムの力。</div>
+    <div class="kaisetsu"><b>やること</b>：アップロードした自分の班の計測記録を折れ線グラフに。<br><b>たてじく（縦軸）は <code>plt.ylim(0, 100)</code> で自分で決められる</b>。数字を変えて見やすい範囲を探そう。</div>
     <button class="act navy" onclick="setCode('ed2', S6())">▶ 自分の班のデータをグラフにする</button>
     <div class="challenge"><b>変えてみよう</b>：グラフから「センサーの前で何かが動いた瞬間」は見つかる？</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomiS6"></span></div>
@@ -467,12 +483,12 @@ print(madogawa / rokagawa)   # 何倍か</pre>
 
 </main>
 
-<footer>教室の光環境ラボ v2.4 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v2.5 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v2.4";
+const VERSION = "v2.5";
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
 
@@ -912,6 +928,11 @@ plt.figure(figsize=(8, 3.5))
 plt.plot(values)
 plt.xlabel("Number")
 plt.ylabel("Brightness")
+
+# たてじくの範囲を自分で決められる（数字を変えてみよう）
+# センサーが乱れて大きな値が入ると山がトゲになる。範囲を決めると見やすい
+plt.ylim(0, 100)     # ← 0〜100 に固定。この数字を変えてOK
+
 plt.grid(True)
 plt.show()
 `;
