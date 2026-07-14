@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v2.0 | スクーミー×Python</title>
+<title>教室の光環境ラボ v2.1 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,7 +16,7 @@
   .subbar .c2 { width: 45.7%; background: #F5E4C4; }
   .subbar .c3 { width: 8.4%;  background: #E88A0A; }
   .subbar .c4 { width: 15.5%; background: #2E8EC4; }
-  main { max-width: 1000px; margin: 0 auto; padding: 16px 12px 60px; }
+  main { max-width: 1500px; margin: 0 auto; padding: 16px 12px 60px; }
 
   .stepnav { display: flex; gap: 8px; margin: 14px 0 18px; flex-wrap: wrap; }
   .stepnav button { flex: 1; min-width: 150px; padding: 14px 8px; border: 2px solid #ccc; border-radius: 10px;
@@ -88,13 +88,24 @@
   .cell.mine { outline: 3px solid #E88A0A; }
   .roomlabel { font-size: 11px; color: #666; text-align: center; }
 
+  /* 左右2分割レイアウト */
+  .split { display: flex; gap: 14px; align-items: flex-start; }
+  .paneL { width: 46%; position: sticky; top: 10px; }
+  .paneR { flex: 1; min-width: 0; }
+  .paneL section { margin-bottom: 0; }
+  .paneL .editor { height: 340px; }
+  .paneL .out { max-height: 220px; }
+  @media (max-width: 950px) {
+    .split { flex-direction: column-reverse; }
+    .paneL { width: 100%; position: static; }
+  }
   footer { background: linear-gradient(90deg, #1f2a30, #2d3439); color: #F5E4C4; text-align: center; padding: 14px; font-size: 12px; margin-top: 30px; }
   .teacher { border: 1px dashed #999; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #555; margin-top: 20px; background: #fafafa; }
 </style>
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v2.0</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v2.1</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -115,7 +126,19 @@
 
 <!-- ============================================================ STEP 1 ============================================================ -->
 <div class="steppage active" id="step1">
-
+<div class="split">
+<div class="paneL">
+<section id="editorSec1">
+  <h2>💻 コード実行</h2>
+  <textarea id="ed1" class="editor" spellcheck="false"># レッスンの「▶ このコードを試す」を押すと、ここにコードが入ります
+# 自分で書いてもOK！
+print("こんにちは、スクーミー！")</textarea>
+  <div class="toolbar"><button class="act primary runbtn" onclick="runCode('ed1','out1','plot1')" disabled>▶ 実行</button></div>
+  <div class="out" id="out1">（ここに結果が表示されます）</div>
+  <div class="plot" id="plot1"></div>
+</section>
+</div>
+<div class="paneR">
 <section>
   <h2>パート1：Pythonの基本 レッスン1〜5（用意したデータ）</h2>
   <p>やり方：各レッスンの<b>「▶ このコードを試す」→ 下のコード欄で「実行」→ 結果を見る → 「変えてみよう」に挑戦</b>。</p>
@@ -199,22 +222,25 @@ else:
     <div class="challenge"><b>変えてみよう</b>：しきい値の50を変えると判定はどう変わる？　forと組み合わせて8個ぜんぶ判定できる？</div>
   </div>
 </section>
+</div>
+</div>
 
-<section id="editorSec1">
-  <h2>コードを書いて実行する</h2>
-  <textarea id="ed1" class="editor" spellcheck="false"># レッスンの「▶ このコードを試す」を押すと、ここにコードが入ります
-# 自分で書いてもOK！
-print("こんにちは、スクーミー！")</textarea>
-  <div class="toolbar"><button class="act primary runbtn" onclick="runCode('ed1','out1','plot1')" disabled>▶ 実行</button></div>
-  <div class="out" id="out1">（ここに結果が表示されます）</div>
-  <div class="plot" id="plot1"></div>
-</section>
 
 </div>
 
 <!-- ============================================================ STEP 2 ============================================================ -->
 <div class="steppage" id="step2">
-
+<div class="split">
+<div class="paneL">
+<section id="editorSec2">
+  <h2>💻 コード実行</h2>
+  <textarea id="ed2" class="editor" spellcheck="false"># レッスンの「▶」ボタンを押すと、ここにコードが入ります</textarea>
+  <div class="toolbar"><button class="act primary runbtn" onclick="runCode('ed2','out2','plot2')" disabled>▶ 実行</button></div>
+  <div class="out" id="out2">（ここに結果が表示されます）</div>
+  <div class="plot" id="plot2"></div>
+</section>
+</div>
+<div class="paneR">
 <section>
   <h2>パート1：データ分析の基本 レッスン6〜7（用意したデータ）</h2>
   <p>ここでは<b>公開されている本物のデータ</b>を使います。気象庁が公開している、<b>甲府（山梨県）で実際に計測された太陽の光のデータ</b>です。</p>
@@ -267,20 +293,25 @@ print("こんにちは、スクーミー！")</textarea>
     <textarea id="yomiS7" class="jp" rows="1" oninput="saveText('yomiS7')" placeholder="例：窓側は廊下側の2倍以上明るい"></textarea>
   </div>
 </section>
+</div>
+</div>
 
-<section id="editorSec2">
-  <h2>コードを書いて実行する</h2>
-  <textarea id="ed2" class="editor" spellcheck="false"># レッスンの「▶」ボタンを押すと、ここにコードが入ります</textarea>
-  <div class="toolbar"><button class="act primary runbtn" onclick="runCode('ed2','out2','plot2')" disabled>▶ 実行</button></div>
-  <div class="out" id="out2">（ここに結果が表示されます）</div>
-  <div class="plot" id="plot2"></div>
-</section>
 
 </div>
 
 <!-- ============================================================ STEP 3 ============================================================ -->
 <div class="steppage" id="step3">
-
+<div class="split">
+<div class="paneL">
+<section id="editorSec3">
+  <h2>💻 コード実行</h2>
+  <textarea id="ed3" class="editor" spellcheck="false"># レッスンの「▶」ボタンやマップのマスを押すと、ここにコードが入ります</textarea>
+  <div class="toolbar"><button class="act primary runbtn" onclick="runCode('ed3','out3','plot3')" disabled>▶ 実行</button></div>
+  <div class="out" id="out3">（ここに結果が表示されます）</div>
+  <div class="plot" id="plot3"></div>
+</section>
+</div>
+<div class="paneR">
 <section>
   <h2>パート1：データ分析の応用 レッスン8〜10（用意したデータ）——「くらべる」を極める</h2>
 
@@ -382,15 +413,8 @@ print("こんにちは、スクーミー！")</textarea>
   <div class="fieldlbl">考察（仮説と結果をくらべて、数値を根拠に書く）<span class="saved" id="sv_m1k"></span></div>
   <textarea id="m1k" class="jp" rows="3" placeholder="例：窓側の平均は約◆、廊下側は約◆で、◆倍の差。仮説の2倍より大きかった。比率は◆:1で基準内だった。理由は…" oninput="saveText('m1k')"></textarea>
 </section>
-
-<section id="editorSec3">
-  <h2>コードを書いて実行する</h2>
-  <textarea id="ed3" class="editor" spellcheck="false"># レッスンの「▶」ボタンやマップのマスを押すと、ここにコードが入ります</textarea>
-  <div class="toolbar"><button class="act primary runbtn" onclick="runCode('ed3','out3','plot3')" disabled>▶ 実行</button></div>
-  <div class="out" id="out3">（ここに結果が表示されます）</div>
-  <div class="plot" id="plot3"></div>
-</section>
-
+</div>
+</div>
 <div class="teacher">
   <b>先生用メモ</b>：アップロードキーは URL末尾に <code>?token=キー</code> を付けて配布すると自動入力されます。記入欄の内容は各自の端末に自動保存。授業前のリセットは data/group1〜9.csv を demo と同じ内容に戻してください。
 </div>
@@ -399,12 +423,12 @@ print("こんにちは、スクーミー！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v2.0 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v2.1 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v2.0";
+const VERSION = "v2.1";
 let pyodide = null;
 
 // ---------- ステップ切替 ----------
@@ -617,8 +641,10 @@ _plot_target = "${plotId}"
 
 function setCode(edId, code) {
   document.getElementById(edId).value = code;
-  const sec = { ed1: "editorSec1", ed2: "editorSec2", ed3: "editorSec3" }[edId];
-  document.getElementById(sec).scrollIntoView({ behavior: "smooth" });
+  if (window.innerWidth <= 950) {
+    const sec = { ed1: "editorSec1", ed2: "editorSec2", ed3: "editorSec3" }[edId];
+    document.getElementById(sec).scrollIntoView({ behavior: "smooth" });
+  }
 }
 
 // ============================================================
