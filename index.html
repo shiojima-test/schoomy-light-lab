@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v3.7 | スクーミー×Python</title>
+<title>教室の光環境ラボ v3.8 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -62,6 +62,8 @@
   .kaisetsu { background: #eef6fb; border-radius: 6px; padding: 8px 12px; margin: 8px 0; font-size: 12.5px; }
   .kaisetsu b { color: #2E8EC4; }
   .challenge { background: #fdf3e7; border-radius: 6px; padding: 8px 12px; margin: 8px 0; font-size: 12.5px; }
+  .chakugan { background: #e8f5f4; border-left: 4px solid #3AABA8; border-radius: 6px; padding: 8px 12px; margin: 8px 0; font-size: 12.5px; }
+  .chakugan b { color: #2a8a87; }
   .challenge b { color: #E88A0A; }
   .fieldlbl { font-size: 12.5px; font-weight: bold; color: #2c4a6e; margin: 10px 0 4px; }
   .saved { font-size: 11px; color: #3AABA8; margin-left: 8px; }
@@ -107,7 +109,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v3.7</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v3.8</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -285,8 +287,7 @@ print("平均:", sum(values) / len(values))</pre>
     <div class="kaisetsu"><b>解説</b>：使うのは<b>甲府・6月1日（晴れ）の太陽の光の強さ</b>。24個の数字を眺めても傾向は分からないが、<code>plt.plot(values)</code> で折れ線にすると「朝から強くなり昼にピーク、夜は0」が一瞬で見える。これが<b>可視化</b>。</div>
     <button class="act navy" onclick="setCode('ed2', L8)">▶ 晴れの日をグラフにする</button>
     <div class="challenge"><b>変えてみよう</b>：FILE を <code>"data/kofu_kumori.csv"</code>（くもりの6月4日）に変えて、山の高さの違いを見よう。</div>
-    <div class="fieldlbl">読み取ったこと（1行で）<span class="saved" id="sv_yomi6"></span></div>
-    <textarea id="yomi6" class="jp" rows="1" oninput="saveText('yomi6')" placeholder="例：13時ごろが最大で、夜は0。きれいな山の形"></textarea>
+    <div class="chakugan"><b>📊 着眼点</b>：「山の形」に注目。最大は何時ごろ？ 0になるのはいつ？ 形から1日の太陽の動きが読める。</div>
   </div>
 
   <div class="lesson">
@@ -294,8 +295,7 @@ print("平均:", sum(values) / len(values))</pre>
     <div class="kaisetsu"><b>解説</b>：グラフは描いて終わりじゃない。<b>タイトル・軸ラベル・縦軸の範囲</b>（<code>plt.ylim</code>）で読みやすく仕上げ、<b>基準線</b>（<code>plt.axhline</code>）を引くと「基準をこえた時間帯」が一目で分かる。1つのグラフを深く読む技術。</div>
     <button class="act navy" onclick="setCode('ed2', L9)">▶ グラフを仕上げる</button>
     <div class="challenge"><b>変えてみよう</b>：基準線を <code>1.0</code> に変えると、こえた時間は何時間になる？ <code>plt.ylim</code> の数字も変えて見やすい範囲を探そう。</div>
-    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi7"></span></div>
-    <textarea id="yomi7" class="jp" rows="1" oninput="saveText('yomi7')" placeholder="例：昼の8時間だけ基準の2.0をこえていた"></textarea>
+    <div class="chakugan"><b>📊 着眼点</b>：基準線をこえている時間帯は、どこからどこまで？ 縦軸の範囲を変えると、同じデータでも印象が変わることにも注目。</div>
   </div>
 </section>
 
@@ -340,8 +340,7 @@ print("平均:", sum(values) / len(values))</pre>
     <div class="kaisetsu"><b>やること</b>：アップロードした自分の班の計測記録を折れ線グラフに。<br><b>たてじく（縦軸）は <code>plt.ylim(0, 100)</code> で自分で決められる</b>。数字を変えて見やすい範囲を探そう。</div>
     <button class="act navy" onclick="setCode('ed2', S6())">▶ 自分の班のデータをグラフにする</button>
     <div class="challenge"><b>変えてみよう</b>：グラフから「センサーの前で何かが動いた瞬間」は見つかる？</div>
-    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomiS6"></span></div>
-    <textarea id="yomiS6" class="jp" rows="1" oninput="saveText('yomiS6')" placeholder="例：ほぼ53前後で安定。ときどき小さく揺れる"></textarea>
+    <div class="chakugan"><b>📊 着眼点</b>：線が動いた瞬間＝教室で何かが起きた瞬間。安定している区間と、ゆれた区間を探そう。</div>
   </div>
 
 </section>
@@ -372,8 +371,7 @@ print("平均:", sum(values) / len(values))</pre>
     <div class="kaisetsu"><b>解説</b>：ここからは<b>比較</b>。晴れ（6/1）とくもり（6/4）を同じグラフに重ねると差が一目で分かる。<code>label=</code> と <code>plt.legend()</code> で凡例を付けるのがマナー。</div>
     <button class="act navy" onclick="setCode('ed3', L10)">▶ 晴れ vs くもり を重ねる</button>
     <div class="challenge"><b>変えてみよう</b>：「晴れはくもりの何倍か」を print で表示する行を追加しよう（合計どうしで割る）。</div>
-    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomiL10"></span></div>
-    <textarea id="yomiL10" class="jp" rows="1" oninput="saveText('yomiL10')" placeholder="例：晴れの山はくもりの約2倍高い"></textarea>
+    <div class="chakugan"><b>📊 着眼点</b>：2本の線の「高さの差」と「形の違い」。どの時間帯で差が一番大きい？</div>
   </div>
 
   <div class="lesson">
@@ -381,8 +379,7 @@ print("平均:", sum(values) / len(values))</pre>
     <div class="kaisetsu"><b>解説</b>：甲府の<b>1月</b>と<b>6月（梅雨）</b>、毎日の日照時間をくらべる。平均だけでなく<b>範囲＝最大−最小</b>を出すと「安定して晴れる月」が数値で言える。範囲が小さい＝毎日似ている＝安定。</div>
     <button class="act navy" onclick="setCode('ed3', L11)">▶ 1月と6月をくらべる</button>
     <div class="challenge"><b>変えてみよう</b>：範囲（max - min）をそれぞれ print して、どちらが安定か数値で言おう。</div>
-    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi8"></span></div>
-    <textarea id="yomi8" class="jp" rows="1" oninput="saveText('yomi8')" placeholder="例：1月は毎日安定して晴れ、6月は0時間の日も12時間の日もある"></textarea>
+    <div class="chakugan"><b>📊 着眼点</b>：平均が近くても「ばらつき」は大きく違うことがある。範囲（最大−最小）が小さい＝毎日似ている＝安定。</div>
   </div>
 
   <div class="lesson">
@@ -390,8 +387,7 @@ print("平均:", sum(values) / len(values))</pre>
     <div class="kaisetsu"><b>解説</b>：ファイルが増えても、<b>ファイル名のリストをforで回せば</b>何個でも一気に処理できる。これがSTEP3パート2で「9チーム分を一発で比較」する鍵になる。</div>
     <button class="act navy" onclick="setCode('ed3', L12)">▶ 2つのファイルをforで処理する</button>
     <div class="challenge"><b>変えてみよう</b>：ファイル名リストに <code>"kofu_1gatsu"</code> と <code>"kofu_6gatsu"</code> を追加して4つ一気に処理しよう。</div>
-    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi9"></span></div>
-    <textarea id="yomi9" class="jp" rows="1" oninput="saveText('yomi9')" placeholder="例：ファイルが何個あってもコードは同じ長さだった"></textarea>
+    <div class="chakugan"><b>📊 着眼点</b>：データが増えてもコードの行数は増えない。「くり返しに任せる」のがプログラミングの強み。</div>
   </div>
 
   <div class="lesson">
@@ -399,8 +395,7 @@ print("平均:", sum(values) / len(values))</pre>
     <div class="kaisetsu"><b>解説</b>：比較の仕上げ。複数の平均を<b>棒グラフ</b>（<code>plt.bar</code>）で並べ、<b>最大÷最小の比率</b>を計算して「差が大きすぎないか」をifで自動判定する。学校の教室には「最大照度と最小照度の比は<b>20:1以内</b>が望ましい」という基準（学校環境衛生基準）があり、STEP3パート2でこの判定を本番で使う。</div>
     <button class="act navy" onclick="setCode('ed3', L13)">▶ 棒グラフ＋比率judge</button>
     <div class="challenge"><b>変えてみよう</b>：判定のしきい値 <code>20</code> を <code>2</code> に変えると結果はどうなる？</div>
-    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi10"></span></div>
-    <textarea id="yomi10" class="jp" rows="1" oninput="saveText('yomi10')" placeholder="例：比率という1つの数字で「差の大きさ」を判定できた"></textarea>
+    <div class="chakugan"><b>📊 着眼点</b>：「差が大きい」を感覚ではなく、比率という1つの数字で判定できる。そのしきい値を決めるのは人間。</div>
   </div>
 </section>
 
@@ -442,8 +437,7 @@ print("平均:", sum(values) / len(values))</pre>
     <div class="kaisetsu"><b>やること</b>：自分の班のデータと、別の班のデータを重ねて、場所による明るさの差を見る（レッスン10のやり方）。上の②で2つチェックしよう。</div>
     <button class="act navy" onclick="setCode('ed3', S7())">▶ 自分の班 vs 別の班 を重ねる</button>
     <div class="challenge"><b>変えてみよう</b>：3つ目のデータもチェックして、コードに3本目を追加してみよう。</div>
-    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomiS7"></span></div>
-    <textarea id="yomiS7" class="jp" rows="1" oninput="saveText('yomiS7')" placeholder="例：窓側は廊下側の2倍以上明るい"></textarea>
+    <div class="chakugan"><b>📊 着眼点</b>：場所によって差はどれくらい？ 窓からの距離と明るさに関係はありそう？</div>
   </div>
 
   <div class="lesson sc">
@@ -480,12 +474,12 @@ print("平均:", sum(values) / len(values))</pre>
 
 </main>
 
-<footer>教室の光環境ラボ v3.7 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v3.8 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v3.7";
+const VERSION = "v3.8";
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
 
@@ -500,7 +494,7 @@ function showStep(n) {
 
 // ---------- URLトークン・記入欄の復元 ----------
 window.addEventListener("DOMContentLoaded", () => {
-  ["m1h","m1k","yomi6","yomi7","yomiL10","yomiS6","yomiS7","yomi8","yomi9","yomi10"].forEach(id => {
+  ["m1h","m1k"].forEach(id => {
     const v = localStorage.getItem("lab_" + id);
     if (v) document.getElementById(id).value = v;
   });
