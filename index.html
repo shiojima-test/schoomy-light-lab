@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v3.5 | スクーミー×Python</title>
+<title>教室の光環境ラボ v3.6 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -107,7 +107,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v3.5</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v3.6</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -142,19 +142,8 @@ print("こんにちは、スクーミー！")</textarea>
 </div>
 <div class="paneR">
 <section>
-  <h2>パート1：Pythonの基本 レッスン1〜7（用意したデータ）</h2>
-  <p>やり方：各レッスンの<b>「▶ このコードを試す」→ 左のコード欄で「実行」→ 結果を見る → 「変えてみよう」に挑戦</b>。レッスン1〜5は文法、6でCSVファイルを読み込み、7で集計します（グラフはSTEP2から）。</p>
-  <div class="toolbar">
-    <label>レッスン6・7で使うデータ:
-      <select id="p1data">
-        <option value="kofu_6gatsu.csv">甲府・6月の日照時間（20日分）</option>
-        <option value="kofu_1gatsu.csv">甲府・1月の日照時間（31日分）</option>
-        <option value="kofu_hare.csv">甲府・晴れの日の日射量（24時間）</option>
-        <option value="kofu_kumori.csv">甲府・くもりの日の日射量（24時間）</option>
-      </select>
-    </label>
-    <span class="note">オープンデータ（気象庁）。選ぶとレッスン6・7のファイル名が変わります</span>
-  </div>
+  <h2>パート1：Pythonの基本 レッスン1〜6</h2>
+  <p>やり方：各レッスンの<b>「▶ このコードを試す」→ 左のコード欄で「実行」→ 結果を見る → 「変えてみよう」に挑戦</b>。レッスン1〜5は文法、6で集計します（データファイルの読み込み・グラフはSTEP2から）。</p>
 
   <div class="lesson">
     <h3>レッスン1：print（表示する）</h3>
@@ -210,68 +199,39 @@ for v in values:
   </div>
 
   <div class="lesson">
-    <h3>レッスン6：CSVファイルを読み込んで表示する</h3>
-    <div class="kaisetsu"><b>解説</b>：ここから<b>本物のオープンデータCSV</b>（上で選んだファイル）を扱う。ファイルを開いて、1行ずつ読み、値をリストに入れて表示する。レッスン3〜4のリスト・forがここで生きる。</div>
-    <button class="act navy" onclick="setCode('ed1', L6())">▶ このコードを試す</button>
-    <div class="challenge"><b>変えてみよう</b>：上のドロップダウンでデータを変えて、中身がどう変わるか見よう。</div>
-  </div>
-
-  <div class="lesson">
-    <h3>レッスン7：CSVのデータで 個数・合計・最大・最小・平均</h3>
-    <div class="kaisetsu"><b>解説</b>：読み込んだリストから <code>len</code>（個数）・<code>sum</code>（合計）・<code>max/min</code>（最大/最小）・平均を求める。数字で全体をつかむ、データ分析の基本の集計。</div>
-    <button class="act navy" onclick="setCode('ed1', L7())">▶ 集計してみる</button>
-    <div class="challenge"><b>変えてみよう</b>：上のドロップダウンでデータを変えて、平均がどう変わるか比べよう。</div>
+    <h3>レッスン6：個数・合計・最大・最小・平均</h3>
+    <pre>values = [512, 530, 498, 505, 521]
+print("個数:", len(values))
+print("平均:", sum(values) / len(values))</pre>
+    <div class="kaisetsu"><b>解説</b>：リストから <code>len</code>（個数）・<code>sum</code>（合計）・<code>max/min</code>（最大/最小）を求める。平均は <b>合計 ÷ 個数</b>。数字で全体をつかむ、集計の基本。</div>
+    <button class="act navy" onclick="setCode('ed1', L6)">▶ 集計してみる</button>
+    <div class="challenge"><b>変えてみよう</b>：リストの数字を増やしたり変えたりして、平均がどう変わるか比べよう。</div>
   </div>
 
 </section>
 
 <section>
   <h2 class="p2">パート2：スクーミーのデータで体験</h2>
-  <p>今度は<b>自分たちで計測したデータ</b>で、パート1と同じ文法・集計をやってみよう。まず計測してアップロードしよう。</p>
-  <div class="uploadbox" id="uploadbox1">
-    <h3>① 計測データをアップロード（各班1人）</h3>
-    <ol class="bignum">
-      <li>スクーミーで計測し、<b>CSVで保存</b>（またはシリアル出力をコピー）</li>
-      <li><b>名前</b>をつける（例：<code>1班</code>、<code>1班_窓ぎわ</code>）→ <b>「CSVファイルを選ぶ」</b> → <b>「アップロード」</b></li>
-    </ol>
-    <div class="toolbar">
-      <label>名前: <input type="text" class="upName1" placeholder="例: 1班" size="16" maxlength="40"></label>
-      <label class="act blue" style="display:inline-block; cursor:pointer;">📄 CSVファイルを選ぶ<input type="file" accept=".csv,.txt" style="display:none" onchange="loadFile(this, 1)"></label>
-    </div>
-    <textarea class="upData1" rows="3" placeholder="CSVファイルを選ぶか、シリアル出力をここに貼り付け"></textarea>
-    <div class="toolbar">
-      <button class="act orange" onclick="uploadData(1)">アップロード</button>
-      <span class="note upNote1"></span>
-    </div>
-  </div>
+  <p>今度は<b>自分たちで計測した数字</b>で、パート1と同じことをやってみよう。スクーミーで計測して、<b>シリアルモニターに出た数字をコピー</b>し、コードのリスト <code>[ ]</code> の中に貼り付けます（アップロードはSTEP2から）。</p>
 
-  <div class="toolbar" style="background:#eef6fb; border-radius:8px; padding:10px 14px; margin:12px 0;">
-    <b style="color:#2c4a6e;">② 使うデータを選ぶ:</b>
-    <select class="pickOne" data-step="1" onchange="pickChanged(1)" style="font-size:15px; padding:8px 12px; min-width:160px;">
-      <option value="">（アップロード済みから選ぶ）</option>
-    </select>
-    <button class="act blue" onclick="reloadList()">🔄 一覧を更新</button>
-    <span class="note">アップした人以外も、自分の班のデータをここで選べば体験できます</span>
+  <div class="lesson sc">
+    <h3>🍊 体験1：計測した数字をリストに入れて表示（レッスン3を参考に）</h3>
+    <div class="kaisetsu"><b>やること</b>：シリアルモニターの数字をコピーして、<code>values = [___]</code> の <code>___</code> に<b>カンマ区切り</b>で貼ろう。まずは表示から。</div>
+    <button class="act navy" onclick="setCode('ed1', S1)">▶ ひな形を入れる</button>
+    <div class="challenge"><b>ヒント</b>：貼り付けたら、数字と数字の間が <code>,</code> で区切られているか確認しよう。</div>
   </div>
 
   <div class="lesson sc">
-    <h3>🍊 体験1：CSVを読み込んで表示する（レッスン6を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：<b>レッスン6</b>を思い出して、自分の班のCSVを読み込み、<code>print(values)</code> で表示しよう。<br>下の「▶ ひな形を入れる」で骨組みが入ります。<b><code>___</code> の部分を自分で書いて</b>完成させよう。</div>
-    <button class="act navy" onclick="setCode('ed1', S1())">▶ ひな形を入れる</button>
-    <div class="challenge"><b>ヒント</b>：レッスン6の <code>values.append(float(v))</code> と同じ。</div>
-  </div>
-
-  <div class="lesson sc">
-    <h3>🍊 体験2：個数・合計・最大・最小・平均（レッスン7を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：<b>レッスン7</b>を参考に、自分の班のデータの <code>len</code>・<code>sum</code>・<code>max</code>・<code>min</code>・平均を出そう。<code>___</code> を自分で埋めよう。</div>
-    <button class="act navy" onclick="setCode('ed1', S2(1))">▶ ひな形を入れる</button>
+    <h3>🍊 体験2：個数・合計・最大・最小・平均（レッスン6を参考に）</h3>
+    <div class="kaisetsu"><b>やること</b>：体験1と同じ数字をリストに貼って、<code>len</code>・<code>sum</code>・<code>max</code>・<code>min</code>・平均を出そう。<code>___</code> を自分で埋めよう。</div>
+    <button class="act navy" onclick="setCode('ed1', S2)">▶ ひな形を入れる</button>
     <div class="challenge"><b>ヒント</b>：平均は <code>sum(values) / len(values)</code>。</div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験3：各データを1つずつ if で判定（レッスン5を参考に）</h3>
     <div class="kaisetsu"><b>やること</b>：<code>for</code>＋<code>if</code>で1件ずつ「◯以上なら明るい／未満なら暗い」を判定。しきい値の <code>___</code> を自分で決めよう。</div>
-    <button class="act navy" onclick="setCode('ed1', S3(1))">▶ ひな形を入れる</button>
+    <button class="act navy" onclick="setCode('ed1', S3)">▶ ひな形を入れる</button>
     <div class="challenge"><b>ヒント</b>：レッスン5の <code>if v &gt;= 500:</code> と同じ形。</div>
   </div>
 
@@ -296,15 +256,22 @@ for v in values:
 </div>
 <div class="paneR">
 <section>
-  <h2>パート1：データ分析の基本 レッスン8〜9（用意したデータ）——グラフにする</h2>
+  <h2>パート1：データ分析の基本 レッスン7〜9（用意したデータ）——CSVを読み込んでグラフにする</h2>
   <p>ここでは<b>公開されている本物のデータ</b>を使います。気象庁が公開している、<b>甲府（山梨県）で実際に計測された太陽の光のデータ</b>です。</p>
 
   <h3>今日つかうデータ（実物がこれ！）</h3>
-  <p>下のボタンで切りかえると<b>表（本物の数値）</b>が見られます。この数字の列を、これから<b>自分のPythonでグラフに変えていきます</b>。</p>
+  <p>下のボタンで切りかえると<b>表（本物の数値）</b>が見られます。この表の実体は<b>「カンマ区切りのテキストファイル＝CSVファイル」</b>。この数字の列を、これから<b>自分のPythonで読み込んでグラフに変えていきます</b>。</p>
   <div class="dtabs" id="dtabs"></div>
   <div class="dmeta" id="dmeta">読み込み中…</div>
   <div class="dtscroll" id="dtable"></div>
   <p class="note" style="margin-top:6px">出典：気象庁「<a href="https://www.data.jma.go.jp/stats/etrn/index.php" target="_blank">過去の気象データ検索</a>」（甲府地方気象台の観測値）より作成。🍊はスクーミーの実測。</p>
+
+  <div class="lesson" style="margin-top:12px">
+    <h3>レッスン7：CSVファイルを読み込む —— ここでファイル初登場</h3>
+    <div class="kaisetsu"><b>解説</b>：上の表の実体は<b>CSVファイル</b>（カンマ区切りのテキスト）。ファイルを開いて1行ずつ読み、値をリストに入れると、STEP1でやった<b>リスト・for・集計</b>がそのまま使える。</div>
+    <button class="act navy" onclick="setCode('ed2', L7)">▶ CSVを読み込んで表示する</button>
+    <div class="challenge"><b>変えてみよう</b>：FILE を <code>"data/kofu_6gatsu.csv"</code> に変えて、中身がどう変わるか見よう。</div>
+  </div>
 
   <div class="lesson" style="margin-top:12px">
     <h3>レッスン8：グラフ化 —— 数字の列を「見える」ようにする</h3>
@@ -327,7 +294,7 @@ for v in values:
 
 <section>
   <h2 class="p2">パート2：スクーミーのデータで体験</h2>
-  <p><b>自分たちで計測したデータ</b>で、グラフ化をやってみよう。まず計測してアップロードしよう。</p>
+  <p><b>自分たちで計測したデータ</b>を、今度は<b>CSVファイルとしてアップロード</b>して、読み込みとグラフ化をやってみよう。</p>
   <div class="uploadbox" id="uploadbox2">
     <h3>① 計測データをアップロード（各班1人）</h3>
     <ol class="bignum">
@@ -351,7 +318,14 @@ for v in values:
       <option value="">（アップロード済みから選ぶ）</option>
     </select>
     <button class="act blue" onclick="reloadList()">🔄 一覧を更新</button>
-    <span class="note">自分の班のデータを選んで、グラフ化を</span>
+    <span class="note">自分の班のデータを選んで、読み込み・グラフ化を</span>
+  </div>
+
+  <div class="lesson sc">
+    <h3>🍊 体験5：自分の班のCSVを読み込んで表示する（レッスン7を参考に）</h3>
+    <div class="kaisetsu"><b>やること</b>：<b>レッスン7</b>を思い出して、自分の班のCSVを読み込み、<code>print(values)</code> で表示しよう。<br>下の「▶ ひな形を入れる」で骨組みが入ります。<b><code>___</code> の部分を自分で書いて</b>完成させよう。</div>
+    <button class="act navy" onclick="setCode('ed2', S5())">▶ ひな形を入れる</button>
+    <div class="challenge"><b>ヒント</b>：レッスン7の <code>values.append(float(v))</code> と同じ。</div>
   </div>
 
   <div class="lesson sc">
@@ -499,12 +473,12 @@ for v in values:
 
 </main>
 
-<footer>教室の光環境ラボ v3.5 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v3.6 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v3.5";
+const VERSION = "v3.6";
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
 
@@ -788,9 +762,18 @@ for v in values:
         print(v, "暗い")
 `;
 
-function L6() {
-  return `# レッスン6: CSVファイルを読み込んで表示する
-FILE = "data/${p1file()}"
+const L6 = `# レッスン6: 個数・合計・最大・最小・平均
+values = [512, 530, 498, 505, 521]
+
+print("個数:", len(values))
+print("合計:", sum(values))
+print("最大:", max(values))
+print("最小:", min(values))
+print("平均:", sum(values) / len(values))
+`;
+
+const L7 = `# レッスン7: CSVファイルを読み込んで表示する
+FILE = "data/kofu_hare.csv"   # 上の表のタブ: kofu_kumori.csv / kofu_1gatsu.csv / kofu_6gatsu.csv も試せる
 
 values = []
 with open(FILE) as f:
@@ -800,67 +783,24 @@ with open(FILE) as f:
         values.append(float(v))      # 値をリストに追加
 
 print(values)                        # 読み込んだ全部
-`;
-}
-
-function L7() {
-  return `# レッスン7: 個数・合計・最大・最小・平均
-FILE = "data/${p1file()}"
-
-values = []
-with open(FILE) as f:
-    next(f)
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(float(v))
-
 print("個数:", len(values))
-print("合計:", round(sum(values), 2))
-print("最大:", max(values))
-print("最小:", min(values))
-print("平均:", round(sum(values) / len(values), 2))
 `;
-}
-function p1file() {
-  const el = document.getElementById("p1data");
-  return el ? el.value : "kofu_6gatsu.csv";
-}
 
 
 
 
 // ============================================================
-// STEP1 パート2（スクーミーの実測値で体験）
+// STEP1 パート2（シリアルモニターの数字を貼って体験）
 // ============================================================
-function S1() {
-  const name = selPart[1];
-  if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
-  return `# 体験1: CSVを読み込んで表示する（レッスン6を参考に）
-FILE = "data/uploads/${name}.csv"
+const S1 = `# 体験1: 計測した数字をリストに入れて表示（レッスン3を参考に）
+# シリアルモニターの数字を、カンマ区切りで [ ] の中に貼ろう
+values = [___]
 
-values = []
-with open(FILE) as f:
-    next(f)                          # 見出しをとばす
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(___)           # ← レッスン6を参考に。float(v) を入れよう
-
-print(___)                           # ← values を表示しよう
+print(values)                        # リスト全体
+print("さいしょの値:", values[0])
 `;
-}
-function S2(step) {
-  step = step || 1;
-  const name = selPart[step];
-  if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
-  return `# 体験2: 個数・合計・最大・最小・平均（レッスン7を参考に）
-FILE = "data/uploads/${name}.csv"
-
-values = []
-with open(FILE) as f:
-    next(f)
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(float(v))
+const S2 = `# 体験2: 個数・合計・最大・最小・平均（レッスン6を参考に）
+values = [___]                       # ← 体験1と同じ数字を貼ろう
 
 print("個数:", len(values))
 print("合計:", ___)                  # ← sum を使おう
@@ -868,26 +808,33 @@ print("最大:", ___)                  # ← max を使おう
 print("最小:", ___)                  # ← min を使おう
 print("平均:", ___)                  # ← sum(values) / len(values)
 `;
-}
-function S3(step) {
-  step = step || 1;
-  const name = selPart[step];
-  if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
-  return `# 体験3: 各データを1つずつ if で判定（レッスン5を参考に）
-FILE = "data/uploads/${name}.csv"
-
-values = []
-with open(FILE) as f:
-    next(f)
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(float(v))
+const S3 = `# 体験3: 各データを1つずつ if で判定（レッスン5を参考に）
+values = [___]                       # ← 計測した数字を貼ろう
 
 for v in values:
     if v >= ___:                     # ← しきい値を自分で決めよう
         print(v, "明るい")
     else:
         print(v, "暗い")
+`;
+
+// ============================================================
+// STEP2 パート2（アップロードしたCSVを読む）
+// ============================================================
+function S5() {
+  const name = selPart[2];
+  if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
+  return `# 体験5: 自分の班のCSVを読み込んで表示する（レッスン7を参考に）
+FILE = "data/uploads/${name}.csv"
+
+values = []
+with open(FILE) as f:
+    next(f)                          # 見出しをとばす
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(___)           # ← レッスン7を参考に。float(v) を入れよう
+
+print(___)                           # ← values を表示しよう
 `;
 }
 
