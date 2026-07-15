@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v3.8 | スクーミー×Python</title>
+<title>教室の光環境ラボ v3.9 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -109,7 +109,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v3.8</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v3.9</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -429,8 +429,7 @@ print("平均:", sum(values) / len(values))</pre>
     <p class="note" id="dashNote3" style="margin-top:6px"></p>
   </div>
 
-  <div class="fieldlbl" style="margin-top:14px">分析まえの仮説（直感で予想を書く）<span class="saved" id="sv_m1h"></span></div>
-  <textarea id="m1h" class="jp" rows="2" placeholder="例：窓側（1・4・7班）は廊下側（3・6・9班）の2倍くらい明るいと思う。一番明るいのは4班。" oninput="saveText('m1h')"></textarea>
+  <div class="chakugan" style="margin-top:14px"><b>🤔 考えてみよう</b>：分析のまえに、直感で予想しよう。窓側と廊下側、どちらがどれくらい明るい？ 一番明るいのはどの班？</div>
 
   <div class="lesson sc" style="margin-top:12px">
     <h3>🍊 体験7：自分の班と別の班をくらべる</h3>
@@ -461,25 +460,24 @@ print("平均:", sum(values) / len(values))</pre>
     <div class="challenge"><b>変えてみよう</b>：一番明るいデータと暗いデータはどれ？　仮説と合っていた？</div>
   </div>
 
-  <div class="fieldlbl">考察（仮説と結果をくらべて、数値を根拠に書く）<span class="saved" id="sv_m1k"></span></div>
-  <textarea id="m1k" class="jp" rows="3" placeholder="例：窓側の平均は約◆、廊下側は約◆で、◆倍の差。仮説の2倍より大きかった。比率は◆:1で基準内だった。理由は…" oninput="saveText('m1k')"></textarea>
+  <div class="chakugan"><b>🤔 考えてみよう</b>：予想と結果はどれくらい違った？ 平均や比率の数値を根拠に、そう言える理由を説明してみよう。</div>
 </section>
 </div>
 </div>
 <div class="teacher">
-  <b>先生用メモ</b>：アップロードはGAS中継経由（生徒はキー不要）。データは名前を付けて data/uploads/ に保存。記入欄は各自の端末に自動保存。授業前のリセットは data/uploads/ 内のファイルを削除してください。
+  <b>先生用メモ</b>：アップロードはGAS中継経由（生徒はキー不要）。データは名前を付けて data/uploads/ に保存。授業前のリセットは data/uploads/ 内のファイルを削除してください。
 </div>
 
 </div>
 
 </main>
 
-<footer>教室の光環境ラボ v3.8 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v3.9 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v3.8";
+const VERSION = "v3.9";
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
 
@@ -492,20 +490,6 @@ function showStep(n) {
   window.scrollTo({ top: 0 });
 }
 
-// ---------- URLトークン・記入欄の復元 ----------
-window.addEventListener("DOMContentLoaded", () => {
-  ["m1h","m1k"].forEach(id => {
-    const v = localStorage.getItem("lab_" + id);
-    if (v) document.getElementById(id).value = v;
-  });
-
-});
-
-function saveText(id) {
-  localStorage.setItem("lab_" + id, document.getElementById(id).value);
-  const sv = document.getElementById("sv_" + id);
-  if (sv) { sv.textContent = "保存しました"; setTimeout(() => sv.textContent = "", 1500); }
-}
 
 
 // ---------- データビューア（表のみ） ----------
