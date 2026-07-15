@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v3.3 | スクーミー×Python</title>
+<title>教室の光環境ラボ v3.4 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -107,7 +107,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v3.3</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v3.4</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -302,18 +302,18 @@ for v in values:
   </div>
 
   <div class="lesson">
-    <h3>レッスン9：くらべる —— 2つを重ねる</h3>
-    <div class="kaisetsu"><b>解説</b>：グラフの真価は<b>比較</b>。晴れ（6/1）とくもり（6/4）を同じグラフに重ねると差が一目で分かる。<code>label=</code> と <code>plt.legend()</code> で凡例を付けるのがマナー。</div>
-    <button class="act navy" onclick="setCode('ed2', L9)">▶ 晴れ vs くもり を重ねる</button>
-    <div class="challenge"><b>変えてみよう</b>：「晴れはくもりの何倍か」を print で表示する行を追加しよう（合計どうしで割る）。</div>
+    <h3>レッスン9：グラフを仕上げる —— 縦軸・タイトル・基準線</h3>
+    <div class="kaisetsu"><b>解説</b>：グラフは描いて終わりじゃない。<b>タイトル・軸ラベル・縦軸の範囲</b>（<code>plt.ylim</code>）で読みやすく仕上げ、<b>基準線</b>（<code>plt.axhline</code>）を引くと「基準をこえた時間帯」が一目で分かる。1つのグラフを深く読む技術。</div>
+    <button class="act navy" onclick="setCode('ed2', L9)">▶ グラフを仕上げる</button>
+    <div class="challenge"><b>変えてみよう</b>：基準線を <code>1.0</code> に変えると、こえた時間は何時間になる？ <code>plt.ylim</code> の数字も変えて見やすい範囲を探そう。</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi7"></span></div>
-    <textarea id="yomi7" class="jp" rows="1" oninput="saveText('yomi7')" placeholder="例：晴れの山はくもりの約2倍高い"></textarea>
+    <textarea id="yomi7" class="jp" rows="1" oninput="saveText('yomi7')" placeholder="例：昼の8時間だけ基準の2.0をこえていた"></textarea>
   </div>
 </section>
 
 <section>
   <h2 class="p2">パート2：スクーミーのデータで体験</h2>
-  <p><b>自分たちで計測したデータ</b>で、グラフ化と比較をやってみよう。まず計測してアップロードしよう。</p>
+  <p><b>自分たちで計測したデータ</b>で、集計とグラフ化をやってみよう。まず計測してアップロードしよう。</p>
   <div class="uploadbox" id="uploadbox2">
     <h3>① 計測データをアップロード（各班1人）</h3>
     <ol class="bignum">
@@ -337,7 +337,7 @@ for v in values:
       <option value="">（アップロード済みから選ぶ）</option>
     </select>
     <button class="act blue" onclick="reloadList()">🔄 一覧を更新</button>
-    <span class="note">自分の班のデータを選んで、集計・グラフ・比較を</span>
+    <span class="note">自分の班のデータを選んで、集計・グラフ化を</span>
   </div>
 
   <div class="lesson sc">
@@ -363,14 +363,6 @@ for v in values:
     <textarea id="yomiS6" class="jp" rows="1" oninput="saveText('yomiS6')" placeholder="例：ほぼ53前後で安定。ときどき小さく揺れる"></textarea>
   </div>
 
-  <div class="lesson sc">
-    <h3>🍊 体験7：自分の班と別の班をくらべる</h3>
-    <div class="kaisetsu"><b>やること</b>：自分の班のデータと、別の班のデータを重ねて、場所による明るさの差を見る。STEP3でやる9地点比較の予告編。（別の班のデータもアップ済みである必要があります）</div>
-    <button class="act navy" onclick="setCode('ed2', S7())">▶ 自分の班 vs 別の班 を重ねる</button>
-    <div class="challenge"><b>変えてみよう</b>：demo5（教室のまん中）も3本目として重ねてみよう。</div>
-    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomiS7"></span></div>
-    <textarea id="yomiS7" class="jp" rows="1" oninput="saveText('yomiS7')" placeholder="例：窓側は廊下側の2倍以上明るい"></textarea>
-  </div>
 </section>
 </div>
 </div>
@@ -392,30 +384,39 @@ for v in values:
 </div>
 <div class="paneR">
 <section>
-  <h2>パート1：データ分析の応用 レッスン10〜12（用意したデータ）——「くらべる」を極める</h2>
+  <h2>パート1：データ分析の応用 レッスン10〜13（用意したデータ）——「くらべる」を極める</h2>
 
   <div class="lesson">
-    <h3>レッスン10：どちらが安定？ —— ばらつきを数値にする</h3>
+    <h3>レッスン10：くらべる —— 2つを重ねる</h3>
+    <div class="kaisetsu"><b>解説</b>：ここからは<b>比較</b>。晴れ（6/1）とくもり（6/4）を同じグラフに重ねると差が一目で分かる。<code>label=</code> と <code>plt.legend()</code> で凡例を付けるのがマナー。</div>
+    <button class="act navy" onclick="setCode('ed3', L10)">▶ 晴れ vs くもり を重ねる</button>
+    <div class="challenge"><b>変えてみよう</b>：「晴れはくもりの何倍か」を print で表示する行を追加しよう（合計どうしで割る）。</div>
+    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomiL10"></span></div>
+    <textarea id="yomiL10" class="jp" rows="1" oninput="saveText('yomiL10')" placeholder="例：晴れの山はくもりの約2倍高い"></textarea>
+  </div>
+
+  <div class="lesson">
+    <h3>レッスン11：どちらが安定？ —— ばらつきを数値にする</h3>
     <div class="kaisetsu"><b>解説</b>：甲府の<b>1月</b>と<b>6月（梅雨）</b>、毎日の日照時間をくらべる。平均だけでなく<b>範囲＝最大−最小</b>を出すと「安定して晴れる月」が数値で言える。範囲が小さい＝毎日似ている＝安定。</div>
-    <button class="act navy" onclick="setCode('ed3', L12)">▶ 1月と6月をくらべる</button>
+    <button class="act navy" onclick="setCode('ed3', L11)">▶ 1月と6月をくらべる</button>
     <div class="challenge"><b>変えてみよう</b>：範囲（max - min）をそれぞれ print して、どちらが安定か数値で言おう。</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi8"></span></div>
     <textarea id="yomi8" class="jp" rows="1" oninput="saveText('yomi8')" placeholder="例：1月は毎日安定して晴れ、6月は0時間の日も12時間の日もある"></textarea>
   </div>
 
   <div class="lesson">
-    <h3>レッスン11：たくさんのファイルをforで一気に処理する</h3>
+    <h3>レッスン12：たくさんのファイルをforで一気に処理する</h3>
     <div class="kaisetsu"><b>解説</b>：ファイルが増えても、<b>ファイル名のリストをforで回せば</b>何個でも一気に処理できる。これがSTEP3パート2で「9チーム分を一発で比較」する鍵になる。</div>
-    <button class="act navy" onclick="setCode('ed3', L11)">▶ 2つのファイルをforで処理する</button>
+    <button class="act navy" onclick="setCode('ed3', L12)">▶ 2つのファイルをforで処理する</button>
     <div class="challenge"><b>変えてみよう</b>：ファイル名リストに <code>"kofu_1gatsu"</code> と <code>"kofu_6gatsu"</code> を追加して4つ一気に処理しよう。</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi9"></span></div>
     <textarea id="yomi9" class="jp" rows="1" oninput="saveText('yomi9')" placeholder="例：ファイルが何個あってもコードは同じ長さだった"></textarea>
   </div>
 
   <div class="lesson">
-    <h3>レッスン12：棒グラフと「比率」で判定する</h3>
+    <h3>レッスン13：棒グラフと「比率」で判定する</h3>
     <div class="kaisetsu"><b>解説</b>：比較の仕上げ。複数の平均を<b>棒グラフ</b>（<code>plt.bar</code>）で並べ、<b>最大÷最小の比率</b>を計算して「差が大きすぎないか」をifで自動判定する。学校の教室には「最大照度と最小照度の比は<b>20:1以内</b>が望ましい」という基準（学校環境衛生基準）があり、STEP3パート2でこの判定を本番で使う。</div>
-    <button class="act navy" onclick="setCode('ed3', L12)">▶ 棒グラフ＋比率judge</button>
+    <button class="act navy" onclick="setCode('ed3', L13)">▶ 棒グラフ＋比率judge</button>
     <div class="challenge"><b>変えてみよう</b>：判定のしきい値 <code>20</code> を <code>2</code> に変えると結果はどうなる？</div>
     <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomi10"></span></div>
     <textarea id="yomi10" class="jp" rows="1" oninput="saveText('yomi10')" placeholder="例：比率という1つの数字で「差の大きさ」を判定できた"></textarea>
@@ -456,15 +457,24 @@ for v in values:
   <textarea id="m1h" class="jp" rows="2" placeholder="例：窓側（1・4・7班）は廊下側（3・6・9班）の2倍くらい明るいと思う。一番明るいのは4班。" oninput="saveText('m1h')"></textarea>
 
   <div class="lesson sc" style="margin-top:12px">
+    <h3>🍊 体験7：自分の班と別の班をくらべる</h3>
+    <div class="kaisetsu"><b>やること</b>：自分の班のデータと、別の班のデータを重ねて、場所による明るさの差を見る（レッスン10のやり方）。上の②で2つチェックしよう。</div>
+    <button class="act navy" onclick="setCode('ed3', S7())">▶ 自分の班 vs 別の班 を重ねる</button>
+    <div class="challenge"><b>変えてみよう</b>：3つ目のデータもチェックして、コードに3本目を追加してみよう。</div>
+    <div class="fieldlbl">読み取ったこと<span class="saved" id="sv_yomiS7"></span></div>
+    <textarea id="yomiS7" class="jp" rows="1" oninput="saveText('yomiS7')" placeholder="例：窓側は廊下側の2倍以上明るい"></textarea>
+  </div>
+
+  <div class="lesson sc">
     <h3>🍊 体験8：自分の班と、となりの班をくらべる</h3>
-    <div class="kaisetsu"><b>やること</b>：上で選んだデータのうち、最初の2つを重ねて比較＋範囲を見る（レッスン10の応用）。</div>
+    <div class="kaisetsu"><b>やること</b>：上で選んだデータのうち、最初の2つを重ねて比較＋範囲を見る（レッスン11の応用）。</div>
     <button class="act navy" onclick="setCode('ed3', S8())">▶ 選んだ2つをくらべる</button>
     <div class="challenge"><b>変えてみよう</b>：上のチェックを変えると、コードに入るデータも変わる。</div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験9：9チームぜんぶをforで一気に読む</h3>
-    <div class="kaisetsu"><b>やること</b>：レッスン11の「forで一気に読む」を、選んだデータぜんぶに適用。各データの平均が一発で出る。</div>
+    <div class="kaisetsu"><b>やること</b>：レッスン12の「forで一気に読む」を、選んだデータぜんぶに適用。各データの平均が一発で出る。</div>
     <button class="act navy" onclick="setCode('ed3', S9())">▶ 選んだデータの平均を一気に出す</button>
     <div class="challenge"><b>変えてみよう</b>：平均といっしょに最大・最小も表示しよう。</div>
   </div>
@@ -489,12 +499,12 @@ for v in values:
 
 </main>
 
-<footer>教室の光環境ラボ v3.3 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v3.4 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v3.3";
+const VERSION = "v3.4";
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
 
@@ -509,7 +519,7 @@ function showStep(n) {
 
 // ---------- URLトークン・記入欄の復元 ----------
 window.addEventListener("DOMContentLoaded", () => {
-  ["m1h","m1k","yomi6","yomi7","yomiS6","yomiS7","yomi8","yomi9","yomi10"].forEach(id => {
+  ["m1h","m1k","yomi6","yomi7","yomiL10","yomiS6","yomiS7","yomi8","yomi9","yomi10"].forEach(id => {
     const v = localStorage.getItem("lab_" + id);
     if (v) document.getElementById(id).value = v;
   });
@@ -906,32 +916,36 @@ plt.ylabel("Solar radiation (MJ/m2)")
 plt.grid(True)
 plt.show()
 `;
-const L9 = `# レッスン9: 晴れ(6/1) と くもり(6/4) をくらべる
+const L9 = `# レッスン9: グラフを仕上げる（縦軸・タイトル・基準線）
 import matplotlib.pyplot as plt
 
-def yomikomi(path):              # 読み込みを関数にまとめた
-    values = []
-    with open(path) as f:
-        next(f)
-        for line in f:
-            t, v = line.strip().split(",")
-            values.append(float(v))
-    return values
+FILE = "data/kofu_hare.csv"
 
-hare   = yomikomi("data/kofu_hare.csv")
-kumori = yomikomi("data/kofu_kumori.csv")
-
-print("晴れの合計:", round(sum(hare), 2))
-print("くもりの合計:", round(sum(kumori), 2))
-# 変えてみよう: 「晴れはくもりの何倍か」をここに print しよう
+values = []
+with open(FILE) as f:
+    next(f)
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(float(v))
 
 plt.figure(figsize=(8, 3.5))
-plt.plot(range(1, len(hare) + 1), hare, label="hare 6/1")
-plt.plot(range(1, len(kumori) + 1), kumori, label="kumori 6/4")
-plt.legend()
-plt.xlabel("Hour")
+plt.plot(range(1, len(values) + 1), values)
+
+plt.title("Kofu 6/1 (hare)")        # タイトル
+plt.xlabel("Hour")                  # よこじくの名前
+plt.ylabel("Solar radiation")       # たてじくの名前
+plt.ylim(0, 4)                      # たてじくの範囲は自分で決める
+plt.axhline(2.0, color="red", linestyle="--")   # 基準線（横線）
+
 plt.grid(True)
 plt.show()
+
+# 基準線をこえた時間が何時間あるか数える
+kosu = 0
+for v in values:
+    if v >= 2.0:
+        kosu = kosu + 1
+print("2.0以上だった時間:", kosu, "時間")
 `;
 
 // ============================================================
@@ -968,8 +982,8 @@ plt.show()
 `;
 }
 function S7() {
-  const names = selMulti.length >= 2 ? selMulti : (selPart[2] ? [selPart[2]] : []);
-  if (names.length < 2) return "# STEP3の「② くらべるデータ」で2つ以上えらぶか、STEP3で使ってください（体験7は2つのデータが必要）";
+  const names = selMulti;
+  if (names.length < 2) return "# 上の「② くらべるデータ」で2つ以上えらんでください（体験7は2つのデータが必要）";
   const a = names[0], b = names[1];
   return `# 体験7: 「${a}」と「${b}」をくらべる
 import matplotlib.pyplot as plt
@@ -1001,7 +1015,34 @@ plt.show()
 // ============================================================
 // STEP3 パート1（用意したデータで「くらべる」応用）
 // ============================================================
-const L10 = `# レッスン10: 1月と6月、どちらが「安定して晴れる」？
+const L10 = `# レッスン10: 晴れ(6/1) と くもり(6/4) をくらべる（重ねる）
+import matplotlib.pyplot as plt
+
+def yomikomi(path):              # 読み込みを関数にまとめた
+    values = []
+    with open(path) as f:
+        next(f)
+        for line in f:
+            t, v = line.strip().split(",")
+            values.append(float(v))
+    return values
+
+hare   = yomikomi("data/kofu_hare.csv")
+kumori = yomikomi("data/kofu_kumori.csv")
+
+print("晴れの合計:", round(sum(hare), 2))
+print("くもりの合計:", round(sum(kumori), 2))
+# 変えてみよう: 「晴れはくもりの何倍か」をここに print しよう
+
+plt.figure(figsize=(8, 3.5))
+plt.plot(range(1, len(hare) + 1), hare, label="hare 6/1")
+plt.plot(range(1, len(kumori) + 1), kumori, label="kumori 6/4")
+plt.legend()
+plt.xlabel("Hour")
+plt.grid(True)
+plt.show()
+`;
+const L11 = `# レッスン11: 1月と6月、どちらが「安定して晴れる」？
 import matplotlib.pyplot as plt
 
 def yomikomi(path):
@@ -1029,7 +1070,7 @@ plt.ylabel("Sunshine (hours)")
 plt.grid(True)
 plt.show()
 `;
-const L11 = `# レッスン11: ファイル名のリストをforで回して、一気に処理する
+const L12 = `# レッスン12: ファイル名のリストをforで回して、一気に処理する
 def yomikomi(path):
     values = []
     with open(path) as f:
@@ -1048,7 +1089,7 @@ for name in file_list:
 
 # 変えてみよう: file_list に "kofu_1gatsu", "kofu_6gatsu" を追加
 `;
-const L12 = `# レッスン12: 棒グラフ + 比率で判定する
+const L13 = `# レッスン13: 棒グラフ + 比率で判定する
 import matplotlib.pyplot as plt
 
 def yomikomi(path):
