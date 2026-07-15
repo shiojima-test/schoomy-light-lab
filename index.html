@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v3.4 | スクーミー×Python</title>
+<title>教室の光環境ラボ v3.5 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -107,7 +107,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v3.4</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v3.5</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -142,10 +142,10 @@ print("こんにちは、スクーミー！")</textarea>
 </div>
 <div class="paneR">
 <section>
-  <h2>パート1：Pythonの基本 レッスン1〜6（用意したデータ）</h2>
-  <p>やり方：各レッスンの<b>「▶ このコードを試す」→ 左のコード欄で「実行」→ 結果を見る → 「変えてみよう」に挑戦</b>。レッスン1〜5は文法、6でCSVファイルを読み込みます（集計・グラフはSTEP2から）。</p>
+  <h2>パート1：Pythonの基本 レッスン1〜7（用意したデータ）</h2>
+  <p>やり方：各レッスンの<b>「▶ このコードを試す」→ 左のコード欄で「実行」→ 結果を見る → 「変えてみよう」に挑戦</b>。レッスン1〜5は文法、6でCSVファイルを読み込み、7で集計します（グラフはSTEP2から）。</p>
   <div class="toolbar">
-    <label>レッスン6で使うデータ:
+    <label>レッスン6・7で使うデータ:
       <select id="p1data">
         <option value="kofu_6gatsu.csv">甲府・6月の日照時間（20日分）</option>
         <option value="kofu_1gatsu.csv">甲府・1月の日照時間（31日分）</option>
@@ -153,7 +153,7 @@ print("こんにちは、スクーミー！")</textarea>
         <option value="kofu_kumori.csv">甲府・くもりの日の日射量（24時間）</option>
       </select>
     </label>
-    <span class="note">オープンデータ（気象庁）。選ぶとレッスン6のファイル名が変わります</span>
+    <span class="note">オープンデータ（気象庁）。選ぶとレッスン6・7のファイル名が変わります</span>
   </div>
 
   <div class="lesson">
@@ -216,11 +216,18 @@ for v in values:
     <div class="challenge"><b>変えてみよう</b>：上のドロップダウンでデータを変えて、中身がどう変わるか見よう。</div>
   </div>
 
+  <div class="lesson">
+    <h3>レッスン7：CSVのデータで 個数・合計・最大・最小・平均</h3>
+    <div class="kaisetsu"><b>解説</b>：読み込んだリストから <code>len</code>（個数）・<code>sum</code>（合計）・<code>max/min</code>（最大/最小）・平均を求める。数字で全体をつかむ、データ分析の基本の集計。</div>
+    <button class="act navy" onclick="setCode('ed1', L7())">▶ 集計してみる</button>
+    <div class="challenge"><b>変えてみよう</b>：上のドロップダウンでデータを変えて、平均がどう変わるか比べよう。</div>
+  </div>
+
 </section>
 
 <section>
   <h2 class="p2">パート2：スクーミーのデータで体験</h2>
-  <p>今度は<b>自分たちで計測したデータ</b>で、パート1と同じ文法をやってみよう。まず計測してアップロードしよう。</p>
+  <p>今度は<b>自分たちで計測したデータ</b>で、パート1と同じ文法・集計をやってみよう。まず計測してアップロードしよう。</p>
   <div class="uploadbox" id="uploadbox1">
     <h3>① 計測データをアップロード（各班1人）</h3>
     <ol class="bignum">
@@ -254,6 +261,20 @@ for v in values:
     <div class="challenge"><b>ヒント</b>：レッスン6の <code>values.append(float(v))</code> と同じ。</div>
   </div>
 
+  <div class="lesson sc">
+    <h3>🍊 体験2：個数・合計・最大・最小・平均（レッスン7を参考に）</h3>
+    <div class="kaisetsu"><b>やること</b>：<b>レッスン7</b>を参考に、自分の班のデータの <code>len</code>・<code>sum</code>・<code>max</code>・<code>min</code>・平均を出そう。<code>___</code> を自分で埋めよう。</div>
+    <button class="act navy" onclick="setCode('ed1', S2(1))">▶ ひな形を入れる</button>
+    <div class="challenge"><b>ヒント</b>：平均は <code>sum(values) / len(values)</code>。</div>
+  </div>
+
+  <div class="lesson sc">
+    <h3>🍊 体験3：各データを1つずつ if で判定（レッスン5を参考に）</h3>
+    <div class="kaisetsu"><b>やること</b>：<code>for</code>＋<code>if</code>で1件ずつ「◯以上なら明るい／未満なら暗い」を判定。しきい値の <code>___</code> を自分で決めよう。</div>
+    <button class="act navy" onclick="setCode('ed1', S3(1))">▶ ひな形を入れる</button>
+    <div class="challenge"><b>ヒント</b>：レッスン5の <code>if v &gt;= 500:</code> と同じ形。</div>
+  </div>
+
 </section>
 </div>
 </div>
@@ -275,7 +296,7 @@ for v in values:
 </div>
 <div class="paneR">
 <section>
-  <h2>パート1：データ分析の基本 レッスン7〜9（用意したデータ）</h2>
+  <h2>パート1：データ分析の基本 レッスン8〜9（用意したデータ）——グラフにする</h2>
   <p>ここでは<b>公開されている本物のデータ</b>を使います。気象庁が公開している、<b>甲府（山梨県）で実際に計測された太陽の光のデータ</b>です。</p>
 
   <h3>今日つかうデータ（実物がこれ！）</h3>
@@ -284,13 +305,6 @@ for v in values:
   <div class="dmeta" id="dmeta">読み込み中…</div>
   <div class="dtscroll" id="dtable"></div>
   <p class="note" style="margin-top:6px">出典：気象庁「<a href="https://www.data.jma.go.jp/stats/etrn/index.php" target="_blank">過去の気象データ検索</a>」（甲府地方気象台の観測値）より作成。🍊はスクーミーの実測。</p>
-
-  <div class="lesson" style="margin-top:12px">
-    <h3>レッスン7：CSVのデータで 個数・合計・最大・最小・平均</h3>
-    <div class="kaisetsu"><b>解説</b>：グラフの前に、まず数字で全体をつかむ。読み込んだリストから <code>len</code>（個数）・<code>sum</code>（合計）・<code>max/min</code>（最大/最小）・平均を求める。データ分析の基本の集計。</div>
-    <button class="act navy" onclick="setCode('ed2', L7())">▶ 集計してみる</button>
-    <div class="challenge"><b>変えてみよう</b>：上のタブでデータを変えて、平均がどう変わるか比べよう。</div>
-  </div>
 
   <div class="lesson" style="margin-top:12px">
     <h3>レッスン8：グラフ化 —— 数字の列を「見える」ようにする</h3>
@@ -313,7 +327,7 @@ for v in values:
 
 <section>
   <h2 class="p2">パート2：スクーミーのデータで体験</h2>
-  <p><b>自分たちで計測したデータ</b>で、集計とグラフ化をやってみよう。まず計測してアップロードしよう。</p>
+  <p><b>自分たちで計測したデータ</b>で、グラフ化をやってみよう。まず計測してアップロードしよう。</p>
   <div class="uploadbox" id="uploadbox2">
     <h3>① 計測データをアップロード（各班1人）</h3>
     <ol class="bignum">
@@ -337,21 +351,7 @@ for v in values:
       <option value="">（アップロード済みから選ぶ）</option>
     </select>
     <button class="act blue" onclick="reloadList()">🔄 一覧を更新</button>
-    <span class="note">自分の班のデータを選んで、集計・グラフ化を</span>
-  </div>
-
-  <div class="lesson sc">
-    <h3>🍊 体験2：個数・合計・最大・最小・平均（レッスン7を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：<b>レッスン7</b>を参考に、自分の班のデータの <code>len</code>・<code>sum</code>・<code>max</code>・<code>min</code>・平均を出そう。<code>___</code> を自分で埋めよう。</div>
-    <button class="act navy" onclick="setCode('ed2', S2(2))">▶ ひな形を入れる</button>
-    <div class="challenge"><b>ヒント</b>：平均は <code>sum(values) / len(values)</code>。</div>
-  </div>
-
-  <div class="lesson sc">
-    <h3>🍊 体験3：各データを1つずつ if で判定（レッスン5を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：<code>for</code>＋<code>if</code>で1件ずつ「◯以上なら明るい／未満なら暗い」を判定。しきい値の <code>___</code> を自分で決めよう。</div>
-    <button class="act navy" onclick="setCode('ed2', S3(2))">▶ ひな形を入れる</button>
-    <div class="challenge"><b>ヒント</b>：レッスン5の <code>if v &gt;= 500:</code> と同じ形。</div>
+    <span class="note">自分の班のデータを選んで、グラフ化を</span>
   </div>
 
   <div class="lesson sc">
@@ -499,12 +499,12 @@ for v in values:
 
 </main>
 
-<footer>教室の光環境ラボ v3.4 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v3.5 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v3.4";
+const VERSION = "v3.5";
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
 
