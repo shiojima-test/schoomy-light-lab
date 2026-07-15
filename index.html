@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v3.6 | スクーミー×Python</title>
+<title>教室の光環境ラボ v3.7 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -107,7 +107,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v3.6</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v3.7</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -212,26 +212,33 @@ print("平均:", sum(values) / len(values))</pre>
 
 <section>
   <h2 class="p2">パート2：スクーミーのデータで体験</h2>
-  <p>今度は<b>自分たちで計測した数字</b>で、パート1と同じことをやってみよう。スクーミーで計測して、<b>シリアルモニターに出た数字をコピー</b>し、コードのリスト <code>[ ]</code> の中に貼り付けます（アップロードはSTEP2から）。</p>
+  <p>今度は<b>自分たちで計測した数字</b>で、パート1と同じことをやってみよう。スクーミーで計測して、<b>シリアルモニターに出た数字をコピー</b>し、下の①に貼り付けます（アップロードはSTEP2から）。</p>
+
+  <div class="uploadbox">
+    <h3>① 計測した数字を貼り付け</h3>
+    <p class="note">シリアルモニターの数字をコピーして、そのまま下に貼り付けよう。貼ったら、下の体験の「▶ ひな形を入れる」を押すと数字がコードに自動で入ります。</p>
+    <textarea id="serialPaste1" rows="3" placeholder="シリアルモニターの数字をここに貼り付け" oninput="serialChanged()"></textarea>
+    <p class="note" id="serialNote1"></p>
+  </div>
 
   <div class="lesson sc">
     <h3>🍊 体験1：計測した数字をリストに入れて表示（レッスン3を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：シリアルモニターの数字をコピーして、<code>values = [___]</code> の <code>___</code> に<b>カンマ区切り</b>で貼ろう。まずは表示から。</div>
-    <button class="act navy" onclick="setCode('ed1', S1)">▶ ひな形を入れる</button>
-    <div class="challenge"><b>ヒント</b>：貼り付けたら、数字と数字の間が <code>,</code> で区切られているか確認しよう。</div>
+    <div class="kaisetsu"><b>やること</b>：①に貼った数字が、リスト <code>values = [ ]</code> に自動で入ります。まずは表示から。</div>
+    <button class="act navy" onclick="setCode('ed1', S1())">▶ ひな形を入れる</button>
+    <div class="challenge"><b>ヒント</b>：<code>values[0]</code> の番号を変えると、別の値も取り出せる。</div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験2：個数・合計・最大・最小・平均（レッスン6を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：体験1と同じ数字をリストに貼って、<code>len</code>・<code>sum</code>・<code>max</code>・<code>min</code>・平均を出そう。<code>___</code> を自分で埋めよう。</div>
-    <button class="act navy" onclick="setCode('ed1', S2)">▶ ひな形を入れる</button>
+    <div class="kaisetsu"><b>やること</b>：①に貼った数字のリストで、<code>len</code>・<code>sum</code>・<code>max</code>・<code>min</code>・平均を出そう。<code>___</code> を自分で埋めよう。</div>
+    <button class="act navy" onclick="setCode('ed1', S2())">▶ ひな形を入れる</button>
     <div class="challenge"><b>ヒント</b>：平均は <code>sum(values) / len(values)</code>。</div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験3：各データを1つずつ if で判定（レッスン5を参考に）</h3>
     <div class="kaisetsu"><b>やること</b>：<code>for</code>＋<code>if</code>で1件ずつ「◯以上なら明るい／未満なら暗い」を判定。しきい値の <code>___</code> を自分で決めよう。</div>
-    <button class="act navy" onclick="setCode('ed1', S3)">▶ ひな形を入れる</button>
+    <button class="act navy" onclick="setCode('ed1', S3())">▶ ひな形を入れる</button>
     <div class="challenge"><b>ヒント</b>：レッスン5の <code>if v &gt;= 500:</code> と同じ形。</div>
   </div>
 
@@ -473,12 +480,12 @@ print("平均:", sum(values) / len(values))</pre>
 
 </main>
 
-<footer>教室の光環境ラボ v3.6 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v3.7 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v3.6";
+const VERSION = "v3.7";
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
 
@@ -792,15 +799,48 @@ print("個数:", len(values))
 // ============================================================
 // STEP1 パート2（シリアルモニターの数字を貼って体験）
 // ============================================================
-const S1 = `# 体験1: 計測した数字をリストに入れて表示（レッスン3を参考に）
-# シリアルモニターの数字を、カンマ区切りで [ ] の中に貼ろう
-values = [___]
+// 貼り付け欄から数値だけを抽出（timestamp,value形式は値列のみ）
+function parseSerial1() {
+  const el = document.getElementById("serialPaste1");
+  if (!el) return [];
+  const nums = [];
+  el.value.split(/\r?\n/).forEach(line => {
+    line = line.trim();
+    if (!line) return;
+    const parts = line.split(",").map(s => s.trim());
+    if (parts.length === 2 && /^-?\d+(\.\d+)?$/.test(parts[0]) && /^-?\d+(\.\d+)?$/.test(parts[1])) {
+      nums.push(parts[1]);           // timestamp,value → 値列だけ
+    } else {
+      parts.forEach(p => { if (/^-?\d+(\.\d+)?$/.test(p)) nums.push(p); });
+    }
+  });
+  return nums;
+}
+function serialChanged() {
+  const note = document.getElementById("serialNote1");
+  if (!note) return;
+  const n = parseSerial1().length;
+  note.textContent = n > 0 ? `✅ ${n}個の数値を読み取りました。下の「▶ ひな形を入れる」を押そう。` : "";
+}
+function serialList1() {
+  const nums = parseSerial1();
+  return nums.length ? nums.join(", ") : null;
+}
+function S1() {
+  const lst = serialList1();
+  const head = lst ? "" : "# まず上の「①」に数字を貼り付けてから、もう一度ボタンを押そう\n";
+  return `# 体験1: 計測した数字をリストに入れて表示（レッスン3を参考に）
+${head}values = [${lst || "___"}]
 
 print(values)                        # リスト全体
 print("さいしょの値:", values[0])
 `;
-const S2 = `# 体験2: 個数・合計・最大・最小・平均（レッスン6を参考に）
-values = [___]                       # ← 体験1と同じ数字を貼ろう
+}
+function S2() {
+  const lst = serialList1();
+  const head = lst ? "" : "# まず上の「①」に数字を貼り付けてから、もう一度ボタンを押そう\n";
+  return `# 体験2: 個数・合計・最大・最小・平均（レッスン6を参考に）
+${head}values = [${lst || "___"}]
 
 print("個数:", len(values))
 print("合計:", ___)                  # ← sum を使おう
@@ -808,8 +848,12 @@ print("最大:", ___)                  # ← max を使おう
 print("最小:", ___)                  # ← min を使おう
 print("平均:", ___)                  # ← sum(values) / len(values)
 `;
-const S3 = `# 体験3: 各データを1つずつ if で判定（レッスン5を参考に）
-values = [___]                       # ← 計測した数字を貼ろう
+}
+function S3() {
+  const lst = serialList1();
+  const head = lst ? "" : "# まず上の「①」に数字を貼り付けてから、もう一度ボタンを押そう\n";
+  return `# 体験3: 各データを1つずつ if で判定（レッスン5を参考に）
+${head}values = [${lst || "___"}]
 
 for v in values:
     if v >= ___:                     # ← しきい値を自分で決めよう
@@ -817,6 +861,7 @@ for v in values:
     else:
         print(v, "暗い")
 `;
+}
 
 // ============================================================
 // STEP2 パート2（アップロードしたCSVを読む）
