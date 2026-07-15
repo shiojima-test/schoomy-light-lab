@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v3.9 | スクーミー×Python</title>
+<title>教室の光環境ラボ v4.0 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -64,6 +64,9 @@
   .challenge { background: #fdf3e7; border-radius: 6px; padding: 8px 12px; margin: 8px 0; font-size: 12.5px; }
   .chakugan { background: #e8f5f4; border-left: 4px solid #3AABA8; border-radius: 6px; padding: 8px 12px; margin: 8px 0; font-size: 12.5px; }
   .chakugan b { color: #2a8a87; }
+  .cheat { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 6px; }
+  .cheat th, .cheat td { border: 1px solid #ddd; padding: 5px 9px; text-align: left; }
+  .cheat th { background: #eef6fb; color: #2c4a6e; }
   .challenge b { color: #E88A0A; }
   .fieldlbl { font-size: 12.5px; font-weight: bold; color: #2c4a6e; margin: 10px 0 4px; }
   .saved { font-size: 11px; color: #3AABA8; margin-left: 8px; }
@@ -109,7 +112,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v3.9</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v4.0</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -117,13 +120,14 @@
 
 <div class="howto">
   <b>このページの使い方</b>：各STEPは2部構成。<b>パート1で「用意したデータ」で学び → パート2で「スクーミー（オレンジボード）のデータ」で同じことを体験</b>します。<br>
-  <b>STEP1</b> Python基本 → <b>STEP2</b> データ分析基本 → <b>STEP3</b> データ分析応用（9チームのデータをぜんぶ使う！）
+  <b>STEP1</b> Python基本 → <b>STEP2</b> データ分析基本 → <b>STEP3</b> データ分析応用（9チームのデータをぜんぶ使う！）→ <b>🔬フリーラボ</b> 自分のデータを自由に分析
 </div>
 
 <div class="stepnav">
   <button id="nav1" class="active" onclick="showStep(1)"><span class="n">STEP 1</span><span class="t">Python基本</span></button>
   <button id="nav2" onclick="showStep(2)"><span class="n">STEP 2</span><span class="t">データ分析基本</span></button>
   <button id="nav3" onclick="showStep(3)"><span class="n">STEP 3</span><span class="t">データ分析応用</span></button>
+  <button id="nav4" onclick="showStep(4)"><span class="n">🔬</span><span class="t">フリーラボ</span></button>
 </div>
 
 <div id="pyStatus" class="status">Python環境を読み込んでいます…（初回は30秒ほどかかります。このまま待っていてください）</div>
@@ -470,20 +474,97 @@ print("平均:", sum(values) / len(values))</pre>
 
 </div>
 
+<!-- ============================================================ フリーラボ ============================================================ -->
+<div class="steppage" id="step4">
+<div class="split">
+<div class="paneL">
+<section id="editorSec4">
+  <h2>💻 コード実行</h2>
+  <textarea id="ed4" class="editor" spellcheck="false"># ここに自由にPythonを書いて「▶ 実行」！
+# 右の「① ファイルを入れる」でデータを置くと、コードから読めます
+print("フリーラボへようこそ！")</textarea>
+  <div class="toolbar"><button class="act primary runbtn" onclick="runCode('ed4','out4','plot4')" disabled>▶ 実行</button></div>
+  <div class="out" id="out4">（ここに結果が表示されます）</div>
+  <div class="plot" id="plot4"></div>
+</section>
+</div>
+<div class="paneR">
+<section>
+  <h2>🔬 フリーラボ —— 自分のデータを、自分のコードで分析する</h2>
+  <p>ここは<b>自由な分析の場所</b>。「1日の温度を計測して表示する」「9チーム分をくらべる」「平均・最大・最小を出す」など、STEP1〜3で身につけたことを<b>自分のデータと自分のコード</b>でやってみよう。</p>
+
+  <div class="uploadbox">
+    <h3>① ファイルを入れる</h3>
+    <p class="note">計測したCSVやテキストファイルを選ぶと、自動で <code>timestamp,value</code> 形式に整形して、コードから読める場所に置きます。<b>複数OK。サーバには送られず、ページを再読み込みすると消えます。</b></p>
+    <div class="toolbar">
+      <label class="act blue" style="display:inline-block; cursor:pointer;">📄 ファイルを選ぶ（複数OK）<input type="file" accept=".csv,.txt" multiple style="display:none" onchange="freeLoadFiles(this)"></label>
+      <label style="font-size:12.5px;"><input type="checkbox" id="freeRaw"> 整形せず、そのまま置く</label>
+    </div>
+    <div id="freeFileList" class="note" style="margin-top:6px">まだファイルがありません。</div>
+  </div>
+
+  <div style="background:#eef6fb; border-radius:8px; padding:10px 14px; margin:12px 0;">
+    <b style="color:#2c4a6e;">② アップ済みの班データも使える（複数えらべる）</b>
+    <button class="act blue" onclick="reloadList()" style="margin-left:8px;">🔄 一覧を更新</button>
+    <p class="note">STEP2・3でアップロードしたデータ。チェックすると <code>data/uploads/名前.csv</code> でコードから読めます。</p>
+    <div id="pickFree" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;">
+      <span class="note">まだデータがありません。「一覧を更新」を押してください。</span>
+    </div>
+  </div>
+
+  <div class="lesson">
+    <h3>スターターテンプレ（白紙から書いてもOK）</h3>
+    <p class="note">押すと、①や②で置いたファイル名が自動で入った雛形がコード欄に入ります。</p>
+    <div class="toolbar" style="flex-wrap:wrap;">
+      <button class="act navy" onclick="setCode('ed4', F1())">📄 読み込んで表示</button>
+      <button class="act navy" onclick="setCode('ed4', F2())">📈 折れ線グラフ</button>
+      <button class="act navy" onclick="setCode('ed4', F3())">🔢 集計（平均・最大・最小）</button>
+      <button class="act navy" onclick="setCode('ed4', F4())">🆚 ぜんぶ重ねてくらべる</button>
+      <button class="act navy" onclick="setCode('ed4', F5())">📊 ぜんぶの平均を棒グラフに</button>
+    </div>
+  </div>
+
+  <div class="lesson">
+    <h3>📖 早見表（レッスンで習った命令）</h3>
+    <table class="cheat">
+      <tr><th>命令</th><th>意味</th></tr>
+      <tr><td><code>print(x)</code></td><td>表示する（レッスン1）</td></tr>
+      <tr><td><code>values = [1, 2, 3]</code></td><td>リストを作る（レッスン3）</td></tr>
+      <tr><td><code>len(values)</code> / <code>sum(values)</code></td><td>個数 ／ 合計（レッスン6）</td></tr>
+      <tr><td><code>max(values)</code> / <code>min(values)</code></td><td>最大 ／ 最小（レッスン6）</td></tr>
+      <tr><td><code>sum(values) / len(values)</code></td><td>平均（レッスン6）</td></tr>
+      <tr><td><code>round(x, 2)</code></td><td>小数2桁に丸める</td></tr>
+      <tr><td><code>for v in values:</code></td><td>1件ずつくり返す（レッスン4）</td></tr>
+      <tr><td><code>if v >= 500:</code></td><td>判定して分岐（レッスン5）</td></tr>
+      <tr><td>CSVの読み込み</td><td>「📄 読み込んで表示」テンプレの定型を使おう（レッスン7）</td></tr>
+      <tr><td><code>plt.plot(values)</code></td><td>折れ線グラフ（レッスン8）</td></tr>
+      <tr><td><code>plt.bar(名前リスト, 値リスト)</code></td><td>棒グラフ（レッスン13）</td></tr>
+      <tr><td><code>plt.ylim(0, 100)</code></td><td>縦軸の範囲を決める（レッスン9）</td></tr>
+      <tr><td><code>plt.axhline(値, color="red", linestyle="--")</code></td><td>基準線（横線）を引く（レッスン9）</td></tr>
+      <tr><td><code>plt.title("...")</code> / <code>plt.xlabel</code> / <code>plt.ylabel</code></td><td>タイトル・軸ラベル（レッスン9）</td></tr>
+      <tr><td><code>label="名前"</code> ＋ <code>plt.legend()</code></td><td>凡例を付ける（レッスン10）</td></tr>
+      <tr><td><code>plt.grid(True)</code> → <code>plt.show()</code></td><td>目盛り線 → グラフ表示</td></tr>
+    </table>
+  </div>
+</section>
+</div>
+</div>
+</div>
+
 </main>
 
-<footer>教室の光環境ラボ v3.9 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v4.0 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v3.9";
+const VERSION = "v4.0";
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
 
 // ---------- ステップ切替 ----------
 function showStep(n) {
-  for (let i = 1; i <= 3; i++) {
+  for (let i = 1; i <= 4; i++) {
     document.getElementById("step" + i).classList.toggle("active", i === n);
     document.getElementById("nav" + i).classList.toggle("active", i === n);
   }
@@ -591,6 +672,8 @@ async function ensureUploaded(names) {
 // ---------- 教室マップ ----------
 let selPart = { 1: "", 2: "" };   // STEP1/2で選択中の名前
 let selMulti = [];                // STEP3で選択中の名前配列
+let freeMulti = [];               // フリーラボで選択中の名前配列
+let freeFiles = {};               // フリーラボ: ローカル配置ファイル { 名前: テキスト }
 
 function renderPickers() {
   // STEP1/2: 単一選択プルダウン
@@ -612,6 +695,18 @@ function renderPickers() {
         </label>`).join("");
     }
   }
+  // フリーラボ: 複数選択チェック
+  const fbox = document.getElementById("pickFree");
+  if (fbox) {
+    if (uploadedList.length === 0) {
+      fbox.innerHTML = '<span class="note">まだデータがありません。「一覧を更新」を押してください。</span>';
+    } else {
+      fbox.innerHTML = uploadedList.map(n =>
+        `<label style="border:1px solid #ccc; border-radius:6px; padding:5px 10px; cursor:pointer; background:#fff;">
+          <input type="checkbox" value="${n}" ${freeMulti.includes(n) ? "checked" : ""} onchange="freeMultiChanged()"> ${n}
+        </label>`).join("");
+    }
+  }
 }
 function pickChanged(step) {
   const sel = document.querySelector(`.pickOne[data-step="${step}"]`);
@@ -619,6 +714,9 @@ function pickChanged(step) {
 }
 function multiChanged() {
   selMulti = Array.from(document.querySelectorAll("#pickMulti input:checked")).map(c => c.value);
+}
+function freeMultiChanged() {
+  freeMulti = Array.from(document.querySelectorAll("#pickFree input:checked")).map(c => c.value);
 }
 
 async function refreshData() {
@@ -681,7 +779,9 @@ async function runCode(edId, outId, plotId) {
     if (selPart[1]) need.add(selPart[1]);
     if (selPart[2]) need.add(selPart[2]);
     selMulti.forEach(n => need.add(n));
+    freeMulti.forEach(n => need.add(n));
     if (need.size) await ensureUploaded(Array.from(need));
+    freeWriteFS();               // フリーラボのローカルファイルを配置
   } catch (e) {}
   try {
     pyodide.runPython(`
@@ -707,7 +807,7 @@ _plot_target = "${plotId}"
 function setCode(edId, code) {
   document.getElementById(edId).value = code;
   if (window.innerWidth <= 950) {
-    const sec = { ed1: "editorSec1", ed2: "editorSec2", ed3: "editorSec3" }[edId];
+    const sec = { ed1: "editorSec1", ed2: "editorSec2", ed3: "editorSec3", ed4: "editorSec4" }[edId];
     document.getElementById(sec).scrollIntoView({ behavior: "smooth" });
   }
 }
@@ -1190,6 +1290,171 @@ if maxv / minv <= 20:
     print("判定: 適正（差は基準内）")
 else:
     print("判定: 不適（差が大きすぎる）")
+`;
+}
+
+// ============================================================
+// フリーラボ（自由分析）
+// ============================================================
+function freeLoadFiles(input) {
+  const files = Array.from(input.files || []);
+  const raw = document.getElementById("freeRaw").checked;
+  files.forEach(f => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      let text = reader.result;
+      let note = "そのまま";
+      if (!raw) {
+        const norm = normalizeCsv(text);
+        if (norm) {
+          text = norm.csv;
+          note = "整形済み" + (norm.skipped ? `・化け行${norm.skipped}行を除去` : "");
+        } else {
+          note = "整形できなかったため、そのまま";
+        }
+      }
+      const safe = f.name.replace(/[^0-9A-Za-z._\-ぁ-んァ-ヶー一-龠]/g, "_");
+      freeFiles[safe] = text;
+      freeFiles["__note_" + safe] = note;
+      freeWriteFS();
+      renderFreeFiles();
+    };
+    reader.readAsText(f);
+  });
+  input.value = "";
+}
+function freeDataNames() {
+  return Object.keys(freeFiles).filter(n => !n.startsWith("__note_"));
+}
+function freeWriteFS() {
+  if (!pyodide) return;
+  try { pyodide.FS.mkdir("data"); } catch (e) {}
+  try { pyodide.FS.mkdir("data/free"); } catch (e) {}
+  for (const n of freeDataNames()) {
+    try { pyodide.FS.writeFile("data/free/" + n, freeFiles[n]); } catch (e) {}
+  }
+}
+function renderFreeFiles() {
+  const el = document.getElementById("freeFileList");
+  if (!el) return;
+  const names = freeDataNames();
+  el.innerHTML = names.length
+    ? "配置済み: " + names.map(n => `<code>data/free/${n}</code>（${freeFiles["__note_" + n] || ""}）`).join(" ／ ")
+    : "まだファイルがありません。";
+}
+function freePaths() {
+  const p = freeDataNames().map(n => "data/free/" + n);
+  freeMulti.forEach(n => p.push("data/uploads/" + n + ".csv"));
+  return p;
+}
+const FREE_EMPTY = `# まず「① ファイルを入れる」か「② 班データを選ぶ」でデータを置いてから、
+# もう一度テンプレのボタンを押そう（ファイル名が自動で入ります）
+`;
+const FREE_YOMIKOMI = `def yomikomi(path):
+    values = []
+    with open(path) as f:
+        next(f)                          # 見出し行をとばす
+        for line in f:
+            t, v = line.strip().split(",")
+            values.append(float(v))
+    return values
+`;
+function F1() {
+  const p = freePaths();
+  if (!p.length) return FREE_EMPTY;
+  return `# 読み込んで表示
+FILE = "${p[0]}"
+
+values = []
+with open(FILE) as f:
+    next(f)                          # 見出し行をとばす
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(float(v))
+
+print(values)
+print("個数:", len(values))
+`;
+}
+function F2() {
+  const p = freePaths();
+  if (!p.length) return FREE_EMPTY;
+  return `# 折れ線グラフ
+import matplotlib.pyplot as plt
+
+${FREE_YOMIKOMI}
+values = yomikomi("${p[0]}")
+
+plt.figure(figsize=(8, 3.5))
+plt.plot(values)
+plt.xlabel("Number")
+plt.grid(True)
+# plt.ylim(0, 100)      # ← 縦軸を自分で決めたいときは # を外す
+plt.show()
+`;
+}
+function F3() {
+  const p = freePaths();
+  if (!p.length) return FREE_EMPTY;
+  return `# 集計（平均・最大・最小）
+${FREE_YOMIKOMI}
+values = yomikomi("${p[0]}")
+
+print("個数:", len(values))
+print("平均:", round(sum(values) / len(values), 2))
+print("最大:", max(values))
+print("最小:", min(values))
+print("範囲(最大-最小):", round(max(values) - min(values), 2))
+`;
+}
+function F4() {
+  const p = freePaths();
+  if (p.length < 2) return FREE_EMPTY;
+  const listStr = p.map(x => `"${x}"`).join(",\n    ");
+  return `# ぜんぶ重ねてくらべる
+import matplotlib.pyplot as plt
+
+${FREE_YOMIKOMI}
+file_list = [
+    ${listStr}
+]
+
+plt.figure(figsize=(8, 4))
+for path in file_list:
+    values = yomikomi(path)
+    plt.plot(values, label=path.split("/")[-1].replace(".csv", ""))
+plt.legend()
+plt.grid(True)
+plt.show()
+`;
+}
+function F5() {
+  const p = freePaths();
+  if (p.length < 2) return FREE_EMPTY;
+  const listStr = p.map(x => `"${x}"`).join(",\n    ");
+  return `# ぜんぶの平均を棒グラフに
+import matplotlib.pyplot as plt
+
+${FREE_YOMIKOMI}
+file_list = [
+    ${listStr}
+]
+
+namae = []
+averages = []
+for path in file_list:
+    values = yomikomi(path)
+    namae.append(path.split("/")[-1].replace(".csv", ""))
+    averages.append(sum(values) / len(values))
+
+plt.figure(figsize=(8, 3.5))
+plt.bar(range(len(namae)), averages, color="#3AABA8")
+plt.xticks(range(len(namae)), namae, rotation=45, ha="right")
+plt.grid(axis="y")
+plt.show()
+
+for n, a in zip(namae, averages):
+    print(n, "の平均:", round(a, 2))
 `;
 }
 
