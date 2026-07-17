@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v5.0 | スクーミー×Python</title>
+<title>教室の光環境ラボ v5.1 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -112,7 +112,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v5.0</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v5.1</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -569,12 +569,13 @@ print("フリーラボへようこそ！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v5.0 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v5.1 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v5.0";  // v5.0: 標準偏差・箱ひげ図・ヒストグラムを追加／STEP3を「くらべる」に再構成（レッスン1-13・体験1-10に通し番号化）
+const VERSION = "v5.1";  // v5.1: グラフの日本語フォント対応（BIZ UDPGothicサブセットを同梱／班名が□にならない）
+let JP_FONT_OK = false;
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
 
@@ -771,6 +772,25 @@ def _show_plot():
         js.document.getElementById(_plot_target).innerHTML = '<img src="data:image/png;base64,' + b64 + '">'
         plt.close("all")
 `);
+    // 日本語フォント（グラフのラベル用）。失敗してもグラフ自体は動くので致命的にしない
+    try {
+      st.textContent = "日本語フォントを読み込んでいます…";
+      const fr = await fetch("fonts/BIZUDPGothic-Regular-subset.ttf");
+      if (!fr.ok) throw new Error("HTTP " + fr.status);
+      const fbuf = new Uint8Array(await fr.arrayBuffer());
+      try { pyodide.FS.mkdir("fonts"); } catch (e) {}
+      pyodide.FS.writeFile("fonts/jp.ttf", fbuf);
+      await pyodide.runPythonAsync(`
+from matplotlib import font_manager
+font_manager.fontManager.addfont("fonts/jp.ttf")
+matplotlib.rcParams["font.family"] = "BIZ UDPGothic"
+matplotlib.rcParams["axes.unicode_minus"] = False
+`);
+      JP_FONT_OK = true;
+    } catch (e) {
+      JP_FONT_OK = false;
+      console.warn("日本語フォントの読み込みに失敗（グラフの日本語が□になります）:", e);
+    }
     // 取得済みデータを仮想ファイルとして配置
     try { pyodide.FS.mkdir("data"); } catch (e) {}
     for (const [n, txt] of Object.entries(lastResults)) if (txt !== null) pyodide.FS.writeFile("data/" + n, txt);
