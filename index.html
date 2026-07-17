@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v4.1 | スクーミー×Python</title>
+<title>教室の光環境ラボ v5.0 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -112,7 +112,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v4.1</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v5.0</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -149,7 +149,7 @@ print("こんにちは、スクーミー！")</textarea>
 <div class="paneR">
 <section>
   <h2>パート1：Pythonの基本 レッスン1〜6</h2>
-  <p>やり方：各レッスンの<b>「▶ このコードを試す」→ 左のコード欄で「実行」→ 結果を見る → 「変えてみよう」に挑戦</b>。レッスン1〜5は文法、6で集計します（データファイルの読み込み・グラフはSTEP2から）。</p>
+  <p>やり方：各レッスンの<b>「▶ このコードを試す」→ 左のコード欄で「実行」→ 結果を見る → 「変えてみよう」に挑戦</b>。レッスン1〜5は文法、6で集計とばらつき（標準偏差）を求めます（データファイルの読み込み・グラフはSTEP2から）。</p>
 
   <div class="lesson">
     <h3>レッスン1：print（表示する）</h3>
@@ -205,13 +205,16 @@ for v in values:
   </div>
 
   <div class="lesson">
-    <h3>レッスン6：個数・合計・最大・最小・平均</h3>
-    <pre>values = [512, 530, 498, 505, 521]
+    <h3>レッスン6：個数・合計・最大・最小・平均・標準偏差</h3>
+    <pre>import statistics
+
+values = [512, 530, 498, 505, 521]
 print("個数:", len(values))
-print("平均:", sum(values) / len(values))</pre>
-    <div class="kaisetsu"><b>解説</b>：リストから <code>len</code>（個数）・<code>sum</code>（合計）・<code>max/min</code>（最大/最小）を求める。平均は <b>合計 ÷ 個数</b>。数字で全体をつかむ、集計の基本。</div>
+print("平均:", sum(values) / len(values))
+print("標準偏差:", statistics.pstdev(values))</pre>
+    <div class="kaisetsu"><b>解説</b>：リストから <code>len</code>（個数）・<code>sum</code>（合計）・<code>max/min</code>（最大/最小）を求める。平均は <b>合計 ÷ 個数</b>。さらに <code>statistics.pstdev</code> で<b>標準偏差＝ばらつき</b>が出せる（平均からどれくらい散らばっているか／単位はデータと同じ）。<b>平均が同じでも、ばらつきが違えばデータの性格はまったく違う</b>。この「平均」と「ばらつき」の2つが分析の土台で、STEP2でこれを図にする。</div>
     <button class="act navy" onclick="setCode('ed1', L6)">▶ 集計してみる</button>
-    <div class="challenge"><b>変えてみよう</b>：リストの数字を増やしたり変えたりして、平均がどう変わるか比べよう。</div>
+    <div class="challenge"><b>変えてみよう</b>：リストを <code>[100, 900, 100, 900, 100]</code> のようにバラバラにすると標準偏差はどうなる？ 逆に全部同じ数字にすると？</div>
   </div>
 
 </section>
@@ -235,10 +238,10 @@ print("平均:", sum(values) / len(values))</pre>
   </div>
 
   <div class="lesson sc">
-    <h3>🍊 体験2：個数・合計・最大・最小・平均（レッスン6を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：①に貼った数字のリストで、<code>len</code>・<code>sum</code>・<code>max</code>・<code>min</code>・平均を出そう。<code>___</code> を自分で埋めよう。</div>
+    <h3>🍊 体験2：個数・合計・最大・最小・平均・標準偏差（レッスン6を参考に）</h3>
+    <div class="kaisetsu"><b>やること</b>：①に貼った数字のリストで、<code>len</code>・<code>sum</code>・<code>max</code>・<code>min</code>・平均・<b>標準偏差</b>を出そう。<code>___</code> を自分で埋めよう。</div>
     <button class="act navy" onclick="setCode('ed1', S2())">▶ ひな形を入れる</button>
-    <div class="challenge"><b>ヒント</b>：平均は <code>sum(values) / len(values)</code>。</div>
+    <div class="challenge"><b>ヒント</b>：平均は <code>sum(values) / len(values)</code>、標準偏差は <code>statistics.pstdev(values)</code>。</div>
   </div>
 
   <div class="lesson sc">
@@ -269,7 +272,7 @@ print("平均:", sum(values) / len(values))</pre>
 </div>
 <div class="paneR">
 <section>
-  <h2>パート1：データ分析の基本 レッスン7〜9（用意したデータ）——CSVを読み込んでグラフにする</h2>
+  <h2>パート1：データ分析の基本 レッスン7〜10（用意したデータ）——1つのデータを深く読む</h2>
   <p>ここでは<b>公開されている本物のデータ</b>を使います。気象庁が公開している、<b>甲府（山梨県）で実際に計測された太陽の光のデータ</b>です。</p>
 
   <h3>今日つかうデータ（実物がこれ！）</h3>
@@ -288,18 +291,26 @@ print("平均:", sum(values) / len(values))</pre>
 
   <div class="lesson" style="margin-top:12px">
     <h3>レッスン8：グラフ化 —— 数字の列を「見える」ようにする</h3>
-    <div class="kaisetsu"><b>解説</b>：使うのは<b>甲府・6月1日（晴れ）の太陽の光の強さ</b>。24個の数字を眺めても傾向は分からないが、<code>plt.plot(values)</code> で折れ線にすると「朝から強くなり昼にピーク、夜は0」が一瞬で見える。これが<b>可視化</b>。</div>
+    <div class="kaisetsu"><b>解説</b>：使うのは<b>甲府・6月1日（晴れ）の太陽の光の強さ</b>。24個の数字を眺めても傾向は分からないが、<code>plt.plot(values)</code> で折れ線にすると「朝から強くなり昼にピーク、夜は0」が一瞬で見える。これが<b>可視化</b>。さらに<b>タイトル・軸ラベル・縦軸の範囲</b>（<code>plt.title</code>／<code>plt.xlabel</code>／<code>plt.ylabel</code>／<code>plt.ylim</code>）まで付けて、はじめて「人に見せられるグラフ」になる。</div>
     <button class="act navy" onclick="setCode('ed2', L8)">▶ 晴れの日をグラフにする</button>
-    <div class="challenge"><b>変えてみよう</b>：FILE を <code>"data/kofu_kumori.csv"</code>（くもりの6月4日）に変えて、山の高さの違いを見よう。</div>
-    <div class="chakugan"><b>📊 着眼点</b>：「山の形」に注目。最大は何時ごろ？ 0になるのはいつ？ 形から1日の太陽の動きが読める。</div>
+    <div class="challenge"><b>変えてみよう</b>：FILE を <code>"data/kofu_kumori.csv"</code>（くもりの6月4日）に変えて、山の高さの違いを見よう。<code>plt.ylim</code> の数字も変えて見やすい範囲を探そう。</div>
+    <div class="chakugan"><b>📊 着眼点</b>：「山の形」に注目。最大は何時ごろ？ 0になるのはいつ？ 縦軸の範囲を変えると、同じデータでも印象が変わることにも注目。</div>
   </div>
 
   <div class="lesson">
-    <h3>レッスン9：グラフを仕上げる —— 縦軸・タイトル・基準線</h3>
-    <div class="kaisetsu"><b>解説</b>：グラフは描いて終わりじゃない。<b>タイトル・軸ラベル・縦軸の範囲</b>（<code>plt.ylim</code>）で読みやすく仕上げ、<b>基準線</b>（<code>plt.axhline</code>）を引くと「基準をこえた時間帯」が一目で分かる。1つのグラフを深く読む技術。</div>
-    <button class="act navy" onclick="setCode('ed2', L9)">▶ グラフを仕上げる</button>
-    <div class="challenge"><b>変えてみよう</b>：基準線を <code>1.0</code> に変えると、こえた時間は何時間になる？ <code>plt.ylim</code> の数字も変えて見やすい範囲を探そう。</div>
-    <div class="chakugan"><b>📊 着眼点</b>：基準線をこえている時間帯は、どこからどこまで？ 縦軸の範囲を変えると、同じデータでも印象が変わることにも注目。</div>
+    <h3>レッスン9：箱ひげ図 —— 最大・最小・真ん中を1つの図にする</h3>
+    <div class="kaisetsu"><b>解説</b>：折れ線は「時間の流れ」を見る図。<b>箱ひげ図</b>（<code>plt.boxplot</code>）は時間を捨てて、<b>データ全体がどのあたりに集まっているか</b>を見る図。STEP1のレッスン6で数字にした<b>最大・最小</b>と<b>真ん中（中央値）</b>が、そのまま図になる。<br><b>読み方</b>：箱の中の線＝<b>中央値</b>（まん中の値）／箱の下端・上端＝データの下から25%・75%の位置／ひげの先＝<b>最小・最大</b>／○＝とびぬけた値（外れ値）。<b>箱が短い＝データが集まっている＝安定</b>。</div>
+    <button class="act navy" onclick="setCode('ed2', L9)">▶ 箱ひげ図をかく</button>
+    <div class="challenge"><b>変えてみよう</b>：FILE を <code>"data/kofu_kumori.csv"</code> に変えると、箱の位置と長さはどう変わる？</div>
+    <div class="chakugan"><b>📊 着眼点</b>：箱はグラフのどのあたりにある？ 中央値は平均とズレている？ 折れ線と見くらべて「同じデータでも図を変えると分かることが変わる」ことを確かめよう。</div>
+  </div>
+
+  <div class="lesson">
+    <h3>レッスン10：ヒストグラム —— ばらつき（標準偏差）を図にする</h3>
+    <div class="kaisetsu"><b>解説</b>：<b>ヒストグラム</b>（<code>plt.hist</code>）は「その値が何回出たか」を数えて棒にした図。STEP1のレッスン6で数字にした<b>標準偏差＝ばらつき</b>が、そのまま形になって見える。<b>山がとがっている＝標準偏差が小さい＝安定</b>、<b>横に広がっている＝標準偏差が大きい＝バラバラ</b>。<code>bins</code>（棒の数）を変えると見え方が変わる。</div>
+    <button class="act navy" onclick="setCode('ed2', L10)">▶ ヒストグラムをかく</button>
+    <div class="challenge"><b>変えてみよう</b>：<code>bins</code> を <code>4</code> や <code>20</code> に変えると形はどう変わる？ 印象が変わりすぎないか確かめよう。</div>
+    <div class="chakugan"><b>📊 着眼点</b>：印刷された標準偏差の数字と、山の広がりを見くらべよう。「ばらつきが大きい」を、数字と図の両方で言えるようになるのがゴール。</div>
   </div>
 </section>
 
@@ -333,19 +344,35 @@ print("平均:", sum(values) / len(values))</pre>
   </div>
 
   <div class="lesson sc">
-    <h3>🍊 体験5：自分の班のCSVを読み込んで表示する（レッスン7を参考に）</h3>
+    <h3>🍊 体験4：自分の班のCSVを読み込んで表示する（レッスン7を参考に）</h3>
     <div class="kaisetsu"><b>やること</b>：<b>レッスン7</b>を思い出して、自分の班のCSVを読み込み、<code>print(values)</code> で表示しよう。<br>下の「▶ ひな形を入れる」で骨組みが入ります。<b><code>___</code> の部分を自分で書いて</b>完成させよう。</div>
-    <button class="act navy" onclick="setCode('ed2', S5())">▶ ひな形を入れる</button>
+    <button class="act navy" onclick="setCode('ed2', S4())">▶ ひな形を入れる</button>
     <div class="challenge"><b>ヒント</b>：レッスン7の <code>values.append(float(v))</code> と同じ。</div>
   </div>
 
   <div class="lesson sc">
-    <h3>🍊 体験6：自分の班の記録をグラフ化する（レッスン8・9を参考に）</h3>
+    <h3>🍊 体験5：自分の班の記録をグラフ化する（レッスン8を参考に）</h3>
     <div class="kaisetsu"><b>やること</b>：アップロードした自分の班の計測記録を折れ線グラフに。<br><b>たてじく（縦軸）は <code>plt.ylim</code> で自分で決められる</b>。数字を変えて見やすい範囲を探そう。<br>下の「▶ ひな形を入れる」で骨組みが入ります。<b><code>___</code> の部分を自分で書いて</b>完成させよう。</div>
-    <button class="act navy" onclick="setCode('ed2', S6())">▶ ひな形を入れる</button>
-    <div class="challenge"><b>ヒント</b>：レッスン8の <code>plt.plot(values)</code>、レッスン9の <code>plt.ylim(0, 4)</code> と同じ形。ylim は <code>0, 100</code> くらいから試そう。</div>
+    <button class="act navy" onclick="setCode('ed2', S5())">▶ ひな形を入れる</button>
+    <div class="challenge"><b>ヒント</b>：レッスン8の <code>plt.plot(values)</code> と <code>plt.ylim(0, 4)</code> と同じ形。ylim は <code>0, 100</code> くらいから試そう。</div>
     <div class="challenge"><b>変えてみよう</b>：グラフから「センサーの前で何かが動いた瞬間」は見つかる？</div>
     <div class="chakugan"><b>📊 着眼点</b>：線が動いた瞬間＝教室で何かが起きた瞬間。安定している区間と、ゆれた区間を探そう。</div>
+  </div>
+
+  <div class="lesson sc">
+    <h3>🍊 体験6：自分の班の箱ひげ図をかく（レッスン9を参考に）</h3>
+    <div class="kaisetsu"><b>やること</b>：自分の班の計測記録を<b>箱ひげ図</b>に。折れ線では「時間の流れ」、箱ひげ図では「<b>どのあたりの明るさに集まっているか</b>」が見える。<br>下の「▶ ひな形を入れる」で骨組みが入ります。<b><code>___</code> の部分を自分で書いて</b>完成させよう。</div>
+    <button class="act navy" onclick="setCode('ed2', S6())">▶ ひな形を入れる</button>
+    <div class="challenge"><b>ヒント</b>：レッスン9の <code>plt.boxplot(values)</code> と同じ形。</div>
+    <div class="chakugan"><b>📊 着眼点</b>：箱は長い？ 短い？ 短いほど「ずっと同じ明るさだった」ということ。○（外れ値）が出ていたら、そのとき教室で何が起きた？</div>
+  </div>
+
+  <div class="lesson sc">
+    <h3>🍊 体験7：自分の班のヒストグラムをかく（レッスン10を参考に）</h3>
+    <div class="kaisetsu"><b>やること</b>：自分の班の計測記録を<b>ヒストグラム</b>に。あわせて<b>標準偏差</b>も出して、「ばらつき」を<b>数字と図の両方</b>で確かめよう。<br>下の「▶ ひな形を入れる」で骨組みが入ります。<b><code>___</code> の部分を自分で書いて</b>完成させよう。</div>
+    <button class="act navy" onclick="setCode('ed2', S7())">▶ ひな形を入れる</button>
+    <div class="challenge"><b>ヒント</b>：標準偏差は <code>statistics.pstdev(values)</code>（レッスン6）、ヒストグラムは <code>plt.hist(values, bins=8)</code>（レッスン10）。</div>
+    <div class="chakugan"><b>📊 着眼点</b>：山は1つ？ それとも2つに分かれている？ 2つに分かれていたら「明るい時間帯」と「暗い時間帯」があったのかもしれない。</div>
   </div>
 
 </section>
@@ -369,38 +396,30 @@ print("平均:", sum(values) / len(values))</pre>
 </div>
 <div class="paneR">
 <section>
-  <h2>パート1：データ分析の応用 レッスン10〜13（用意したデータ）——「くらべる」を極める</h2>
+  <h2>パート1：データ分析の応用 レッスン11〜13（用意したデータ）——「くらべる」を極める</h2>
 
   <div class="lesson">
-    <h3>レッスン10：くらべる —— 2つを重ねる</h3>
-    <div class="kaisetsu"><b>解説</b>：ここからは<b>比較</b>。晴れ（6/1）とくもり（6/4）を同じグラフに重ねると差が一目で分かる。<code>label=</code> と <code>plt.legend()</code> で凡例を付けるのがマナー。</div>
-    <button class="act navy" onclick="setCode('ed3', L10)">▶ 晴れ vs くもり を重ねる</button>
-    <div class="challenge"><b>変えてみよう</b>：「晴れはくもりの何倍か」を print で表示する行を追加しよう（合計どうしで割る）。</div>
-    <div class="chakugan"><b>📊 着眼点</b>：2本の線の「高さの差」と「形の違い」。どの時間帯で差が一番大きい？</div>
+    <h3>レッスン11：くらべる —— 箱ひげ図を並べる</h3>
+    <div class="kaisetsu"><b>解説</b>：ここからは<b>比較</b>。STEP2で1つのデータをかいた<b>箱ひげ図</b>は、<b>並べたときにいちばん力を発揮する</b>。晴れ（6/1）とくもり（6/4）を並べると、「箱の高さ＝どのくらい明るいか」「箱の長さ＝ばらつき」が同時にくらべられる。折れ線を2本重ねるより、差がはっきり見える。</div>
+    <button class="act navy" onclick="setCode('ed3', L11)">▶ 晴れ vs くもり を箱ひげ図で並べる</button>
+    <div class="challenge"><b>変えてみよう</b>：<code>data</code> に <code>yomikomi("data/kofu_1gatsu.csv")</code> を足して、3つ並べてみよう（<code>labels</code> にも名前を追加）。</div>
+    <div class="chakugan"><b>📊 着眼点</b>：箱の<b>位置</b>（高さ）と<b>長さ</b>、2つを見る。晴れの箱はくもりよりどれくらい上にある？ どちらの箱が長い＝ばらついている？</div>
   </div>
 
   <div class="lesson">
-    <h3>レッスン11：どちらが安定？ —— ばらつきを数値にする</h3>
-    <div class="kaisetsu"><b>解説</b>：甲府の<b>1月</b>と<b>6月（梅雨）</b>、毎日の日照時間をくらべる。平均だけでなく<b>範囲＝最大−最小</b>を出すと「安定して晴れる月」が数値で言える。範囲が小さい＝毎日似ている＝安定。</div>
-    <button class="act navy" onclick="setCode('ed3', L11)">▶ 1月と6月をくらべる</button>
-    <div class="challenge"><b>変えてみよう</b>：範囲（max - min）をそれぞれ print して、どちらが安定か数値で言おう。</div>
-    <div class="chakugan"><b>📊 着眼点</b>：平均が近くても「ばらつき」は大きく違うことがある。範囲（最大−最小）が小さい＝毎日似ている＝安定。</div>
+    <h3>レッスン12：どちらが安定？ —— ヒストグラムを重ねて、標準偏差でくらべる</h3>
+    <div class="kaisetsu"><b>解説</b>：甲府の<b>1月</b>と<b>6月（梅雨）</b>、毎日の日照時間をくらべる。<b>ヒストグラムを重ねる</b>（<code>alpha=0.5</code> で半透明にすると重なりが見える）と分布の形の違いが見え、<b>標準偏差</b>（レッスン6）を出すと「<b>どちらが安定して晴れる月か</b>」が数値で言える。<b>図で示して、数字で裏づける</b>——これが分析の型。</div>
+    <button class="act navy" onclick="setCode('ed3', L12)">▶ 1月と6月をヒストグラムでくらべる</button>
+    <div class="challenge"><b>変えてみよう</b>：<code>bins</code> の数を変えると結論は変わる？ 標準偏差の数字は変わらないことも確かめよう。</div>
+    <div class="chakugan"><b>📊 着眼点</b>：平均が近くても「ばらつき」は大きく違うことがある。標準偏差が小さい＝毎日似ている＝安定。図の形と数字が一致しているか確かめよう。</div>
   </div>
 
   <div class="lesson">
-    <h3>レッスン12：たくさんのファイルをforで一気に処理する</h3>
+    <h3>レッスン13：たくさんのファイルをforで一気に処理する</h3>
     <div class="kaisetsu"><b>解説</b>：ファイルが増えても、<b>ファイル名のリストをforで回せば</b>何個でも一気に処理できる。これがSTEP3パート2で「9チーム分を一発で比較」する鍵になる。</div>
-    <button class="act navy" onclick="setCode('ed3', L12)">▶ 2つのファイルをforで処理する</button>
+    <button class="act navy" onclick="setCode('ed3', L13)">▶ 2つのファイルをforで処理する</button>
     <div class="challenge"><b>変えてみよう</b>：ファイル名リストに <code>"kofu_1gatsu"</code> と <code>"kofu_6gatsu"</code> を追加して4つ一気に処理しよう。</div>
     <div class="chakugan"><b>📊 着眼点</b>：データが増えてもコードの行数は増えない。「くり返しに任せる」のがプログラミングの強み。</div>
-  </div>
-
-  <div class="lesson">
-    <h3>レッスン13：棒グラフと「比率」で判定する</h3>
-    <div class="kaisetsu"><b>解説</b>：比較の仕上げ。複数の平均を<b>棒グラフ</b>（<code>plt.bar</code>）で並べ、<b>最大÷最小の比率</b>を計算して「差が大きすぎないか」をifで自動判定する。学校の教室には「最大照度と最小照度の比は<b>20:1以内</b>が望ましい」という基準（学校環境衛生基準）があり、STEP3パート2でこの判定を本番で使う。</div>
-    <button class="act navy" onclick="setCode('ed3', L13)">▶ 棒グラフ＋比率judge</button>
-    <div class="challenge"><b>変えてみよう</b>：判定のしきい値 <code>20</code> を <code>2</code> に変えると結果はどうなる？</div>
-    <div class="chakugan"><b>📊 着眼点</b>：「差が大きい」を感覚ではなく、比率という1つの数字で判定できる。そのしきい値を決めるのは人間。</div>
   </div>
 </section>
 
@@ -437,35 +456,29 @@ print("平均:", sum(values) / len(values))</pre>
   <div class="chakugan" style="margin-top:14px"><b>🤔 考えてみよう</b>：分析のまえに、直感で予想しよう。窓側と廊下側、どちらがどれくらい明るい？ 一番明るいのはどの班？</div>
 
   <div class="lesson sc" style="margin-top:12px">
-    <h3>🍊 体験7：自分の班と別の班をくらべる</h3>
-    <div class="kaisetsu"><b>やること</b>：自分の班のデータと、別の班のデータを重ねて、場所による明るさの差を見る（レッスン10のやり方）。上の②で2つチェックしよう。</div>
-    <button class="act navy" onclick="setCode('ed3', S7())">▶ 自分の班 vs 別の班 を重ねる</button>
-    <div class="challenge"><b>変えてみよう</b>：3つ目のデータもチェックして、コードに3本目を追加してみよう。</div>
-    <div class="chakugan"><b>📊 着眼点</b>：場所によって差はどれくらい？ 窓からの距離と明るさに関係はありそう？</div>
+    <h3>🍊 体験8：自分の班と他の班を、箱ひげ図でくらべる（レッスン11を参考に）</h3>
+    <div class="kaisetsu"><b>やること</b>：上の②で選んだ班の箱ひげ図を<b>ぜんぶ並べて</b>、場所による明るさの差を見る。2つでも9班ぜんぶでもOK。<br><b>箱の高さ＝どのくらい明るいか</b>、<b>箱の長さ＝ばらつき</b>。自分の班はどの位置にいる？</div>
+    <button class="act navy" onclick="setCode('ed3', S8())">▶ 選んだ班を箱ひげ図で並べる</button>
+    <div class="challenge"><b>変えてみよう</b>：②のチェックを増やすと、そのままコードに入る。9班ぜんぶ並べてみよう。</div>
+    <div class="chakugan"><b>📊 着眼点</b>：いちばん箱が高い班・低い班はどこ？ 窓からの距離と関係はありそう？ 箱が長い班は「途中で明るさが変わった」のかもしれない。</div>
   </div>
 
   <div class="lesson sc">
-    <h3>🍊 体験8：自分の班と、となりの班をくらべる</h3>
-    <div class="kaisetsu"><b>やること</b>：上で選んだデータのうち、最初の2つを重ねて比較＋範囲を見る（レッスン11の応用）。</div>
-    <button class="act navy" onclick="setCode('ed3', S8())">▶ 選んだ2つをくらべる</button>
-    <div class="challenge"><b>変えてみよう</b>：上のチェックを変えると、コードに入るデータも変わる。</div>
+    <h3>🍊 体験9：自分の班と他の班を、ヒストグラムでくらべる（レッスン12を参考に）</h3>
+    <div class="kaisetsu"><b>やること</b>：選んだ班のヒストグラムを<b>重ねて</b>、あわせて<b>標準偏差</b>も出す。「どの班がいちばん安定していたか」を<b>図と数字の両方</b>で言えるようにしよう。</div>
+    <button class="act navy" onclick="setCode('ed3', S9())">▶ 選んだ班をヒストグラムで重ねる</button>
+    <div class="challenge"><b>変えてみよう</b>：<code>bins</code> や <code>alpha</code>（透明度）を変えて、いちばん見やすい形を探そう。</div>
+    <div class="chakugan"><b>📊 着眼点</b>：山の位置がずれている＝明るさが違う。山の広がりが違う＝安定度が違う。標準偏差がいちばん小さい班はどこ？</div>
   </div>
 
   <div class="lesson sc">
-    <h3>🍊 体験9：9チームぜんぶをforで一気に読む</h3>
-    <div class="kaisetsu"><b>やること</b>：レッスン12の「forで一気に読む」を、選んだデータぜんぶに適用。各データの平均が一発で出る。</div>
-    <button class="act navy" onclick="setCode('ed3', S9())">▶ 選んだデータの平均を一気に出す</button>
+    <h3>🍊 体験10：9チームぜんぶをforで一気に読む（レッスン13を参考に）</h3>
+    <div class="kaisetsu"><b>やること</b>：レッスン13の「forで一気に読む」を、選んだデータぜんぶに適用。各班の<b>平均と標準偏差</b>が一発で出る。</div>
+    <button class="act navy" onclick="setCode('ed3', S10())">▶ 選んだデータを一気に集計する</button>
     <div class="challenge"><b>変えてみよう</b>：平均といっしょに最大・最小も表示しよう。</div>
   </div>
 
-  <div class="lesson sc">
-    <h3>🍊 体験10：教室の明るさマップを棒グラフに＋基準で診断</h3>
-    <div class="kaisetsu"><b>やること</b>：選んだデータの平均を棒グラフで並べ、最大÷最小の比率で「場所による差が大きすぎないか」を判定（基準20:1）。</div>
-    <button class="act navy" onclick="setCode('ed3', S10())">▶ 棒グラフ＋診断</button>
-    <div class="challenge"><b>変えてみよう</b>：一番明るいデータと暗いデータはどれ？　仮説と合っていた？</div>
-  </div>
-
-  <div class="chakugan"><b>🤔 考えてみよう</b>：予想と結果はどれくらい違った？ 平均や比率の数値を根拠に、そう言える理由を説明してみよう。</div>
+  <div class="chakugan"><b>🤔 考えてみよう</b>：予想と結果はどれくらい違った？ <b>箱ひげ図・ヒストグラム・標準偏差の数値</b>を根拠に、「どの班がいちばん明るいか」「どの班がいちばん安定していたか」を、そう言える理由といっしょに説明してみよう。</div>
 </section>
 </div>
 </div>
@@ -534,16 +547,18 @@ print("フリーラボへようこそ！")</textarea>
       <tr><td><code>len(values)</code> / <code>sum(values)</code></td><td>個数 ／ 合計（レッスン6）</td></tr>
       <tr><td><code>max(values)</code> / <code>min(values)</code></td><td>最大 ／ 最小（レッスン6）</td></tr>
       <tr><td><code>sum(values) / len(values)</code></td><td>平均（レッスン6）</td></tr>
+      <tr><td><code>statistics.pstdev(values)</code></td><td>標準偏差＝ばらつき（レッスン6）※<code>import statistics</code> が必要</td></tr>
       <tr><td><code>round(x, 2)</code></td><td>小数2桁に丸める</td></tr>
       <tr><td><code>for v in values:</code></td><td>1件ずつくり返す（レッスン4）</td></tr>
       <tr><td><code>if v >= 500:</code></td><td>判定して分岐（レッスン5）</td></tr>
       <tr><td>CSVの読み込み</td><td>「📄 読み込んで表示」テンプレの定型を使おう（レッスン7）</td></tr>
       <tr><td><code>plt.plot(values)</code></td><td>折れ線グラフ（レッスン8）</td></tr>
-      <tr><td><code>plt.bar(名前リスト, 値リスト)</code></td><td>棒グラフ（レッスン13）</td></tr>
-      <tr><td><code>plt.ylim(0, 100)</code></td><td>縦軸の範囲を決める（レッスン9）</td></tr>
-      <tr><td><code>plt.axhline(値, color="red", linestyle="--")</code></td><td>基準線（横線）を引く（レッスン9）</td></tr>
-      <tr><td><code>plt.title("...")</code> / <code>plt.xlabel</code> / <code>plt.ylabel</code></td><td>タイトル・軸ラベル（レッスン9）</td></tr>
-      <tr><td><code>label="名前"</code> ＋ <code>plt.legend()</code></td><td>凡例を付ける（レッスン10）</td></tr>
+      <tr><td><code>plt.boxplot(values)</code></td><td>箱ひげ図（レッスン9）／並べるなら <code>plt.boxplot([a, b], labels=["A", "B"])</code>（レッスン11）</td></tr>
+      <tr><td><code>plt.hist(values, bins=8)</code></td><td>ヒストグラム（レッスン10）／重ねるなら <code>alpha=0.5</code>（レッスン12）</td></tr>
+      <tr><td><code>plt.ylim(0, 100)</code></td><td>縦軸の範囲を決める（レッスン8）</td></tr>
+      <tr><td><code>plt.title("...")</code> / <code>plt.xlabel</code> / <code>plt.ylabel</code></td><td>タイトル・軸ラベル（レッスン8）</td></tr>
+      <tr><td><code>label="名前"</code> ＋ <code>plt.legend()</code></td><td>凡例を付ける（レッスン12）</td></tr>
+      <tr><td><code>plt.bar(名前リスト, 値リスト)</code></td><td>棒グラフ（フリーラボのテンプレで使用）</td></tr>
       <tr><td><code>plt.grid(True)</code> → <code>plt.show()</code></td><td>目盛り線 → グラフ表示</td></tr>
     </table>
   </div>
@@ -554,12 +569,12 @@ print("フリーラボへようこそ！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v4.1 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v5.0 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v4.1";  // v4.1: 体験6を虫食い（___）方式に変更
+const VERSION = "v5.0";  // v5.0: 標準偏差・箱ひげ図・ヒストグラムを追加／STEP3を「くらべる」に再構成（レッスン1-13・体験1-10に通し番号化）
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
 
@@ -848,7 +863,9 @@ for v in values:
         print(v, "暗い")
 `;
 
-const L6 = `# レッスン6: 個数・合計・最大・最小・平均
+const L6 = `# レッスン6: 個数・合計・最大・最小・平均・標準偏差
+import statistics
+
 values = [512, 530, 498, 505, 521]
 
 print("個数:", len(values))
@@ -856,6 +873,9 @@ print("合計:", sum(values))
 print("最大:", max(values))
 print("最小:", min(values))
 print("平均:", sum(values) / len(values))
+
+# ばらつき（標準偏差）= 平均から、どれくらい散らばっているか
+print("標準偏差:", round(statistics.pstdev(values), 2))
 `;
 
 const L7 = `# レッスン7: CSVファイルを読み込んで表示する
@@ -918,7 +938,9 @@ print("さいしょの値:", values[0])
 function S2() {
   const lst = serialList1();
   const head = lst ? "" : "# まず上の「①」に数字を貼り付けてから、もう一度ボタンを押そう\n";
-  return `# 体験2: 個数・合計・最大・最小・平均（レッスン6を参考に）
+  return `# 体験2: 個数・合計・最大・最小・平均・標準偏差（レッスン6を参考に）
+import statistics
+
 ${head}values = [${lst || "___"}]
 
 print("個数:", len(values))
@@ -926,6 +948,7 @@ print("合計:", ___)                  # ← sum を使おう
 print("最大:", ___)                  # ← max を使おう
 print("最小:", ___)                  # ← min を使おう
 print("平均:", ___)                  # ← sum(values) / len(values)
+print("標準偏差:", ___)              # ← statistics.pstdev(values) （ばらつき）
 `;
 }
 function S3() {
@@ -945,10 +968,10 @@ for v in values:
 // ============================================================
 // STEP2 パート2（アップロードしたCSVを読む）
 // ============================================================
-function S5() {
+function S4() {
   const name = selPart[2];
   if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
-  return `# 体験5: 自分の班のCSVを読み込んで表示する（レッスン7を参考に）
+  return `# 体験4: 自分の班のCSVを読み込んで表示する（レッスン7を参考に）
 FILE = "data/uploads/${name}.csv"
 
 values = []
@@ -982,13 +1005,19 @@ print("最大:", max(values))
 
 plt.figure(figsize=(8, 3.5))
 plt.plot(range(1, len(values) + 1), values)
-plt.xlabel("Hour")
-plt.ylabel("Solar radiation (MJ/m2)")
+
+plt.title("Kofu 6/1 (hare)")             # タイトル
+plt.xlabel("Hour")                       # よこじくの名前
+plt.ylabel("Solar radiation (MJ/m2)")    # たてじくの名前
+plt.ylim(0, 4)                           # たてじくの範囲は自分で決める
+
 plt.grid(True)
 plt.show()
 `;
-const L9 = `# レッスン9: グラフを仕上げる（縦軸・タイトル・基準線）
+const L9 = `# レッスン9: 箱ひげ図（甲府・6月1日(晴れ)）
+# 折れ線は「時間の流れ」、箱ひげ図は「どのあたりに集まっているか」を見る図
 import matplotlib.pyplot as plt
+import statistics
 
 FILE = "data/kofu_hare.csv"
 
@@ -999,33 +1028,55 @@ with open(FILE) as f:
         t, v = line.strip().split(",")
         values.append(float(v))
 
-plt.figure(figsize=(8, 3.5))
-plt.plot(range(1, len(values) + 1), values)
+# STEP1のレッスン6で「数字」にしたことが、そのまま「図」になる
+print("最大:", max(values))
+print("最小:", min(values))
+print("中央値:", statistics.median(values))   # まん中の値 = 箱の中の線
 
-plt.title("Kofu 6/1 (hare)")        # タイトル
-plt.xlabel("Hour")                  # よこじくの名前
-plt.ylabel("Solar radiation")       # たてじくの名前
-plt.ylim(0, 4)                      # たてじくの範囲は自分で決める
-plt.axhline(2.0, color="red", linestyle="--")   # 基準線（横線）
-
-plt.grid(True)
+plt.figure(figsize=(4, 4))
+plt.boxplot(values, labels=["hare 6/1"])
+plt.ylabel("Solar radiation (MJ/m2)")
+plt.grid(axis="y")
 plt.show()
 
-# 基準線をこえた時間が何時間あるか数える
-kosu = 0
-for v in values:
-    if v >= 2.0:
-        kosu = kosu + 1
-print("2.0以上だった時間:", kosu, "時間")
+# 読み方: 箱の中の線=中央値 / 箱の下端・上端=下から25%・75%の位置
+#         ひげの先=最小・最大 / ○=とびぬけた値（外れ値）
+`;
+const L10 = `# レッスン10: ヒストグラム（甲府・6月1日(晴れ)）
+# 「その値が何回出たか」を数えて棒にした図 = ばらつきが形になって見える
+import matplotlib.pyplot as plt
+import statistics
+
+FILE = "data/kofu_hare.csv"
+
+values = []
+with open(FILE) as f:
+    next(f)
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(float(v))
+
+print("平均:", round(sum(values) / len(values), 2))
+print("標準偏差:", round(statistics.pstdev(values), 2))   # レッスン6と同じ
+
+plt.figure(figsize=(6, 3.5))
+plt.hist(values, bins=8)          # bins = 棒の数。変えて形をくらべよう
+plt.xlabel("Solar radiation (MJ/m2)")
+plt.ylabel("Count")
+plt.grid(axis="y")
+plt.show()
+
+# 山がとがっている = 標準偏差が小さい = 安定
+# 横に広がっている = 標準偏差が大きい = バラバラ
 `;
 
 // ============================================================
 // STEP2 パート2（スクーミーのデータで体験）
 // ============================================================
-function S6() {
+function S5() {
   const name = selPart[2];
   if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
-  return `# 体験6: 選んだデータ「${name}」をグラフ化（レッスン8・9を参考に）
+  return `# 体験5: 選んだデータ「${name}」をグラフ化（レッスン8を参考に）
 import matplotlib.pyplot as plt
 
 FILE = "data/uploads/${name}.csv"
@@ -1035,7 +1086,7 @@ with open(FILE) as f:
     next(f)
     for line in f:
         t, v = line.strip().split(",")
-        values.append(___)           # ← 体験5と同じ。float(v) を入れよう
+        values.append(___)           # ← 体験4と同じ。float(v) を入れよう
 
 print("データの数:", len(values), "個")
 print("平均:", round(sum(values) / len(values), 2))
@@ -1046,48 +1097,77 @@ plt.xlabel("Number")
 plt.ylabel("Brightness")
 
 # たてじくの範囲を自分で決められる（数字を変えてOK）
-plt.ylim(___, ___)                   # ← レッスン9を参考に。たてじくの範囲を自分で決めよう
+plt.ylim(___, ___)                   # ← レッスン8を参考に。たてじくの範囲を自分で決めよう
 
 plt.grid(True)
 plt.show()
 `;
 }
-function S7() {
-  const names = selMulti;
-  if (names.length < 2) return "# 上の「② くらべるデータ」で2つ以上えらんでください（体験7は2つのデータが必要）";
-  const a = names[0], b = names[1];
-  return `# 体験7: 「${a}」と「${b}」をくらべる
+function S6() {
+  const name = selPart[2];
+  if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
+  return `# 体験6: 選んだデータ「${name}」の箱ひげ図（レッスン9を参考に）
 import matplotlib.pyplot as plt
+import statistics
 
-def yomikomi(path):
-    values = []
-    with open(path) as f:
-        next(f)
-        for line in f:
-            t, v = line.strip().split(",")
-            values.append(float(v))
-    return values
+FILE = "data/uploads/${name}.csv"
 
-x = yomikomi("data/uploads/${a}.csv")
-y = yomikomi("data/uploads/${b}.csv")
+values = []
+with open(FILE) as f:
+    next(f)
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(___)           # ← 体験4と同じ。float(v) を入れよう
 
-print("${a} の平均:", round(sum(x)/len(x), 2))
-print("${b} の平均:", round(sum(y)/len(y), 2))
+print("最大:", max(values))
+print("最小:", min(values))
+print("中央値:", statistics.median(values))
 
-plt.figure(figsize=(8, 3.5))
-plt.plot(x, label="${a}")
-plt.plot(y, label="${b}")
-plt.legend()
-plt.grid(True)
+plt.figure(figsize=(4, 4))
+plt.boxplot(___, labels=["${name}"])      # ← レッスン9を参考に。values を入れよう
+plt.ylabel("Brightness")
+plt.grid(axis="y")
 plt.show()
+
+# 箱が短い = ずっと同じ明るさだった / ○ = とびぬけた値（外れ値）
+`;
+}
+function S7() {
+  const name = selPart[2];
+  if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
+  return `# 体験7: 選んだデータ「${name}」のヒストグラム（レッスン10を参考に）
+import matplotlib.pyplot as plt
+import statistics
+
+FILE = "data/uploads/${name}.csv"
+
+values = []
+with open(FILE) as f:
+    next(f)
+    for line in f:
+        t, v = line.strip().split(",")
+        values.append(___)           # ← 体験4と同じ。float(v) を入れよう
+
+print("平均:", round(sum(values) / len(values), 2))
+print("標準偏差:", ___)              # ← レッスン6・10を参考に。round(statistics.pstdev(values), 2)
+
+plt.figure(figsize=(6, 3.5))
+plt.hist(values, bins=___)           # ← 棒の数を自分で決めよう（8くらいから）
+plt.xlabel("Brightness")
+plt.ylabel("Count")
+plt.grid(axis="y")
+plt.show()
+
+# 山がとがっている = ばらつきが小さい = 安定
 `;
 }
 
 // ============================================================
 // STEP3 パート1（用意したデータで「くらべる」応用）
 // ============================================================
-const L10 = `# レッスン10: 晴れ(6/1) と くもり(6/4) をくらべる（重ねる）
+const L11 = `# レッスン11: くらべる —— 晴れ(6/1) と くもり(6/4) の箱ひげ図を並べる
 import matplotlib.pyplot as plt
+import statistics
 
 def yomikomi(path):              # 読み込みを関数にまとめた
     values = []
@@ -1101,20 +1181,25 @@ def yomikomi(path):              # 読み込みを関数にまとめた
 hare   = yomikomi("data/kofu_hare.csv")
 kumori = yomikomi("data/kofu_kumori.csv")
 
-print("晴れの合計:", round(sum(hare), 2))
-print("くもりの合計:", round(sum(kumori), 2))
-# 変えてみよう: 「晴れはくもりの何倍か」をここに print しよう
+print("晴れ  の中央値:", statistics.median(hare))
+print("くもりの中央値:", statistics.median(kumori))
 
-plt.figure(figsize=(8, 3.5))
-plt.plot(range(1, len(hare) + 1), hare, label="hare 6/1")
-plt.plot(range(1, len(kumori) + 1), kumori, label="kumori 6/4")
-plt.legend()
-plt.xlabel("Hour")
-plt.grid(True)
+data   = [hare, kumori]
+labels = ["hare 6/1", "kumori 6/4"]
+
+plt.figure(figsize=(5, 4))
+plt.boxplot(data, labels=labels)
+plt.ylabel("Solar radiation (MJ/m2)")
+plt.grid(axis="y")
 plt.show()
+
+# 変えてみよう: data に yomikomi("data/kofu_1gatsu.csv") を足して3つ並べる
+#              （labels にも名前を追加すること）
 `;
-const L11 = `# レッスン11: 1月と6月、どちらが「安定して晴れる」？
+const L12 = `# レッスン12: どちらが「安定して晴れる」？
+# 1月と6月(梅雨)のヒストグラムを重ねて、標準偏差でくらべる
 import matplotlib.pyplot as plt
+import statistics
 
 def yomikomi(path):
     values = []
@@ -1128,20 +1213,23 @@ def yomikomi(path):
 jan = yomikomi("data/kofu_1gatsu.csv")   # 1月・31日分
 jun = yomikomi("data/kofu_6gatsu.csv")   # 6月・20日分（梅雨）
 
-print("1月の平均:", round(sum(jan) / len(jan), 1), "時間")
-print("6月の平均:", round(sum(jun) / len(jun), 1), "時間")
-# 変えてみよう: 範囲（max - min）をそれぞれ print しよう
+print("1月: 平均", round(sum(jan) / len(jan), 1), "時間 / 標準偏差", round(statistics.pstdev(jan), 2))
+print("6月: 平均", round(sum(jun) / len(jun), 1), "時間 / 標準偏差", round(statistics.pstdev(jun), 2))
 
-plt.figure(figsize=(8, 3.5))
-plt.plot(jan, label="Jan")
-plt.plot(jun, label="Jun")
+plt.figure(figsize=(7, 3.5))
+plt.hist(jan, bins=8, alpha=0.5, label="Jan")   # alpha=0.5 で半透明 → 重なりが見える
+plt.hist(jun, bins=8, alpha=0.5, label="Jun")
 plt.legend()
-plt.xlabel("Day")
-plt.ylabel("Sunshine (hours)")
-plt.grid(True)
+plt.xlabel("Sunshine (hours)")
+plt.ylabel("Count")
+plt.grid(axis="y")
 plt.show()
+
+# 標準偏差が小さいほう = 毎日似ている = 安定して晴れる月
 `;
-const L12 = `# レッスン12: ファイル名のリストをforで回して、一気に処理する
+const L13 = `# レッスン13: ファイル名のリストをforで回して、一気に処理する
+import statistics
+
 def yomikomi(path):
     values = []
     with open(path) as f:
@@ -1156,42 +1244,10 @@ file_list = ["kofu_hare", "kofu_kumori"]
 
 for name in file_list:
     values = yomikomi("data/" + name + ".csv")
-    print(name, "の平均:", round(sum(values) / len(values), 2))
+    print(name, "の平均:", round(sum(values) / len(values), 2),
+          " 標準偏差:", round(statistics.pstdev(values), 2))
 
 # 変えてみよう: file_list に "kofu_1gatsu", "kofu_6gatsu" を追加
-`;
-const L13 = `# レッスン13: 棒グラフ + 比率で判定する
-import matplotlib.pyplot as plt
-
-def yomikomi(path):
-    values = []
-    with open(path) as f:
-        next(f)
-        for line in f:
-            t, v = line.strip().split(",")
-            values.append(float(v))
-    return values
-
-hare   = yomikomi("data/kofu_hare.csv")
-kumori = yomikomi("data/kofu_kumori.csv")
-
-avg_hare = sum(hare) / len(hare)
-avg_kumori = sum(kumori) / len(kumori)
-
-plt.figure(figsize=(6, 3.5))
-plt.bar(["hare", "kumori"], [avg_hare, avg_kumori], color="#3AABA8")
-plt.ylabel("Average")
-plt.grid(axis="y")
-plt.show()
-
-# 最大÷最小の「比率」で差の大きさを1つの数字にする
-hiritsu = max(avg_hare, avg_kumori) / min(avg_hare, avg_kumori)
-print("比率 =", round(hiritsu, 2), ": 1")
-
-if hiritsu <= 20:
-    print("判定: 差は基準内（20:1以内）")
-else:
-    print("判定: 差が大きすぎる！")
 `;
 
 // ============================================================
@@ -1202,10 +1258,11 @@ else:
 
 function S8() {
   const names = selMulti.length >= 2 ? selMulti : [];
-  if (names.length < 2) return "# 上の「② くらべるデータ」で2つ以上えらんでください";
-  const a = names[0], b = names[1];
-  return `# 体験8: 「${a}」と「${b}」をくらべる（重ねて表示＋範囲）
+  if (names.length < 2) return "# 上の「② くらべるデータ」で2つ以上えらんでください（体験8は2つ以上のデータが必要）";
+  const listStr = names.map(n => `"${n}"`).join(", ");
+  return `# 体験8: 選んだ班の箱ひげ図を並べてくらべる（レッスン11を参考に）
 import matplotlib.pyplot as plt
+import statistics
 
 def yomikomi(path):
     values = []
@@ -1216,26 +1273,34 @@ def yomikomi(path):
             values.append(float(v))
     return values
 
-x = yomikomi("data/uploads/${a}.csv")
-y = yomikomi("data/uploads/${b}.csv")
+namae = [${listStr}]
 
-print("${a} の平均:", round(sum(x)/len(x), 2), " 範囲:", round(max(x)-min(x), 2))
-print("${b} の平均:", round(sum(y)/len(y), 2), " 範囲:", round(max(y)-min(y), 2))
+data = []
+for name in namae:
+    data.append(yomikomi("data/uploads/" + name + ".csv"))
 
-plt.figure(figsize=(8, 3.5))
-plt.plot(x, label="${a}")
-plt.plot(y, label="${b}")
-plt.legend()
-plt.grid(True)
+for i in range(len(namae)):
+    print(namae[i], "の中央値:", round(statistics.median(data[i]), 2))
+
+plt.figure(figsize=(8, 4))
+plt.boxplot(data, labels=namae)
+plt.ylabel("Brightness")
+plt.xticks(rotation=45, ha="right")
+plt.grid(axis="y")
 plt.show()
+
+# 箱の高さ = どのくらい明るいか / 箱の長さ = ばらつき
 `;
 }
 
 function S9() {
-  const names = selMulti.length >= 1 ? selMulti : [];
-  if (names.length < 1) return "# 上の「② くらべるデータ」で1つ以上えらんでください";
+  const names = selMulti.length >= 2 ? selMulti : [];
+  if (names.length < 2) return "# 上の「② くらべるデータ」で2つ以上えらんでください（体験9は2つ以上のデータが必要）";
   const listStr = names.map(n => `"${n}"`).join(", ");
-  return `# 体験9: 選んだデータぜんぶを for で一気に読む
+  return `# 体験9: 選んだ班のヒストグラムを重ねてくらべる（レッスン12を参考に）
+import matplotlib.pyplot as plt
+import statistics
+
 def yomikomi(path):
     values = []
     with open(path) as f:
@@ -1246,18 +1311,30 @@ def yomikomi(path):
     return values
 
 namae = [${listStr}]
+
+plt.figure(figsize=(7, 3.5))
 for name in namae:
     values = yomikomi("data/uploads/" + name + ".csv")
-    print(name, "の平均:", round(sum(values) / len(values), 2))
+    print(name, ": 平均", round(sum(values) / len(values), 2),
+          " 標準偏差", round(statistics.pstdev(values), 2))
+    plt.hist(values, bins=8, alpha=0.5, label=name)   # alpha=0.5 で半透明
+
+plt.legend()
+plt.xlabel("Brightness")
+plt.ylabel("Count")
+plt.grid(axis="y")
+plt.show()
+
+# 標準偏差がいちばん小さい班 = いちばん安定していた班
 `;
 }
 
 function S10() {
-  const names = selMulti.length >= 2 ? selMulti : [];
-  if (names.length < 2) return "# 上の「② くらべるデータ」で2つ以上えらんでください";
+  const names = selMulti.length >= 1 ? selMulti : [];
+  if (names.length < 1) return "# 上の「② くらべるデータ」で1つ以上えらんでください";
   const listStr = names.map(n => `"${n}"`).join(", ");
-  return `# 体験10: 選んだデータの棒グラフ + 比率で診断
-import matplotlib.pyplot as plt
+  return `# 体験10: 選んだデータぜんぶを for で一気に読む（レッスン13を参考に）
+import statistics
 
 def yomikomi(path):
     values = []
@@ -1269,28 +1346,12 @@ def yomikomi(path):
     return values
 
 namae = [${listStr}]
-averages = []
 for name in namae:
     values = yomikomi("data/uploads/" + name + ".csv")
-    averages.append(sum(values) / len(values))
+    print(name, "の平均:", round(sum(values) / len(values), 2),
+          " 標準偏差:", round(statistics.pstdev(values), 2))
 
-plt.figure(figsize=(8, 3.5))
-plt.bar(range(len(namae)), averages, color="#3AABA8")
-plt.xticks(range(len(namae)), namae, rotation=45, ha="right")
-plt.ylabel("Average")
-plt.grid(axis="y")
-plt.show()
-
-maxv = max(averages)
-minv = min(averages)
-print("いちばん明るい:", round(maxv, 2))
-print("いちばん暗い:", round(minv, 2))
-print("比率 =", round(maxv / minv, 2), ": 1")
-
-if maxv / minv <= 20:
-    print("判定: 適正（差は基準内）")
-else:
-    print("判定: 不適（差が大きすぎる）")
+# 変えてみよう: 平均といっしょに max(values), min(values) も表示しよう
 `;
 }
 
