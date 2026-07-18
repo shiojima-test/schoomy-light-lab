@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v6.4 | スクーミー×Python</title>
+<title>教室の光環境ラボ v6.5 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -117,7 +117,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v6.4</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v6.5</span>
   <span class="xlink"><a href="bike/">🚲 自転車スピードラボへ</a></span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
@@ -488,25 +488,28 @@ print("標準偏差:", round(hyojun, 2))</pre>
 
   <div class="lesson sc" style="margin-top:12px">
     <h3>🍊 体験8：自分の班と他の班をくらべる（折れ線／箱ひげ図）（レッスン11を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：上の②で選んだ班を、<b>2通り</b>でくらべる。<br><b>① 折れ線で重ねる</b>：計測中の明るさの<b>動き</b>を班ごとに重ねる。いつ誰が動いたか、時間の差が見える。<br><b>② 箱ひげ図で並べる</b>：<b>箱の高さ＝明るさ</b>、<b>箱の長さ＝ばらつき</b>。自分の班はどの位置にいる？ 2つでも9班ぜんぶでもOK。</div>
+    <div class="kaisetsu"><b>やること</b>：上の②で選んだ班を、<b>2通り</b>でくらべる。<br><b>① 折れ線で重ねる</b>：計測中の明るさの<b>動き</b>を班ごとに重ねる。いつ誰が動いたか、時間の差が見える。<br><b>② 箱ひげ図で並べる</b>：<b>箱の高さ＝明るさ</b>、<b>箱の長さ＝ばらつき</b>。自分の班はどの位置にいる？ 2つでも9班ぜんぶでもOK。<br>どちらもボタンで<b>ひな形</b>が入ります。<b><code>___</code> を自分で埋めて</b>グラフを完成させよう。</div>
     <button class="act navy" onclick="setCode('ed3', S8line())">▶ ① 選んだ班を折れ線で重ねる</button>
     <button class="act navy" onclick="setCode('ed3', S8())">▶ ② 選んだ班を箱ひげ図で並べる</button>
+    <div class="challenge"><b>ヒント</b>：①はレッスン11-①の <code>plt.plot(df["value"])</code>、②はレッスン11-②の <code>plt.boxplot(data)</code> と同じ形。</div>
     <div class="challenge"><b>変えてみよう</b>：②のチェックを増やすと、そのままコードに入る。折れ線と箱ひげ図、場所の差が分かりやすいのはどっち？</div>
     <div class="chakugan"><b>📊 着眼点</b>：折れ線なら「動いた瞬間」、箱ひげ図なら「箱の高さ・長さ」。いちばん明るい班・ばらついた班はどこ？ 窓からの距離と関係はありそう？</div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験9：自分の班と他の班を、ヒストグラムでくらべる（レッスン12を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：選んだ班のヒストグラムを<b>重ねて</b>、あわせて<b>標準偏差</b>も出す。「どの班がいちばん安定していたか」を<b>図と数字の両方</b>で言えるようにしよう。</div>
+    <div class="kaisetsu"><b>やること</b>：選んだ班のヒストグラムを<b>重ねて</b>、あわせて<b>標準偏差</b>も出す。「どの班がいちばん安定していたか」を<b>図と数字の両方</b>で言えるようにしよう。<br>ボタンで<b>ひな形</b>が入ります。<b><code>___</code> を自分で埋めよう</b>。</div>
     <button class="act navy" onclick="setCode('ed3', S9())">▶ 選んだ班をヒストグラムで重ねる</button>
+    <div class="challenge"><b>ヒント</b>：レッスン12の <code>alpha=0.5</code>（半透明）と同じ。重ねたとき両方が見えるようにする値。</div>
     <div class="challenge"><b>変えてみよう</b>：<code>bins</code> や <code>alpha</code>（透明度）を変えて、いちばん見やすい形を探そう。</div>
     <div class="chakugan"><b>📊 着眼点</b>：山の位置がずれている＝明るさが違う。山の広がりが違う＝安定度が違う。標準偏差がいちばん小さい班はどこ？</div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験10：9チームぜんぶをforで一気に読む（レッスン13を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：レッスン13の「forで一気に読む」を、選んだデータぜんぶに適用。各班の<b>平均・標準偏差・最大・最小</b>が<b>1つの表</b>になって出る。これが<b>データサイエンスの入口</b>。</div>
+    <div class="kaisetsu"><b>やること</b>：レッスン13の「forで一気に読む」を、選んだデータぜんぶに適用。各班の<b>平均・標準偏差・最大・最小</b>が<b>1つの表</b>になって出る。これが<b>データサイエンスの入口</b>。<br>ボタンで<b>ひな形</b>が入ります。<b>最大・最小の <code>___</code> を自分で埋めよう</b>。</div>
     <button class="act navy" onclick="setCode('ed3', S10())">▶ 選んだデータを一気に集計する</button>
+    <div class="challenge"><b>ヒント</b>：最大は <code>values.max()</code>、最小は <code>values.min()</code>（STEP1の体験2と同じ）。</div>
     <div class="challenge"><b>変えてみよう</b>：<code>matome.sort_values("平均")</code> を <code>print</code> すると、明るい順に並べ替えられる。</div>
   </div>
 
@@ -610,12 +613,12 @@ print("フリーラボへようこそ！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v6.4 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v6.5 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v6.4";  // v6.4: STEP3の比較に「折れ線で重ねる」を追加。L11a(晴れ/くもり折れ線)＋L11(箱ひげ)の2段。体験8にS8line()追加。「比べ方は目的で図を選ぶ」  // v6.3: ヘッダーに自転車スピードラボ（bike/）への相互リンクを追加。 v6.2: STEP1①のアップロードを「貼り付けた数字を班名で保存」方式に修正（CSVファイル選択UI・CSV文言を削除）。uploadSerial1()新設。保存した班は自分も他班もプルダウンで選べる
+const VERSION = "v6.5";  // v6.5: STEP3の体験8-10も虫食い（___）方式に統一（STEP2と作りを揃えた）。S8line/S8/S9/S10のグラフ核心行を___化  // v6.4: STEP3の比較に「折れ線で重ねる」を追加。L11a(晴れ/くもり折れ線)＋L11(箱ひげ)の2段。体験8にS8line()追加。「比べ方は目的で図を選ぶ」  // v6.3: ヘッダーに自転車スピードラボ（bike/）への相互リンクを追加。 v6.2: STEP1①のアップロードを「貼り付けた数字を班名で保存」方式に修正（CSVファイル選択UI・CSV文言を削除）。uploadSerial1()新設。保存した班は自分も他班もプルダウンで選べる
 let JP_FONT_OK = false;
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
@@ -1395,7 +1398,7 @@ namae = [${listStr}]
 plt.figure(figsize=(8, 4))
 for name in namae:
     df = pd.read_csv("data/uploads/" + name + ".csv")
-    plt.plot(df["value"], label=name)     # label で班の名前をつける
+    plt.plot(___, label=name)              # ← レッスン11-①を参考に。df["value"] を入れよう
 plt.legend()                              # 凡例（どの線がどの班か）
 plt.xlabel("Number")
 plt.ylabel("Brightness")
@@ -1423,7 +1426,7 @@ for name in namae:
     print(name, "の中央値:", round(df["value"].median(), 2))
 
 plt.figure(figsize=(8, 4))
-plt.boxplot(data, labels=namae)
+plt.boxplot(___, labels=namae)            # ← レッスン11-②を参考に。data を入れよう
 plt.ylabel("Brightness")
 plt.xticks(rotation=45, ha="right")
 plt.grid(axis="y")
@@ -1448,7 +1451,7 @@ for name in namae:
     values = pd.read_csv("data/uploads/" + name + ".csv")["value"]
     print(name, ": 平均", round(values.mean(), 2),
           " 標準偏差", round(values.std(ddof=0), 2))
-    plt.hist(values, bins=8, alpha=0.5, label=name)   # alpha=0.5 で半透明
+    plt.hist(values, bins=8, alpha=___, label=name)   # ← レッスン12を参考に。0.5 を入れると半透明で重なりが見える
 
 plt.legend()
 plt.xlabel("Brightness")
@@ -1475,9 +1478,9 @@ for name in namae:
     kekka.append({
         "班": name,
         "平均": round(values.mean(), 2),
-        "標準偏差": round(values.std(ddof=0), 2),
-        "最大": values.max(),
-        "最小": values.min(),
+        "標準偏差": round(values.std(ddof=0), 2),   # ← ddof=0 で ÷n（レッスン10）
+        "最大": ___,                                # ← values.max() を入れよう
+        "最小": ___,                                # ← values.min() を入れよう
     })
 
 matome = pd.DataFrame(kekka)     # 9班ぶんの結果が、1つの表になる
