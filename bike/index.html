@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自転車スピードラボ v1.0 | スクーミー</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Meiryo, "Hiragino Kaku Gothic ProN", sans-serif; background: #f7f5f0; color: #1f2a30; }
+  header { background: linear-gradient(90deg, #1f2a30, #2d3439); color: #fff; padding: 16px 20px; }
+  header h1 { font-size: 19px; font-weight: bold; display: inline; }
+  header .ver { font-size: 12px; color: #F5E4C4; margin-left: 8px; }
+  header .xlink { float: right; font-size: 12px; }
+  header .xlink a { color: #F5E4C4; text-decoration: none; border: 1px solid #F5E4C4; border-radius: 6px; padding: 4px 10px; }
+  .subbar { display: flex; height: 6px; }
+  .subbar .c1 { width: 30.5%; background: #3AABA8; }
+  .subbar .c2 { width: 45.7%; background: #F5E4C4; }
+  .subbar .c3 { width: 8.4%;  background: #E88A0A; }
+  .subbar .c4 { width: 15.5%; background: #2E8EC4; }
+  main { max-width: 1100px; margin: 0 auto; padding: 16px 12px 60px; }
+  section { background: #fff; border-radius: 10px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(31,42,48,.08); }
+  h2 { font-size: 16px; color: #1a3a5c; border-left: 5px solid #3AABA8; padding-left: 10px; margin-bottom: 10px; }
+  h2.p2 { border-left-color: #E88A0A; }
+  h3 { font-size: 14px; margin: 12px 0 6px; color: #2c4a6e; }
+  p, li, label, td, th { font-size: 13px; line-height: 1.75; }
+  .note { font-size: 12px; color: #666; }
+  .howto { background: #fffbe8; border: 1px solid #E88A0A; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; }
+  .howto b { color: #E88A0A; }
+  .numrow { display: flex; flex-wrap: wrap; gap: 16px; margin: 12px 0; }
+  .numbox { background: #d9efee; border: 2px solid #3AABA8; border-radius: 10px; padding: 14px 16px; flex: 1; min-width: 240px; }
+  .numbox label { font-weight: bold; display: block; margin-bottom: 6px; }
+  .numbox input { font-size: 20px; width: 110px; padding: 8px; border: 1px solid #3AABA8; border-radius: 6px; font-family: inherit; text-align: right; }
+  .numbox .unit { font-size: 15px; font-weight: bold; margin-left: 6px; }
+  .numbox .sub { font-size: 12px; color: #2c4a6e; margin-top: 6px; }
+  pre.code { background: #1f2a30; color: #d9efee; padding: 14px; border-radius: 8px; font-family: "Consolas", "Courier New", monospace; font-size: 12.5px; line-height: 1.55; overflow: auto; white-space: pre; }
+  pre.code .me { color: #ffd27a; font-weight: bold; }
+  pre.code .cm { color: #7fa8a6; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+  button.act { font-size: 13px; padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-family: inherit; font-weight: bold; }
+  .primary { background: #3AABA8; color: #fff; }
+  .orange { background: #E88A0A; color: #fff; }
+  .blue { background: #2E8EC4; color: #fff; }
+  button:disabled { background: #bbb !important; cursor: not-allowed; }
+  textarea { width: 100%; font-family: "Consolas", "Courier New", monospace; font-size: 13px; border: 1px solid #ccc; border-radius: 6px; padding: 10px; line-height: 1.5; }
+  select, input[type=text] { font-size: 13px; padding: 7px 9px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .statbar { display: flex; flex-wrap: wrap; gap: 12px; margin: 10px 0; }
+  .stat { background: #f0f7fb; border: 1px solid #2E8EC4; border-radius: 10px; padding: 10px 18px; text-align: center; min-width: 130px; }
+  .stat .v { font-size: 24px; font-weight: bold; color: #1a3a5c; }
+  .stat .l { font-size: 12px; color: #2c4a6e; }
+  .chartwrap { position: relative; width: 100%; height: 320px; margin-top: 8px; }
+  table.cmp { border-collapse: collapse; margin-top: 10px; width: 100%; }
+  table.cmp th, table.cmp td { border: 1px solid #ccc; padding: 6px 10px; text-align: center; }
+  table.cmp th { background: #d9efee; }
+  .picklist { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+  .picklist label { border: 1px solid #3AABA8; border-radius: 6px; padding: 5px 10px; background: #fff; cursor: pointer; }
+  .picklist label.on { background: #d9efee; font-weight: bold; }
+  footer { text-align: center; padding: 24px; color: #888; font-size: 12px; }
+  @media (max-width: 640px) { header .xlink { float: none; display: block; margin-top: 8px; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🚲 自転車スピードラボ</h1><span class="ver">v1.0</span>
+  <span class="xlink"><a href="../">💡 教室の光環境ラボへ</a></span>
+</header>
+<div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
+
+<main>
+
+<div class="howto">
+  <b>このページの使い方</b>：①班で決めた数字を入れる → ②できあがったプログラムをコピーしてスクーミー（オレンジボード）に入れる → ③自転車で走って計測 → ④シリアルモニタの数字を貼り付けてアップロード → ⑤グラフで自分の班・ほかの班とくらべる
+</div>
+
+<!-- ========== ① 数字を入れる ========== -->
+<section>
+  <h2>① 班で決めた数字を入れる</h2>
+  <p>磁力センサーは、タイヤにつけた磁石が目の前を通ったことを検知できます。速度計に必要な数字が決まったら、下に入力しよう。</p>
+  <div class="numrow">
+    <div class="numbox">
+      <label for="inHankei">タイヤの半径</label>
+      <input type="number" id="inHankei" min="1" max="200" step="0.1" placeholder="例 30"><span class="unit">cm</span>
+      <div class="sub">自分の自転車で実際に測ろう（車軸の中心からタイヤの外側まで）</div>
+    </div>
+    <div class="numbox">
+      <label for="inKankaku">何秒ごとに速度を出すか</label>
+      <input type="number" id="inKankaku" min="1" max="60" step="1" placeholder="例 5"><span class="unit">秒</span>
+      <div class="sub">短いほどこまかく更新、長いほどなめらか。班で決めよう</div>
+    </div>
+  </div>
+  <p class="note" id="calcNote">数字を2つとも入れると、円周の計算結果とプログラムが下に出ます。</p>
+</section>
+
+<!-- ========== ② プログラム ========== -->
+<section>
+  <h2>② できあがったプログラム</h2>
+  <p>黄色の部分に、①で入れた数字が入っています。<b>コピーしてスクーミーに書きこもう</b>。磁石はタイヤのスポークに、磁力センサーは磁石が目の前を通る位置に取りつけます（センサーはA5につなぐ）。</p>
+  <div class="toolbar">
+    <button class="act primary" id="btnCopy" onclick="copyCode()" disabled>📋 プログラムをコピー</button>
+    <span class="note" id="copyNote"></span>
+  </div>
+  <pre class="code" id="codeView">（①の数字を入れるとここにプログラムが出ます）</pre>
+</section>
+
+<!-- ========== ③ アップロード ========== -->
+<section>
+  <h2 class="p2">③ 走ったデータをアップロード</h2>
+  <p>計測が終わったら、シリアルモニタに出た数字を全部コピーして、下に貼り付けよう。1行が「時間(秒),時速(km/h)」の形で出ています。</p>
+  <textarea id="pasteArea" rows="7" placeholder="ここに貼り付け（例）&#10;jikan(byo),jisoku(km/h)&#10;5,0.0&#10;10,7.7&#10;15,12.9&#10;20,15.5"></textarea>
+  <div class="toolbar">
+    <label>班の名前: <input type="text" id="upName" placeholder="例: 1班" style="width:130px"></label>
+    <button class="act orange" onclick="uploadRun()">アップロードして保存</button>
+    <span class="note" id="upNote"></span>
+  </div>
+</section>
+
+<!-- ========== ④ グラフ ========== -->
+<section>
+  <h2 class="p2">④ グラフでくらべる</h2>
+  <div class="toolbar">
+    <button class="act blue" onclick="reloadList()">🔄 一覧を更新</button>
+    <span class="note" id="listNote">「一覧を更新」を押すと、保存された班が下に出ます</span>
+  </div>
+  <div class="picklist" id="pickList"></div>
+  <div class="statbar" id="statBar"></div>
+  <div class="chartwrap"><canvas id="chart"></canvas></div>
+  <table class="cmp" id="cmpTable" style="display:none"></table>
+  <p class="note" style="margin-top:8px">🤔 <b>考えてみよう</b>：最高速度が出たのはどんな場所？ 計測間隔を短くした班と長くした班で、グラフの形はどうちがう？</p>
+</section>
+
+</main>
+
+<footer>自転車スピードラボ v1.0 ｜ SchooMy</footer>
+
+<script>
+// 自転車スピードラボ v1.0
+// v1.0: 初版。半径・計測間隔の2数値入力→スクーミープログラム自動生成（基準値自動計測・チャタリング対策込み）、
+//       シリアル貼り付け→GAS保存（bike_接頭辞で光環境ラボと区別）、Chart.jsで速度折れ線・最高/平均・班比較
+const VERSION = "v1.0";
+const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
+const PREFIX = "bike_";   // 光環境ラボのデータと混ざらないための接頭辞
+
+// ---------- ① 数字 → ② プログラム生成 ----------
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function buildCode(hankei, kankaku) {
+  return `#include <SchooMyUtilities.h>
+SchooMyUtilities scmUtils = SchooMyUtilities();
+
+// ===== 班で決めた数字 =====
+const float HANKEI_CM  = ${hankei};   // タイヤの半径（cm）
+const float KANKAKU_BYO = ${kankaku};   // 何秒ごとに速度を出すか（秒）
+
+// ===== ここから下は完成ずみ =====
+const float ENSHU_CM = 2.0 * HANKEI_CM * 3.14;   // 円周 = 2 × 半径 × 円周率
+
+const int HENKA_SHIKII = 80;        // ふだんの値からこれ以上変化したら「磁石が来た」
+const unsigned long MUSHI_MS = 60;  // 検知した直後はこの時間(ミリ秒)数えない
+
+int kijun = 0;                   // ふだんの値（起動時に自動で測る）
+int kaitensu = 0;                // 車輪が回った回数
+bool kenchiChu = false;
+unsigned long saigoKenchi = 0;
+unsigned long maeShuturyoku = 0;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(A5, INPUT);
+  // 起動してすぐ、ふだんの値を自動で測る（このあいだ磁石はセンサーから離しておく）
+  long gokei = 0;
+  for (int i = 0; i < 100; i++) { gokei += analogRead(A5); delay(5); }
+  kijun = gokei / 100;
+  Serial.println("jikan(byo),jisoku(km/h)");
+  maeShuturyoku = millis();
+}
+
+void loop() {
+  int atai = analogRead(A5);
+  int sa = atai - kijun;
+  if (sa < 0) sa = -sa;                     // ふだんの値との差
+  unsigned long ima = millis();
+
+  // 磁石が来た（1回転）を数える
+  if (!kenchiChu && sa >= HENKA_SHIKII && (ima - saigoKenchi) >= MUSHI_MS) {
+    kaitensu = kaitensu + 1;
+    kenchiChu = true;
+    saigoKenchi = ima;
+  }
+  // 磁石が離れたら、次の検知を待つ
+  if (kenchiChu && sa < HENKA_SHIKII / 2) {
+    kenchiChu = false;
+  }
+
+  // 決めた間隔ごとに速度を計算して出力
+  if (ima - maeShuturyoku >= (unsigned long)(KANKAKU_BYO * 1000.0)) {
+    float kyori_cm  = ENSHU_CM * kaitensu;             // 距離 = 円周 × 回転数
+    float byosoku   = kyori_cm / KANKAKU_BYO;          // 1秒あたりに進んだ距離（cm/秒）
+    float jisoku_km = byosoku * 3600.0 / 100000.0;     // km/時 になおす
+    Serial.print(ima / 1000);
+    Serial.print(",");
+    Serial.println(jisoku_km, 1);
+    kaitensu = 0;
+    maeShuturyoku = ima;
+  }
+}`;
+}
+
+let currentCode = "";
+function refreshCode() {
+  const h = parseFloat(document.getElementById("inHankei").value);
+  const k = parseFloat(document.getElementById("inKankaku").value);
+  const note = document.getElementById("calcNote");
+  const view = document.getElementById("codeView");
+  const btn = document.getElementById("btnCopy");
+  if (!(h > 0) || !(k > 0)) {
+    note.textContent = "数字を2つとも入れると、円周の計算結果とプログラムが下に出ます。";
+    view.textContent = "（①の数字を入れるとここにプログラムが出ます）";
+    btn.disabled = true; currentCode = ""; return;
+  }
+  const enshu = 2 * h * 3.14;
+  note.innerHTML = `円周 = 2 × ${h} × 3.14 = <b>${enshu.toFixed(1)} cm</b>（1回転で進む距離）／ ${k}秒ごとに時速を出します`;
+  currentCode = buildCode(h, k);
+  // 班の数字の行だけ強調表示
+  view.innerHTML = esc(currentCode)
+    .replace(/^(const float HANKEI_CM.*)$/m, '<span class="me">$1</span>')
+    .replace(/^(const float KANKAKU_BYO.*)$/m, '<span class="me">$1</span>')
+    .replace(/(\/\/[^\n]*)/g, '<span class="cm">$1</span>');
+  btn.disabled = false;
+}
+document.getElementById("inHankei").addEventListener("input", refreshCode);
+document.getElementById("inKankaku").addEventListener("input", refreshCode);
+
+async function copyCode() {
+  const note = document.getElementById("copyNote");
+  if (!currentCode) return;
+  try {
+    await navigator.clipboard.writeText(currentCode);
+    note.textContent = "✅ コピーしました！スクーミーに貼りつけて書きこもう。";
+  } catch (e) {
+    // フォールバック
+    const ta = document.createElement("textarea");
+    ta.value = currentCode; document.body.appendChild(ta);
+    ta.select(); document.execCommand("copy"); document.body.removeChild(ta);
+    note.textContent = "✅ コピーしました！";
+  }
+}
+
+// ---------- ③ 貼り付け解析 & アップロード ----------
+function parsePaste(txt) {
+  // 「時間,時速」の行を拾う。時速だけの行にも対応（時間は通し番号）
+  const rows = [];
+  let idx = 0;
+  for (const line of txt.split("\n")) {
+    const s = line.trim();
+    if (!s || /[a-zA-Z]/.test(s.replace(/e[+-]?\d+/g,""))) {
+      if (!/^[\d.,\s+-]+$/.test(s)) continue;
+    }
+    const parts = s.split(",").map(p => p.trim());
+    if (parts.length >= 2 && isFinite(parts[0]) && isFinite(parts[1])) {
+      rows.push([parseFloat(parts[0]), parseFloat(parts[1])]);
+    } else if (parts.length === 1 && isFinite(parts[0]) && parts[0] !== "") {
+      idx++; rows.push([idx, parseFloat(parts[0])]);
+    }
+  }
+  return rows;
+}
+
+async function uploadRun() {
+  const note = document.getElementById("upNote");
+  const name = (document.getElementById("upName").value || "").trim();
+  const rows = parsePaste(document.getElementById("pasteArea").value);
+  if (!name) { note.textContent = "⚠ 班の名前を入力してください（例: 1班）"; return; }
+  if (/[\/\\?%*:|"<>#]/.test(name)) { note.textContent = "⚠ 名前に使えない記号があります"; return; }
+  if (!rows.length) { note.textContent = "⚠ 先にシリアルモニタの数字を貼り付けてください"; return; }
+  const csv = "timestamp,value\n" + rows.map(r => r[0] + "," + r[1]).join("\n") + "\n";
+  note.textContent = `「${name}」として送信中…（${rows.length}件）`;
+  try {
+    const res = await fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ name: PREFIX + name, csv: csv })
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || "送信失敗");
+    note.textContent = `✅ 「${name}」を保存しました（${rows.length}件）。④で選んでグラフにしよう。`;
+    cache[name] = rows;
+    await reloadList();
+    picked.add(name);
+    renderPicks(); renderChart();
+  } catch (e) {
+    note.textContent = "❌ 失敗: " + e.message;
+  }
+}
+
+// ---------- ④ 一覧・グラフ ----------
+let uploadedList = [];       // 表示名（接頭辞なし）
+const cache = {};            // 表示名 -> rows
+const picked = new Set();
+let chart = null;
+const COLORS = ["#3AABA8","#E88A0A","#2E8EC4","#2c4a6e","#c0574f","#7b9e3e","#9a6bb0","#b8860b","#5f9ea0"];
+
+async function reloadList() {
+  const note = document.getElementById("listNote");
+  try {
+    const r = await fetch(`${GAS_URL}?list=1`, { cache: "no-store" });
+    const d = await r.json();
+    const files = (d && d.ok && d.files) ? d.files : [];
+    uploadedList = files
+      .filter(f => f.startsWith(PREFIX))
+      .map(f => f.slice(PREFIX.length).replace(/\.csv$/, ""));
+    note.textContent = `一覧更新: ${new Date().toLocaleTimeString()}（${uploadedList.length}件）`;
+  } catch (e) {
+    note.textContent = "❌ 一覧の取得に失敗: " + e.message;
+  }
+  renderPicks();
+}
+
+function renderPicks() {
+  const box = document.getElementById("pickList");
+  box.innerHTML = "";
+  if (!uploadedList.length) {
+    box.innerHTML = '<span class="note">まだデータがありません。③でアップロードするか「一覧を更新」を押してください。</span>';
+    return;
+  }
+  for (const name of uploadedList) {
+    const lb = document.createElement("label");
+    lb.textContent = "🚲 " + name;
+    lb.className = picked.has(name) ? "on" : "";
+    lb.onclick = async () => {
+      if (picked.has(name)) picked.delete(name); else picked.add(name);
+      renderPicks(); await renderChart();
+    };
+    box.appendChild(lb);
+  }
+}
+
+async function fetchRun(name) {
+  if (cache[name]) return cache[name];
+  const r = await fetch(`${GAS_URL}?file=${encodeURIComponent(PREFIX + name)}`, { cache: "no-store" });
+  const t = await r.text();
+  if (t.trim().startsWith("{")) throw new Error("読み込み失敗: " + name);
+  const rows = [];
+  const lines = t.trim().split("\n");
+  for (let i = 1; i < lines.length; i++) {
+    const [a, b] = lines[i].split(",");
+    if (isFinite(a) && isFinite(b)) rows.push([parseFloat(a), parseFloat(b)]);
+  }
+  cache[name] = rows;
+  return rows;
+}
+
+function stats(rows) {
+  const vs = rows.map(r => r[1]);
+  const max = Math.max(...vs);
+  const avg = vs.reduce((a,b)=>a+b,0) / vs.length;
+  return { max, avg, n: vs.length };
+}
+
+async function renderChart() {
+  const statBar = document.getElementById("statBar");
+  const tbl = document.getElementById("cmpTable");
+  const names = [...picked];
+  const datasets = [];
+  const rowsMap = {};
+  for (let i = 0; i < names.length; i++) {
+    try {
+      const rows = await fetchRun(names[i]);
+      rowsMap[names[i]] = rows;
+      datasets.push({
+        label: names[i],
+        data: rows.map(r => ({ x: r[0], y: r[1] })),
+        borderColor: COLORS[i % COLORS.length],
+        backgroundColor: COLORS[i % COLORS.length],
+        tension: 0.2, pointRadius: 3,
+      });
+    } catch (e) { /* skip */ }
+  }
+  if (chart) chart.destroy();
+  const ctx = document.getElementById("chart").getContext("2d");
+  chart = new Chart(ctx, {
+    type: "line",
+    data: { datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        x: { type: "linear", title: { display: true, text: "時間（秒）" } },
+        y: { min: 0, title: { display: true, text: "時速（km/h）" } }
+      },
+      plugins: { legend: { display: true } }
+    }
+  });
+  // 統計
+  statBar.innerHTML = "";
+  if (names.length === 1) {
+    const s = stats(rowsMap[names[0]]);
+    statBar.innerHTML =
+      `<div class="stat"><div class="v">${s.max.toFixed(1)}</div><div class="l">最高速度（km/h）</div></div>` +
+      `<div class="stat"><div class="v">${s.avg.toFixed(1)}</div><div class="l">平均速度（km/h）</div></div>` +
+      `<div class="stat"><div class="v">${s.n}</div><div class="l">計測回数</div></div>`;
+    tbl.style.display = "none";
+  } else if (names.length >= 2) {
+    let html = "<tr><th>班</th><th>最高速度（km/h）</th><th>平均速度（km/h）</th><th>計測回数</th></tr>";
+    for (const n of names) {
+      if (!rowsMap[n]) continue;
+      const s = stats(rowsMap[n]);
+      html += `<tr><td>${n}</td><td>${s.max.toFixed(1)}</td><td>${s.avg.toFixed(1)}</td><td>${s.n}</td></tr>`;
+    }
+    tbl.innerHTML = html;
+    tbl.style.display = "";
+  } else {
+    tbl.style.display = "none";
+  }
+}
+
+reloadList();
+</script>
+</body>
+</html>
