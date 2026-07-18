@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v6.0 | スクーミー×Python</title>
+<title>教室の光環境ラボ v6.1 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -114,7 +114,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v6.0</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v6.1</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -229,25 +229,51 @@ print("標準偏差:", round(hyojun, 2))</pre>
 
 <section>
   <h2 class="p2">パート2：スクーミーのデータで体験</h2>
-  <p>今度は<b>自分たちで計測した数字</b>で、パート1と同じことをやってみよう。スクーミーで計測して、<b>シリアルモニターに出た数字をコピー</b>し、下の①に貼り付けます（アップロードはSTEP2から）。</p>
+  <p>今度は<b>自分たちで計測した数字</b>で、パート1と同じことをやってみよう。数字を用意する方法は<b>2つ</b>。手早く試すなら<b>コピペ（A）</b>、みんなの班のデータを保存して使うなら<b>アップロード（B）</b>。どちらでも、下の体験の「▶ ひな形を入れる」で数字がコードに入ります。</p>
 
   <div class="uploadbox">
-    <h3>① 計測した数字を貼り付け</h3>
-    <p class="note">シリアルモニターの数字をコピーして、そのまま下に貼り付けよう。貼ったら、下の体験の「▶ ひな形を入れる」を押すと数字がコードに自動で入ります。</p>
+    <h3>① 計測した数字を用意する（A か B のどちらか）</h3>
+
+    <p class="note" style="margin-top:2px"><b>A. その場で貼り付ける（かんたん・保存なし）</b></p>
+    <p class="note">シリアルモニターの数字をコピーして、そのまま下に貼り付けよう。</p>
     <textarea id="serialPaste1" rows="3" placeholder="シリアルモニターの数字をここに貼り付け" oninput="serialChanged()"></textarea>
     <p class="note" id="serialNote1"></p>
+
+    <p class="note" style="margin-top:12px"><b>B. CSVでアップロードする（保存される・STEP2/3と共通）</b></p>
+    <ol class="note" style="margin:2px 0 6px 1.1em; padding:0;">
+      <li>スクーミーで計測し、<b>CSVで保存</b>（またはシリアル出力をコピー）</li>
+      <li><b>名前</b>をつける（例：<code>1班</code>）→ <b>「CSVファイルを選ぶ」</b> → <b>「アップロード」</b></li>
+    </ol>
+    <div class="toolbar">
+      <label>名前: <input type="text" class="upName1" placeholder="例: 1班" size="16" maxlength="40"></label>
+      <label class="act blue" style="display:inline-block; cursor:pointer;">📄 CSVファイルを選ぶ<input type="file" accept=".csv,.txt" style="display:none" onchange="loadFile(this, 1)"></label>
+    </div>
+    <textarea class="upData1" rows="3" placeholder="CSVファイルを選ぶか、シリアル出力をここに貼り付け"></textarea>
+    <div class="toolbar">
+      <button class="act orange" onclick="uploadData(1)">アップロード</button>
+      <span class="note upNote1"></span>
+    </div>
+
+    <div class="toolbar" style="background:#eef6fb; border-radius:8px; padding:10px 14px; margin:12px 0 0;">
+      <b style="color:#2c4a6e;">アップロードした班を使う:</b>
+      <select class="pickOne" data-step="1" onchange="pickChanged(1)" style="font-size:15px; padding:8px 12px; min-width:160px;">
+        <option value="">（コピペを使う／未選択）</option>
+      </select>
+      <button class="act blue" onclick="reloadList()">🔄 一覧を更新</button>
+      <span class="note" id="pick1Note">班を選ぶと、その数字が体験に入ります（未選択ならAのコピペを使用）</span>
+    </div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験1：計測した数字をリストに入れて表示（レッスン3を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：①に貼った数字が、リスト <code>values = [ ]</code> に自動で入ります。まずは表示から。</div>
+    <div class="kaisetsu"><b>やること</b>：①で用意した数字（A:貼り付け か B:班を選ぶ）が、リスト <code>values = [ ]</code> に自動で入ります。まずは表示から。</div>
     <button class="act navy" onclick="setCode('ed1', S1())">▶ ひな形を入れる</button>
     <div class="challenge"><b>ヒント</b>：<code>values[0]</code> の番号を変えると、別の値も取り出せる。</div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験2：個数・合計・最大・最小・平均・標準偏差（レッスン6を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：①に貼った数字のリストで、<code>len</code>・<code>sum</code>・<code>max</code>・<code>min</code>・平均・<b>標準偏差</b>を出そう。<code>___</code> を自分で埋めよう。</div>
+    <div class="kaisetsu"><b>やること</b>：①で用意した数字のリストで、<code>len</code>・<code>sum</code>・<code>max</code>・<code>min</code>・平均・<b>標準偏差</b>を出そう。<code>___</code> を自分で埋めよう。</div>
     <button class="act navy" onclick="setCode('ed1', S2())">▶ ひな形を入れる</button>
     <div class="challenge"><b>ヒント</b>：平均は <code>sum(values) / len(values)</code>、最後は <code>math.sqrt(bunsan)</code>（分散のルート）。</div>
   </div>
@@ -590,12 +616,12 @@ print("フリーラボへようこそ！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v6.0 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v6.1 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v6.0";  // v6.0: pandas導入（情報I=手で計算/情報II=pandas）。statistics廃止。L6は標準偏差を手計算、L7でpandas登場、L8以降とフリーラボはpandasベース。std(ddof=0)厳守
+const VERSION = "v6.1";  // v6.1: STEP1①をアップロード対応（A:貼り付け と B:CSVアップロード の両対応）。班選択時はCSV値をvalues=[...]にリテラル展開。STEP2/3のupload機構（loadFile/uploadData/pickChanged）を流用
 let JP_FONT_OK = false;
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
@@ -746,9 +772,28 @@ function renderPickers() {
     }
   }
 }
-function pickChanged(step) {
+async function pickChanged(step) {
   const sel = document.querySelector(`.pickOne[data-step="${step}"]`);
   selPart[step] = sel.value;
+  // STEP1: 選んだ班のCSVを取ってきて、数値をキャッシュ（コード内リストに展開するため）
+  if ((step === 1 || step === "1")) {
+    const note = document.getElementById("pick1Note");
+    const name = sel.value;
+    if (!name) { if (note) note.textContent = "班を選ぶと、その数字が体験に入ります（未選択ならAのコピペを使用）"; return; }
+    if (step1Values[name]) {
+      if (note) note.textContent = `✅ 「${name}」を使います（${step1Values[name].length}個）。体験の「▶ ひな形を入れる」を押そう。`;
+      return;
+    }
+    if (note) note.textContent = `「${name}」を読み込み中…`;
+    try {
+      const txt = await fetchUploaded(name);
+      step1Values[name] = valuesFromCsv(txt);
+      if (note) note.textContent = `✅ 「${name}」を使います（${step1Values[name].length}個）。体験の「▶ ひな形を入れる」を押そう。`;
+    } catch (e) {
+      step1Values[name] = [];
+      if (note) note.textContent = `❌ 「${name}」の読み込みに失敗しました。コピペ（A）を使ってください。`;
+    }
+  }
 }
 function multiChanged() {
   selMulti = Array.from(document.querySelectorAll("#pickMulti input:checked")).map(c => c.value);
@@ -993,13 +1038,32 @@ function serialChanged() {
   const n = parseSerial1().length;
   note.textContent = n > 0 ? `✅ ${n}個の数値を読み取りました。下の「▶ ひな形を入れる」を押そう。` : "";
 }
+// アップロード班のCSV本文キャッシュ（名前 → 値の配列）
+let step1Values = {};
+// CSVテキストから値列（timestamp,value）を数値配列で取り出す
+function valuesFromCsv(txt) {
+  const out = [];
+  txt.split(/\r?\n/).forEach(line => {
+    line = line.trim();
+    if (!line || /^timestamp/i.test(line)) return;
+    const parts = line.split(",").map(s => s.trim());
+    const v = parts.length >= 2 ? parts[1] : parts[0];
+    if (/^-?\d+(\.\d+)?$/.test(v)) out.push(v);
+  });
+  return out;
+}
+// STEP1で使う数値リスト: アップロード班を選んでいればそれ、なければ貼り付け欄
 function serialList1() {
+  const name = selPart[1];
+  if (name && step1Values[name] && step1Values[name].length) {
+    return step1Values[name].join(", ");
+  }
   const nums = parseSerial1();
   return nums.length ? nums.join(", ") : null;
 }
 function S1() {
   const lst = serialList1();
-  const head = lst ? "" : "# まず上の「①」に数字を貼り付けてから、もう一度ボタンを押そう\n";
+  const head = lst ? "" : "# まず上の「①」で数字を用意（A:貼り付け か B:班を選ぶ）してから、もう一度ボタンを押そう\n";
   return `# 体験1: 計測した数字をリストに入れて表示（レッスン3を参考に）
 ${head}values = [${lst || "___"}]
 
@@ -1009,7 +1073,7 @@ print("さいしょの値:", values[0])
 }
 function S2() {
   const lst = serialList1();
-  const head = lst ? "" : "# まず上の「①」に数字を貼り付けてから、もう一度ボタンを押そう\n";
+  const head = lst ? "" : "# まず上の「①」で数字を用意（A:貼り付け か B:班を選ぶ）してから、もう一度ボタンを押そう\n";
   return `# 体験2: 個数・合計・最大・最小・平均・標準偏差（レッスン6を参考に）
 import math
 
@@ -1036,7 +1100,7 @@ print("標準偏差:", round(hyojun, 2))
 }
 function S3() {
   const lst = serialList1();
-  const head = lst ? "" : "# まず上の「①」に数字を貼り付けてから、もう一度ボタンを押そう\n";
+  const head = lst ? "" : "# まず上の「①」で数字を用意（A:貼り付け か B:班を選ぶ）してから、もう一度ボタンを押そう\n";
   return `# 体験3: 各データを1つずつ if で判定（レッスン5を参考に）
 ${head}values = [${lst || "___"}]
 
