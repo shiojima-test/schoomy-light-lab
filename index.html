@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v6.3 | スクーミー×Python</title>
+<title>教室の光環境ラボ v6.4 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -117,7 +117,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v6.3</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v6.4</span>
   <span class="xlink"><a href="bike/">🚲 自転車スピードラボへ</a></span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
@@ -429,11 +429,12 @@ print("標準偏差:", round(hyojun, 2))</pre>
   <h2>パート1：データ分析の応用 レッスン11〜13（用意したデータ）——「くらべる」を極める</h2>
 
   <div class="lesson">
-    <h3>レッスン11：くらべる —— 箱ひげ図を並べる</h3>
-    <div class="kaisetsu"><b>解説</b>：ここからは<b>比較</b>。STEP2で1つのデータをかいた<b>箱ひげ図</b>は、<b>並べたときにいちばん力を発揮する</b>。晴れ（6/1）とくもり（6/4）を並べると、「箱の高さ＝どのくらい明るいか」「箱の長さ＝ばらつき」が同時にくらべられる。折れ線を2本重ねるより、差がはっきり見える。</div>
-    <button class="act navy" onclick="setCode('ed3', L11)">▶ 晴れ vs くもり を箱ひげ図で並べる</button>
-    <div class="challenge"><b>変えてみよう</b>：<code>data</code> に <code>yomikomi("data/kofu_1gatsu.csv")</code> を足して、3つ並べてみよう（<code>labels</code> にも名前を追加）。</div>
-    <div class="chakugan"><b>📊 着眼点</b>：箱の<b>位置</b>（高さ）と<b>長さ</b>、2つを見る。晴れの箱はくもりよりどれくらい上にある？ どちらの箱が長い＝ばらついている？</div>
+    <h3>レッスン11：くらべる —— 折れ線で重ねる／箱ひげ図で並べる</h3>
+    <div class="kaisetsu"><b>解説</b>：ここからは<b>比較</b>。比べ方は<b>目的で選ぶ</b>。<br><b>① 折れ線で重ねる</b>：時間の動きをくらべたいとき。晴れ（6/1）とくもり（6/4）を重ねると、「どの時間帯で差が大きいか」が見える。<code>label=</code> と <code>plt.legend()</code> で凡例をつけるのがコツ。<br><b>② 箱ひげ図で並べる</b>：全体がどのあたりに集まっているかをくらべたいとき。「箱の高さ＝どのくらい明るいか」「箱の長さ＝ばらつき」が一目で分かる。<br><b>同じ2つのデータでも、見たいものによって図を使い分ける</b>——これが比較の基本。</div>
+    <button class="act navy" onclick="setCode('ed3', L11a)">▶ ① 晴れ vs くもり を折れ線で重ねる</button>
+    <button class="act navy" onclick="setCode('ed3', L11)">▶ ② 晴れ vs くもり を箱ひげ図で並べる</button>
+    <div class="challenge"><b>変えてみよう</b>：折れ線と箱ひげ図、同じ2日ぶんを両方かいてみて、「時間の差」が分かるのはどっち？「ばらつきの差」が分かるのはどっち？</div>
+    <div class="chakugan"><b>📊 着眼点</b>：折れ線は<b>山の形と高さの差</b>、箱ひげ図は<b>箱の位置と長さ</b>。同じデータでも、図が変わると「見えること」が変わる。</div>
   </div>
 
   <div class="lesson">
@@ -486,11 +487,12 @@ print("標準偏差:", round(hyojun, 2))</pre>
   <div class="chakugan" style="margin-top:14px"><b>🤔 考えてみよう</b>：分析のまえに、直感で予想しよう。窓側と廊下側、どちらがどれくらい明るい？ 一番明るいのはどの班？</div>
 
   <div class="lesson sc" style="margin-top:12px">
-    <h3>🍊 体験8：自分の班と他の班を、箱ひげ図でくらべる（レッスン11を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：上の②で選んだ班の箱ひげ図を<b>ぜんぶ並べて</b>、場所による明るさの差を見る。2つでも9班ぜんぶでもOK。<br><b>箱の高さ＝どのくらい明るいか</b>、<b>箱の長さ＝ばらつき</b>。自分の班はどの位置にいる？</div>
-    <button class="act navy" onclick="setCode('ed3', S8())">▶ 選んだ班を箱ひげ図で並べる</button>
-    <div class="challenge"><b>変えてみよう</b>：②のチェックを増やすと、そのままコードに入る。9班ぜんぶ並べてみよう。</div>
-    <div class="chakugan"><b>📊 着眼点</b>：いちばん箱が高い班・低い班はどこ？ 窓からの距離と関係はありそう？ 箱が長い班は「途中で明るさが変わった」のかもしれない。</div>
+    <h3>🍊 体験8：自分の班と他の班をくらべる（折れ線／箱ひげ図）（レッスン11を参考に）</h3>
+    <div class="kaisetsu"><b>やること</b>：上の②で選んだ班を、<b>2通り</b>でくらべる。<br><b>① 折れ線で重ねる</b>：計測中の明るさの<b>動き</b>を班ごとに重ねる。いつ誰が動いたか、時間の差が見える。<br><b>② 箱ひげ図で並べる</b>：<b>箱の高さ＝明るさ</b>、<b>箱の長さ＝ばらつき</b>。自分の班はどの位置にいる？ 2つでも9班ぜんぶでもOK。</div>
+    <button class="act navy" onclick="setCode('ed3', S8line())">▶ ① 選んだ班を折れ線で重ねる</button>
+    <button class="act navy" onclick="setCode('ed3', S8())">▶ ② 選んだ班を箱ひげ図で並べる</button>
+    <div class="challenge"><b>変えてみよう</b>：②のチェックを増やすと、そのままコードに入る。折れ線と箱ひげ図、場所の差が分かりやすいのはどっち？</div>
+    <div class="chakugan"><b>📊 着眼点</b>：折れ線なら「動いた瞬間」、箱ひげ図なら「箱の高さ・長さ」。いちばん明るい班・ばらついた班はどこ？ 窓からの距離と関係はありそう？</div>
   </div>
 
   <div class="lesson sc">
@@ -608,12 +610,12 @@ print("フリーラボへようこそ！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v6.3 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v6.4 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v6.3";  // v6.3: ヘッダーに自転車スピードラボ（bike/）への相互リンクを追加。 v6.2: STEP1①のアップロードを「貼り付けた数字を班名で保存」方式に修正（CSVファイル選択UI・CSV文言を削除）。uploadSerial1()新設。保存した班は自分も他班もプルダウンで選べる
+const VERSION = "v6.4";  // v6.4: STEP3の比較に「折れ線で重ねる」を追加。L11a(晴れ/くもり折れ線)＋L11(箱ひげ)の2段。体験8にS8line()追加。「比べ方は目的で図を選ぶ」  // v6.3: ヘッダーに自転車スピードラボ（bike/）への相互リンクを追加。 v6.2: STEP1①のアップロードを「貼り付けた数字を班名で保存」方式に修正（CSVファイル選択UI・CSV文言を削除）。uploadSerial1()新設。保存した班は自分も他班もプルダウンで選べる
 let JP_FONT_OK = false;
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
@@ -1290,7 +1292,26 @@ plt.show()
 // ============================================================
 // STEP3 パート1（用意したデータで「くらべる」応用）
 // ============================================================
-const L11 = `# レッスン11: くらべる —— 晴れ(6/1) と くもり(6/4) の箱ひげ図を並べる
+const L11a = `# レッスン11-①: くらべる —— 晴れ(6/1) と くもり(6/4) を折れ線で重ねる
+# 「時間の動き」をくらべたいときは、折れ線を重ねるのが分かりやすい
+import pandas as pd
+import matplotlib.pyplot as plt
+
+hare   = pd.read_csv("data/kofu_hare.csv")
+kumori = pd.read_csv("data/kofu_kumori.csv")
+
+plt.figure(figsize=(8, 3.5))
+plt.plot(hare["timestamp"],   hare["value"],   label="hare 6/1")     # label で名前をつける
+plt.plot(kumori["timestamp"], kumori["value"], label="kumori 6/4")
+plt.legend()                             # 凡例（どっちがどっち）を出す
+plt.xlabel("Hour")
+plt.ylabel("Solar radiation (MJ/m2)")
+plt.grid(True)
+plt.show()
+
+# 着眼点: 2本の線の「高さの差」と「形のちがい」。どの時間帯で差が一番大きい？
+`;
+const L11 = `# レッスン11-②: くらべる —— 晴れ(6/1) と くもり(6/4) の箱ひげ図を並べる
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -1360,6 +1381,30 @@ print(matome)
 // ============================================================
 // 複数のアップロード欄（班選択・キー）を同期
 
+
+function S8line() {
+  const names = selMulti.length >= 2 ? selMulti : [];
+  if (names.length < 2) return "# 上の「② くらべるデータ」で2つ以上えらんでください（折れ線の重ねは2つ以上のデータが必要）";
+  const listStr = names.map(n => `"${n}"`).join(", ");
+  return `# 体験8-①: 選んだ班を折れ線で重ねてくらべる（レッスン11を参考に）
+import pandas as pd
+import matplotlib.pyplot as plt
+
+namae = [${listStr}]
+
+plt.figure(figsize=(8, 4))
+for name in namae:
+    df = pd.read_csv("data/uploads/" + name + ".csv")
+    plt.plot(df["value"], label=name)     # label で班の名前をつける
+plt.legend()                              # 凡例（どの線がどの班か）
+plt.xlabel("Number")
+plt.ylabel("Brightness")
+plt.grid(True)
+plt.show()
+
+# 着眼点: 線が動いた瞬間 = その班の教室で何かが起きた瞬間。班ごとの高さの差にも注目
+`;
+}
 
 function S8() {
   const names = selMulti.length >= 2 ? selMulti : [];
