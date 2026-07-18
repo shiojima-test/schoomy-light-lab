@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v6.2 | スクーミー×Python</title>
+<title>教室の光環境ラボ v6.3 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -11,6 +11,9 @@
   header { background: linear-gradient(90deg, #1f2a30, #2d3439); color: #fff; padding: 16px 20px; }
   header h1 { font-size: 19px; font-weight: bold; display: inline; }
   header .ver { font-size: 12px; color: #F5E4C4; margin-left: 8px; }
+  header .xlink { float: right; font-size: 12px; }
+  header .xlink a { color: #F5E4C4; text-decoration: none; border: 1px solid #F5E4C4; border-radius: 6px; padding: 4px 10px; }
+  @media (max-width: 640px) { header .xlink { float: none; display: block; margin-top: 8px; } }
   .subbar { display: flex; height: 6px; }
   .subbar .c1 { width: 30.5%; background: #3AABA8; }
   .subbar .c2 { width: 45.7%; background: #F5E4C4; }
@@ -114,7 +117,8 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v6.2</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v6.3</span>
+  <span class="xlink"><a href="bike/">🚲 自転車スピードラボへ</a></span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -604,12 +608,12 @@ print("フリーラボへようこそ！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v6.2 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v6.3 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v6.2";  // v6.2: STEP1①のアップロードを「貼り付けた数字を班名で保存」方式に修正（CSVファイル選択UI・CSV文言を削除）。uploadSerial1()新設。保存した班は自分も他班もプルダウンで選べる
+const VERSION = "v6.3";  // v6.3: ヘッダーに自転車スピードラボ（bike/）への相互リンクを追加。 v6.2: STEP1①のアップロードを「貼り付けた数字を班名で保存」方式に修正（CSVファイル選択UI・CSV文言を削除）。uploadSerial1()新設。保存した班は自分も他班もプルダウンで選べる
 let JP_FONT_OK = false;
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
