@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v5.1 | スクーミー×Python</title>
+<title>教室の光環境ラボ v6.0 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -65,6 +65,8 @@
   .chakugan { background: #e8f5f4; border-left: 4px solid #3AABA8; border-radius: 6px; padding: 8px 12px; margin: 8px 0; font-size: 12.5px; }
   .chakugan b { color: #2a8a87; }
   .cheat { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 6px; }
+  .cheat tr.pd td { background: #eef7f7; }
+  .cheat tr.pd td:first-child { border-left: 3px solid #3AABA8; }
   .cheat th, .cheat td { border: 1px solid #ddd; padding: 5px 9px; text-align: left; }
   .cheat th { background: #eef6fb; color: #2c4a6e; }
   .challenge b { color: #E88A0A; }
@@ -112,7 +114,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v5.1</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v6.0</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -120,7 +122,7 @@
 
 <div class="howto">
   <b>このページの使い方</b>：各STEPは2部構成。<b>パート1で「用意したデータ」で学び → パート2で「スクーミー（オレンジボード）のデータ」で同じことを体験</b>します。<br>
-  <b>STEP1</b> Python基本 → <b>STEP2</b> データ分析基本 → <b>STEP3</b> データ分析応用（9チームのデータをぜんぶ使う！）→ <b>🔬フリーラボ</b> 自分のデータを自由に分析
+  <b>STEP1</b> Python基本（手で書く）→ <b>STEP2</b> データ分析基本（pandas登場）→ <b>STEP3</b> データ分析応用（9チームのデータをぜんぶ使う！）→ <b>🔬フリーラボ</b> 自分のデータを自由に分析
 </div>
 
 <div class="stepnav">
@@ -149,7 +151,7 @@ print("こんにちは、スクーミー！")</textarea>
 <div class="paneR">
 <section>
   <h2>パート1：Pythonの基本 レッスン1〜6</h2>
-  <p>やり方：各レッスンの<b>「▶ このコードを試す」→ 左のコード欄で「実行」→ 結果を見る → 「変えてみよう」に挑戦</b>。レッスン1〜5は文法、6で集計とばらつき（標準偏差）を求めます（データファイルの読み込み・グラフはSTEP2から）。</p>
+  <p>やり方：各レッスンの<b>「▶ このコードを試す」→ 左のコード欄で「実行」→ 結果を見る → 「変えてみよう」に挑戦</b>。レッスン1〜5は文法、6で集計とばらつき（標準偏差）を求めます。<b>STEP1はライブラリを使わず、自分の手で計算します</b>（＝仕組みを理解する）。データファイルの読み込み・pandas・グラフはSTEP2から。</p>
 
   <div class="lesson">
     <h3>レッスン1：print（表示する）</h3>
@@ -206,15 +208,21 @@ for v in values:
 
   <div class="lesson">
     <h3>レッスン6：個数・合計・最大・最小・平均・標準偏差</h3>
-    <pre>import statistics
+    <pre>import math
 
 values = [512, 530, 498, 505, 521]
-print("個数:", len(values))
-print("平均:", sum(values) / len(values))
-print("標準偏差:", statistics.pstdev(values))</pre>
-    <div class="kaisetsu"><b>解説</b>：リストから <code>len</code>（個数）・<code>sum</code>（合計）・<code>max/min</code>（最大/最小）を求める。平均は <b>合計 ÷ 個数</b>。さらに <code>statistics.pstdev</code> で<b>標準偏差＝ばらつき</b>が出せる（平均からどれくらい散らばっているか／単位はデータと同じ）。<b>平均が同じでも、ばらつきが違えばデータの性格はまったく違う</b>。この「平均」と「ばらつき」の2つが分析の土台で、STEP2でこれを図にする。</div>
+heikin = sum(values) / len(values)
+
+gokei = 0
+for v in values:
+    gokei = gokei + (v - heikin) ** 2
+
+bunsan = gokei / len(values)      # 分散
+hyojun = math.sqrt(bunsan)        # 標準偏差
+print("標準偏差:", round(hyojun, 2))</pre>
+    <div class="kaisetsu"><b>解説</b>：リストから <code>len</code>（個数）・<code>sum</code>（合計）・<code>max/min</code>（最大/最小）を求める。平均は <b>合計 ÷ 個数</b>。<br><b>標準偏差＝ばらつき</b>は、<b>①平均との差を2乗して、②その平均をとり（＝分散）、③ルートをとる</b>。数学Iで習う定義そのままを <code>for</code> で書ける。<b>平均が同じでも、ばらつきが違えばデータの性格はまったく違う</b>。この「平均」と「ばらつき」の2つが分析の土台で、STEP2でこれを図にする。<br>※ここでは<b>仕組みを理解するために手で計算</b>する。STEP2からは同じことを <code>pandas</code> が1行でやってくれる。</div>
     <button class="act navy" onclick="setCode('ed1', L6)">▶ 集計してみる</button>
-    <div class="challenge"><b>変えてみよう</b>：リストを <code>[100, 900, 100, 900, 100]</code> のようにバラバラにすると標準偏差はどうなる？ 逆に全部同じ数字にすると？</div>
+    <div class="challenge"><b>変えてみよう</b>：リストを <code>[100, 900, 100, 900, 100]</code> のようにバラバラにすると標準偏差はどうなる？ 逆に全部同じ数字にすると（答え：0）？</div>
   </div>
 
 </section>
@@ -241,7 +249,7 @@ print("標準偏差:", statistics.pstdev(values))</pre>
     <h3>🍊 体験2：個数・合計・最大・最小・平均・標準偏差（レッスン6を参考に）</h3>
     <div class="kaisetsu"><b>やること</b>：①に貼った数字のリストで、<code>len</code>・<code>sum</code>・<code>max</code>・<code>min</code>・平均・<b>標準偏差</b>を出そう。<code>___</code> を自分で埋めよう。</div>
     <button class="act navy" onclick="setCode('ed1', S2())">▶ ひな形を入れる</button>
-    <div class="challenge"><b>ヒント</b>：平均は <code>sum(values) / len(values)</code>、標準偏差は <code>statistics.pstdev(values)</code>。</div>
+    <div class="challenge"><b>ヒント</b>：平均は <code>sum(values) / len(values)</code>、最後は <code>math.sqrt(bunsan)</code>（分散のルート）。</div>
   </div>
 
   <div class="lesson sc">
@@ -283,15 +291,18 @@ print("標準偏差:", statistics.pstdev(values))</pre>
   <p class="note" style="margin-top:6px">出典：気象庁「<a href="https://www.data.jma.go.jp/stats/etrn/index.php" target="_blank">過去の気象データ検索</a>」（甲府地方気象台の観測値）より作成。🍊はスクーミーの実測。</p>
 
   <div class="lesson" style="margin-top:12px">
-    <h3>レッスン7：CSVファイルを読み込む —— ここでファイル初登場</h3>
-    <div class="kaisetsu"><b>解説</b>：上の表の実体は<b>CSVファイル</b>（カンマ区切りのテキスト）。ファイルを開いて1行ずつ読み、値をリストに入れると、STEP1でやった<b>リスト・for・集計</b>がそのまま使える。</div>
-    <button class="act navy" onclick="setCode('ed2', L7)">▶ CSVを読み込んで表示する</button>
-    <div class="challenge"><b>変えてみよう</b>：FILE を <code>"data/kofu_6gatsu.csv"</code> に変えて、中身がどう変わるか見よう。</div>
+    <h3>レッスン7：CSVファイルを読み込む —— ここでファイル初登場、そして pandas 登場</h3>
+    <div class="kaisetsu"><b>解説①（手で読む）</b>：上の表の実体は<b>CSVファイル</b>（カンマ区切りのテキスト）。ファイルを開いて1行ずつ読み、値をリストに入れると、STEP1でやった<b>リスト・for・集計</b>がそのまま使える。<b>まずこの仕組みを知ることが大事</b>。</div>
+    <button class="act navy" onclick="setCode('ed2', L7)">▶ ① 手でCSVを読み込む</button>
+    <div class="kaisetsu" style="margin-top:10px"><b>解説②（pandas で読む）</b>：実は、いま書いた読み込み・集計は <b><code>pandas</code></b>（データ分析の標準ライブラリ）なら数行で終わる。<code>pd.read_csv</code> で<b>表（データフレーム）</b>として読み、<code>df["value"]</code> で列を取り出し、<code>describe()</code> で集計が一発。<b>STEP2・STEP3はこの pandas で進める</b>。<br>⚠️<b>注意</b>：<code>describe()</code> の <code>std</code> は <b>÷(n−1)</b> の標準偏差。数学Iで習う<b>÷n</b> の標準偏差（レッスン6で手計算したもの）は <code>.std(ddof=0)</code> と書く。</div>
+    <button class="act navy" onclick="setCode('ed2', L7P)">▶ ② pandas で読み込む</button>
+    <div class="challenge"><b>変えてみよう</b>：FILE を <code>"data/kofu_6gatsu.csv"</code> に変えて、中身がどう変わるか見よう。①と②で同じ答えになる？</div>
+    <div class="chakugan"><b>📊 着眼点</b>：①と②は<b>まったく同じこと</b>をしている。仕組みが分かっていれば、道具（pandas）は「めんどうな部分を任せる相手」になる。中身を知らずに使うと、<code>ddof</code> のような落とし穴に気づけない。</div>
   </div>
 
   <div class="lesson" style="margin-top:12px">
     <h3>レッスン8：グラフ化 —— 数字の列を「見える」ようにする</h3>
-    <div class="kaisetsu"><b>解説</b>：使うのは<b>甲府・6月1日（晴れ）の太陽の光の強さ</b>。24個の数字を眺めても傾向は分からないが、<code>plt.plot(values)</code> で折れ線にすると「朝から強くなり昼にピーク、夜は0」が一瞬で見える。これが<b>可視化</b>。さらに<b>タイトル・軸ラベル・縦軸の範囲</b>（<code>plt.title</code>／<code>plt.xlabel</code>／<code>plt.ylabel</code>／<code>plt.ylim</code>）まで付けて、はじめて「人に見せられるグラフ」になる。</div>
+    <div class="kaisetsu"><b>解説</b>：ここからは <code>pandas</code> で読む。使うのは<b>甲府・6月1日（晴れ）の太陽の光の強さ</b>。24個の数字を眺めても傾向は分からないが、<code>plt.plot(df["timestamp"], df["value"])</code> で折れ線にすると「朝から強くなり昼にピーク、夜は0」が一瞬で見える。これが<b>可視化</b>。さらに<b>タイトル・軸ラベル・縦軸の範囲</b>（<code>plt.title</code>／<code>plt.xlabel</code>／<code>plt.ylabel</code>／<code>plt.ylim</code>）まで付けて、はじめて「人に見せられるグラフ」になる。</div>
     <button class="act navy" onclick="setCode('ed2', L8)">▶ 晴れの日をグラフにする</button>
     <div class="challenge"><b>変えてみよう</b>：FILE を <code>"data/kofu_kumori.csv"</code>（くもりの6月4日）に変えて、山の高さの違いを見よう。<code>plt.ylim</code> の数字も変えて見やすい範囲を探そう。</div>
     <div class="chakugan"><b>📊 着眼点</b>：「山の形」に注目。最大は何時ごろ？ 0になるのはいつ？ 縦軸の範囲を変えると、同じデータでも印象が変わることにも注目。</div>
@@ -299,7 +310,7 @@ print("標準偏差:", statistics.pstdev(values))</pre>
 
   <div class="lesson">
     <h3>レッスン9：箱ひげ図 —— 最大・最小・真ん中を1つの図にする</h3>
-    <div class="kaisetsu"><b>解説</b>：折れ線は「時間の流れ」を見る図。<b>箱ひげ図</b>（<code>plt.boxplot</code>）は時間を捨てて、<b>データ全体がどのあたりに集まっているか</b>を見る図。STEP1のレッスン6で数字にした<b>最大・最小</b>と<b>真ん中（中央値）</b>が、そのまま図になる。<br><b>読み方</b>：箱の中の線＝<b>中央値</b>（まん中の値）／箱の下端・上端＝データの下から25%・75%の位置／ひげの先＝<b>最小・最大</b>／○＝とびぬけた値（外れ値）。<b>箱が短い＝データが集まっている＝安定</b>。</div>
+    <div class="kaisetsu"><b>解説</b>：折れ線は「時間の流れ」を見る図。<b>箱ひげ図</b>（<code>plt.boxplot</code>）は時間を捨てて、<b>データ全体がどのあたりに集まっているか</b>を見る図。<br><b>ここが重要</b>：レッスン7で出した <code>describe()</code> の <b><code>min</code> / <code>25%</code> / <code>50%</code> / <code>75%</code> / <code>max</code> が、そのまま箱ひげ図の形</b>になる。数字の表と図は同じものの裏表。<br><b>読み方</b>：箱の中の線＝<b>中央値（50%）</b>／箱の下端・上端＝<b>25%・75%</b>／ひげの先＝<b>最小・最大</b>／○＝とびぬけた値（外れ値）。<b>箱が短い＝データが集まっている＝安定</b>。</div>
     <button class="act navy" onclick="setCode('ed2', L9)">▶ 箱ひげ図をかく</button>
     <div class="challenge"><b>変えてみよう</b>：FILE を <code>"data/kofu_kumori.csv"</code> に変えると、箱の位置と長さはどう変わる？</div>
     <div class="chakugan"><b>📊 着眼点</b>：箱はグラフのどのあたりにある？ 中央値は平均とズレている？ 折れ線と見くらべて「同じデータでも図を変えると分かることが変わる」ことを確かめよう。</div>
@@ -307,10 +318,10 @@ print("標準偏差:", statistics.pstdev(values))</pre>
 
   <div class="lesson">
     <h3>レッスン10：ヒストグラム —— ばらつき（標準偏差）を図にする</h3>
-    <div class="kaisetsu"><b>解説</b>：<b>ヒストグラム</b>（<code>plt.hist</code>）は「その値が何回出たか」を数えて棒にした図。STEP1のレッスン6で数字にした<b>標準偏差＝ばらつき</b>が、そのまま形になって見える。<b>山がとがっている＝標準偏差が小さい＝安定</b>、<b>横に広がっている＝標準偏差が大きい＝バラバラ</b>。<code>bins</code>（棒の数）を変えると見え方が変わる。</div>
+    <div class="kaisetsu"><b>解説</b>：<b>ヒストグラム</b>（<code>plt.hist</code>）は「その値が何回出たか」を数えて棒にした図。レッスン6で<b>手計算</b>した<b>標準偏差＝ばらつき</b>が、そのまま形になって見える。<b>山がとがっている＝標準偏差が小さい＝安定</b>、<b>横に広がっている＝標準偏差が大きい＝バラバラ</b>。<code>bins</code>（棒の数）を変えると見え方が変わる。<br>pandasでは <code>df["value"].std(ddof=0)</code> と書く。<b><code>ddof=0</code> を忘れると ÷(n−1) になり、レッスン6の手計算と数字が合わない</b>ので注意。</div>
     <button class="act navy" onclick="setCode('ed2', L10)">▶ ヒストグラムをかく</button>
     <div class="challenge"><b>変えてみよう</b>：<code>bins</code> を <code>4</code> や <code>20</code> に変えると形はどう変わる？ 印象が変わりすぎないか確かめよう。</div>
-    <div class="chakugan"><b>📊 着眼点</b>：印刷された標準偏差の数字と、山の広がりを見くらべよう。「ばらつきが大きい」を、数字と図の両方で言えるようになるのがゴール。</div>
+    <div class="chakugan"><b>📊 着眼点</b>：印刷された標準偏差の数字と、山の広がりを見くらべよう。「ばらつきが大きい」を、数字と図の両方で言えるようになるのがゴール。<code>ddof=0</code> を外すと数字がどう変わるかも試してみよう。</div>
   </div>
 </section>
 
@@ -344,17 +355,18 @@ print("標準偏差:", statistics.pstdev(values))</pre>
   </div>
 
   <div class="lesson sc">
-    <h3>🍊 体験4：自分の班のCSVを読み込んで表示する（レッスン7を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：<b>レッスン7</b>を思い出して、自分の班のCSVを読み込み、<code>print(values)</code> で表示しよう。<br>下の「▶ ひな形を入れる」で骨組みが入ります。<b><code>___</code> の部分を自分で書いて</b>完成させよう。</div>
+    <h3>🍊 体験4：自分の班のCSVを pandas で読み込む（レッスン7を参考に）</h3>
+    <div class="kaisetsu"><b>やること</b>：<b>レッスン7の②</b>を思い出して、自分の班のCSVを <code>pandas</code> で読み込み、<code>describe()</code> で集計まで出そう。<br>下の「▶ ひな形を入れる」で骨組みが入ります。<b><code>___</code> の部分を自分で書いて</b>完成させよう。</div>
     <button class="act navy" onclick="setCode('ed2', S4())">▶ ひな形を入れる</button>
-    <div class="challenge"><b>ヒント</b>：レッスン7の <code>values.append(float(v))</code> と同じ。</div>
+    <div class="challenge"><b>ヒント</b>：レッスン7の <code>pd.read_csv(FILE)</code> と同じ。</div>
+    <div class="chakugan"><b>📊 着眼点</b>：<code>describe()</code> の <code>count</code> は計測した回数、<code>50%</code> は中央値。自分の班は平均何ルクスだった？</div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験5：自分の班の記録をグラフ化する（レッスン8を参考に）</h3>
     <div class="kaisetsu"><b>やること</b>：アップロードした自分の班の計測記録を折れ線グラフに。<br><b>たてじく（縦軸）は <code>plt.ylim</code> で自分で決められる</b>。数字を変えて見やすい範囲を探そう。<br>下の「▶ ひな形を入れる」で骨組みが入ります。<b><code>___</code> の部分を自分で書いて</b>完成させよう。</div>
     <button class="act navy" onclick="setCode('ed2', S5())">▶ ひな形を入れる</button>
-    <div class="challenge"><b>ヒント</b>：レッスン8の <code>plt.plot(values)</code> と <code>plt.ylim(0, 4)</code> と同じ形。ylim は <code>0, 100</code> くらいから試そう。</div>
+    <div class="challenge"><b>ヒント</b>：レッスン8の <code>plt.plot(...)</code> と <code>plt.ylim(0, 4)</code> と同じ形。グラフにしたいのは <code>df["value"]</code>。ylim は <code>0, 100</code> くらいから試そう。</div>
     <div class="challenge"><b>変えてみよう</b>：グラフから「センサーの前で何かが動いた瞬間」は見つかる？</div>
     <div class="chakugan"><b>📊 着眼点</b>：線が動いた瞬間＝教室で何かが起きた瞬間。安定している区間と、ゆれた区間を探そう。</div>
   </div>
@@ -363,15 +375,15 @@ print("標準偏差:", statistics.pstdev(values))</pre>
     <h3>🍊 体験6：自分の班の箱ひげ図をかく（レッスン9を参考に）</h3>
     <div class="kaisetsu"><b>やること</b>：自分の班の計測記録を<b>箱ひげ図</b>に。折れ線では「時間の流れ」、箱ひげ図では「<b>どのあたりの明るさに集まっているか</b>」が見える。<br>下の「▶ ひな形を入れる」で骨組みが入ります。<b><code>___</code> の部分を自分で書いて</b>完成させよう。</div>
     <button class="act navy" onclick="setCode('ed2', S6())">▶ ひな形を入れる</button>
-    <div class="challenge"><b>ヒント</b>：レッスン9の <code>plt.boxplot(values)</code> と同じ形。</div>
+    <div class="challenge"><b>ヒント</b>：レッスン9の <code>plt.boxplot(...)</code> と同じ形。入れるのは <code>df["value"]</code>。</div>
     <div class="chakugan"><b>📊 着眼点</b>：箱は長い？ 短い？ 短いほど「ずっと同じ明るさだった」ということ。○（外れ値）が出ていたら、そのとき教室で何が起きた？</div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験7：自分の班のヒストグラムをかく（レッスン10を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：自分の班の計測記録を<b>ヒストグラム</b>に。あわせて<b>標準偏差</b>も出して、「ばらつき」を<b>数字と図の両方</b>で確かめよう。<br>下の「▶ ひな形を入れる」で骨組みが入ります。<b><code>___</code> の部分を自分で書いて</b>完成させよう。</div>
+    <div class="kaisetsu"><b>やること</b>：自分の班の計測記録を<b>ヒストグラム</b>に。あわせて<b>標準偏差</b>も出して、「ばらつき」を<b>数字と図の両方</b>で確かめよう。レッスン6で手計算したものを、pandasは1行で出してくれる。<br>下の「▶ ひな形を入れる」で骨組みが入ります。<b><code>___</code> の部分を自分で書いて</b>完成させよう。</div>
     <button class="act navy" onclick="setCode('ed2', S7())">▶ ひな形を入れる</button>
-    <div class="challenge"><b>ヒント</b>：標準偏差は <code>statistics.pstdev(values)</code>（レッスン6）、ヒストグラムは <code>plt.hist(values, bins=8)</code>（レッスン10）。</div>
+    <div class="challenge"><b>ヒント</b>：標準偏差は <code>df["value"].std(ddof=0)</code>（レッスン10）。<code>ddof=0</code> を忘れると数学Iの標準偏差になりません。<code>bins</code> は <code>8</code> くらいから。</div>
     <div class="chakugan"><b>📊 着眼点</b>：山は1つ？ それとも2つに分かれている？ 2つに分かれていたら「明るい時間帯」と「暗い時間帯」があったのかもしれない。</div>
   </div>
 
@@ -408,7 +420,7 @@ print("標準偏差:", statistics.pstdev(values))</pre>
 
   <div class="lesson">
     <h3>レッスン12：どちらが安定？ —— ヒストグラムを重ねて、標準偏差でくらべる</h3>
-    <div class="kaisetsu"><b>解説</b>：甲府の<b>1月</b>と<b>6月（梅雨）</b>、毎日の日照時間をくらべる。<b>ヒストグラムを重ねる</b>（<code>alpha=0.5</code> で半透明にすると重なりが見える）と分布の形の違いが見え、<b>標準偏差</b>（レッスン6）を出すと「<b>どちらが安定して晴れる月か</b>」が数値で言える。<b>図で示して、数字で裏づける</b>——これが分析の型。</div>
+    <div class="kaisetsu"><b>解説</b>：甲府の<b>1月</b>と<b>6月（梅雨）</b>、毎日の日照時間をくらべる。<b>ヒストグラムを重ねる</b>（<code>alpha=0.5</code> で半透明にすると重なりが見える）と分布の形の違いが見え、<b>標準偏差</b>（<code>.std(ddof=0)</code>）を出すと「<b>どちらが安定して晴れる月か</b>」が数値で言える。<b>図で示して、数字で裏づける</b>——これが分析の型。</div>
     <button class="act navy" onclick="setCode('ed3', L12)">▶ 1月と6月をヒストグラムでくらべる</button>
     <div class="challenge"><b>変えてみよう</b>：<code>bins</code> の数を変えると結論は変わる？ 標準偏差の数字は変わらないことも確かめよう。</div>
     <div class="chakugan"><b>📊 着眼点</b>：平均が近くても「ばらつき」は大きく違うことがある。標準偏差が小さい＝毎日似ている＝安定。図の形と数字が一致しているか確かめよう。</div>
@@ -416,10 +428,10 @@ print("標準偏差:", statistics.pstdev(values))</pre>
 
   <div class="lesson">
     <h3>レッスン13：たくさんのファイルをforで一気に処理する</h3>
-    <div class="kaisetsu"><b>解説</b>：ファイルが増えても、<b>ファイル名のリストをforで回せば</b>何個でも一気に処理できる。これがSTEP3パート2で「9チーム分を一発で比較」する鍵になる。</div>
+    <div class="kaisetsu"><b>解説</b>：ファイルが増えても、<b>ファイル名のリストをforで回せば</b>何個でも一気に処理できる（STEP1のレッスン4で習った <code>for</code> がここで効く）。さらに集めた結果を <code>pd.DataFrame()</code> に渡せば<b>そのまま表になる</b>。これがSTEP3パート2で「9チーム分を一発で比較」する鍵になる。</div>
     <button class="act navy" onclick="setCode('ed3', L13)">▶ 2つのファイルをforで処理する</button>
     <div class="challenge"><b>変えてみよう</b>：ファイル名リストに <code>"kofu_1gatsu"</code> と <code>"kofu_6gatsu"</code> を追加して4つ一気に処理しよう。</div>
-    <div class="chakugan"><b>📊 着眼点</b>：データが増えてもコードの行数は増えない。「くり返しに任せる」のがプログラミングの強み。</div>
+    <div class="chakugan"><b>📊 着眼点</b>：データが増えてもコードの行数は増えない。「くり返しに任せる」のがプログラミングの強み。9班でも100班でも <code>file_list</code> を増やすだけ。</div>
   </div>
 </section>
 
@@ -473,9 +485,9 @@ print("標準偏差:", statistics.pstdev(values))</pre>
 
   <div class="lesson sc">
     <h3>🍊 体験10：9チームぜんぶをforで一気に読む（レッスン13を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：レッスン13の「forで一気に読む」を、選んだデータぜんぶに適用。各班の<b>平均と標準偏差</b>が一発で出る。</div>
+    <div class="kaisetsu"><b>やること</b>：レッスン13の「forで一気に読む」を、選んだデータぜんぶに適用。各班の<b>平均・標準偏差・最大・最小</b>が<b>1つの表</b>になって出る。これが<b>データサイエンスの入口</b>。</div>
     <button class="act navy" onclick="setCode('ed3', S10())">▶ 選んだデータを一気に集計する</button>
-    <div class="challenge"><b>変えてみよう</b>：平均といっしょに最大・最小も表示しよう。</div>
+    <div class="challenge"><b>変えてみよう</b>：<code>matome.sort_values("平均")</code> を <code>print</code> すると、明るい順に並べ替えられる。</div>
   </div>
 
   <div class="chakugan"><b>🤔 考えてみよう</b>：予想と結果はどれくらい違った？ <b>箱ひげ図・ヒストグラム・標準偏差の数値</b>を根拠に、「どの班がいちばん明るいか」「どの班がいちばん安定していたか」を、そう言える理由といっしょに説明してみよう。</div>
@@ -540,6 +552,7 @@ print("フリーラボへようこそ！")</textarea>
 
   <div class="lesson">
     <h3>📖 早見表（レッスンで習った命令）</h3>
+    <p style="font-size:12.5px;color:#555;margin:4px 0 8px">水色の行は <b>pandas</b>（レッスン7で登場）。<code>import pandas as pd</code> が必要です。</p>
     <table class="cheat">
       <tr><th>命令</th><th>意味</th></tr>
       <tr><td><code>print(x)</code></td><td>表示する（レッスン1）</td></tr>
@@ -547,7 +560,15 @@ print("フリーラボへようこそ！")</textarea>
       <tr><td><code>len(values)</code> / <code>sum(values)</code></td><td>個数 ／ 合計（レッスン6）</td></tr>
       <tr><td><code>max(values)</code> / <code>min(values)</code></td><td>最大 ／ 最小（レッスン6）</td></tr>
       <tr><td><code>sum(values) / len(values)</code></td><td>平均（レッスン6）</td></tr>
-      <tr><td><code>statistics.pstdev(values)</code></td><td>標準偏差＝ばらつき（レッスン6）※<code>import statistics</code> が必要</td></tr>
+      <tr><td><code>math.sqrt(x)</code></td><td>ルート（レッスン6）※<code>import math</code> が必要</td></tr>
+      <tr class="pd"><td><code>import pandas as pd</code></td><td>pandas を使う準備（レッスン7）</td></tr>
+      <tr class="pd"><td><code>df = pd.read_csv("...")</code></td><td>CSVを「表」として読む（レッスン7）</td></tr>
+      <tr class="pd"><td><code>df.head()</code> / <code>len(df)</code></td><td>最初の5行 ／ 行数（レッスン7）</td></tr>
+      <tr class="pd"><td><code>df["value"]</code></td><td>「value」の列だけ取り出す（レッスン7）</td></tr>
+      <tr class="pd"><td><code>df["value"].mean()</code> / <code>.max()</code> / <code>.min()</code> / <code>.median()</code></td><td>平均 ／ 最大 ／ 最小 ／ 中央値（レッスン7・11）</td></tr>
+      <tr class="pd"><td><code>df["value"].std(ddof=0)</code></td><td>標準偏差（レッスン10）※<b><code>ddof=0</code> で ÷n</b>。付けないと ÷(n−1) になる</td></tr>
+      <tr class="pd"><td><code>df["value"].describe()</code></td><td>集計をまとめて出す＝箱ひげ図の中身（レッスン7・9）</td></tr>
+      <tr class="pd"><td><code>pd.DataFrame(リスト)</code></td><td>集めた結果を表にする（レッスン13）</td></tr>
       <tr><td><code>round(x, 2)</code></td><td>小数2桁に丸める</td></tr>
       <tr><td><code>for v in values:</code></td><td>1件ずつくり返す（レッスン4）</td></tr>
       <tr><td><code>if v >= 500:</code></td><td>判定して分岐（レッスン5）</td></tr>
@@ -569,12 +590,12 @@ print("フリーラボへようこそ！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v5.1 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v6.0 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v5.1";  // v5.1: グラフの日本語フォント対応（BIZ UDPGothicサブセットを同梱／班名が□にならない）
+const VERSION = "v6.0";  // v6.0: pandas導入（情報I=手で計算/情報II=pandas）。statistics廃止。L6は標準偏差を手計算、L7でpandas登場、L8以降とフリーラボはpandasベース。std(ddof=0)厳守
 let JP_FONT_OK = false;
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
@@ -754,8 +775,8 @@ async function initPy() {
   const st = document.getElementById("pyStatus");
   try {
     pyodide = await loadPyodide();
-    st.textContent = "グラフ機能を読み込んでいます…";
-    await pyodide.loadPackage("matplotlib");
+    st.textContent = "グラフ機能とpandasを読み込んでいます…";
+    await pyodide.loadPackage(["matplotlib", "pandas"]);
     await pyodide.runPythonAsync(`
 import matplotlib
 matplotlib.use("AGG")
@@ -884,7 +905,7 @@ for v in values:
 `;
 
 const L6 = `# レッスン6: 個数・合計・最大・最小・平均・標準偏差
-import statistics
+import math
 
 values = [512, 530, 498, 505, 521]
 
@@ -892,10 +913,20 @@ print("個数:", len(values))
 print("合計:", sum(values))
 print("最大:", max(values))
 print("最小:", min(values))
-print("平均:", sum(values) / len(values))
 
-# ばらつき（標準偏差）= 平均から、どれくらい散らばっているか
-print("標準偏差:", round(statistics.pstdev(values), 2))
+heikin = sum(values) / len(values)
+print("平均:", heikin)
+
+# 標準偏差 = 「平均との差」を2乗して平均し、ルートをとる（数学Iの定義どおり）
+gokei = 0
+for v in values:
+    gokei = gokei + (v - heikin) ** 2   # 平均との差を2乗して足していく
+
+bunsan = gokei / len(values)            # 分散 = 2乗の平均
+hyojun = math.sqrt(bunsan)              # 標準偏差 = 分散のルート
+
+print("分散:", round(bunsan, 2))
+print("標準偏差:", round(hyojun, 2))
 `;
 
 const L7 = `# レッスン7: CSVファイルを読み込んで表示する
@@ -910,6 +941,27 @@ with open(FILE) as f:
 
 print(values)                        # 読み込んだ全部
 print("個数:", len(values))
+`;
+const L7P = `# レッスン7（つづき）: 同じことを pandas なら数行で
+import pandas as pd
+
+FILE = "data/kofu_hare.csv"
+
+df = pd.read_csv(FILE)          # これだけで「表」として読み込める
+
+print(df.head())                # 最初の5行だけ見る
+print("個数:", len(df))
+
+values = df["value"]            # "value" の列だけ取り出す
+print("平均:", values.mean())
+print("最大:", values.max())
+print("最小:", values.min())
+
+# describe() は集計をまとめて出してくれる（レッスン9の箱ひげ図の中身そのもの）
+print(values.describe())
+
+# 注意: describe() の std は ÷(n-1)。数学Iの標準偏差（÷n）は ddof=0 を付ける
+print("標準偏差(÷n):", values.std(ddof=0))
 `;
 
 
@@ -959,7 +1011,7 @@ function S2() {
   const lst = serialList1();
   const head = lst ? "" : "# まず上の「①」に数字を貼り付けてから、もう一度ボタンを押そう\n";
   return `# 体験2: 個数・合計・最大・最小・平均・標準偏差（レッスン6を参考に）
-import statistics
+import math
 
 ${head}values = [${lst || "___"}]
 
@@ -967,8 +1019,19 @@ print("個数:", len(values))
 print("合計:", ___)                  # ← sum を使おう
 print("最大:", ___)                  # ← max を使おう
 print("最小:", ___)                  # ← min を使おう
-print("平均:", ___)                  # ← sum(values) / len(values)
-print("標準偏差:", ___)              # ← statistics.pstdev(values) （ばらつき）
+
+heikin = ___                         # ← sum(values) / len(values)
+print("平均:", heikin)
+
+# 標準偏差（レッスン6と同じ手順）
+gokei = 0
+for v in values:
+    gokei = gokei + (v - heikin) ** 2
+
+bunsan = gokei / len(values)         # 分散
+hyojun = ___                         # ← math.sqrt(bunsan)
+
+print("標準偏差:", round(hyojun, 2))
 `;
 }
 function S3() {
@@ -991,17 +1054,17 @@ for v in values:
 function S4() {
   const name = selPart[2];
   if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
-  return `# 体験4: 自分の班のCSVを読み込んで表示する（レッスン7を参考に）
+  return `# 体験4: 自分の班のCSVを pandas で読み込んで表示する（レッスン7を参考に）
+import pandas as pd
+
 FILE = "data/uploads/${name}.csv"
 
-values = []
-with open(FILE) as f:
-    next(f)                          # 見出しをとばす
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(___)           # ← レッスン7を参考に。float(v) を入れよう
+df = pd.read_csv(___)                # ← FILE を入れよう
 
-print(___)                           # ← values を表示しよう
+print(df.head())                     # 最初の5行だけ見る
+print("個数:", len(df))
+
+print(df["value"].describe())        # 集計をまとめて出す
 `;
 }
 
@@ -1010,21 +1073,16 @@ print(___)                           # ← values を表示しよう
 // ============================================================
 const L8 = `# レッスン8: グラフ化（甲府・6月1日(晴れ) 1時間ごとの日射量）
 # 出典: 気象庁「過去の気象データ検索」
+import pandas as pd
 import matplotlib.pyplot as plt
 
 FILE = "data/kofu_hare.csv"   # くもりの日は "data/kofu_kumori.csv"
 
-values = []
-with open(FILE) as f:
-    next(f)                          # 見出し行をとばす
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(float(v))      # 小数なので float
-
-print("最大:", max(values))
+df = pd.read_csv(FILE)
+print("最大:", df["value"].max())
 
 plt.figure(figsize=(8, 3.5))
-plt.plot(range(1, len(values) + 1), values)
+plt.plot(df["timestamp"], df["value"])
 
 plt.title("Kofu 6/1 (hare)")             # タイトル
 plt.xlabel("Hour")                       # よこじくの名前
@@ -1036,22 +1094,14 @@ plt.show()
 `;
 const L9 = `# レッスン9: 箱ひげ図（甲府・6月1日(晴れ)）
 # 折れ線は「時間の流れ」、箱ひげ図は「どのあたりに集まっているか」を見る図
+import pandas as pd
 import matplotlib.pyplot as plt
-import statistics
 
-FILE = "data/kofu_hare.csv"
+df = pd.read_csv("data/kofu_hare.csv")
+values = df["value"]
 
-values = []
-with open(FILE) as f:
-    next(f)
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(float(v))
-
-# STEP1のレッスン6で「数字」にしたことが、そのまま「図」になる
-print("最大:", max(values))
-print("最小:", min(values))
-print("中央値:", statistics.median(values))   # まん中の値 = 箱の中の線
+# describe() の数字が、そのまま箱ひげ図の形になる
+print(values.describe())
 
 plt.figure(figsize=(4, 4))
 plt.boxplot(values, labels=["hare 6/1"])
@@ -1059,25 +1109,19 @@ plt.ylabel("Solar radiation (MJ/m2)")
 plt.grid(axis="y")
 plt.show()
 
-# 読み方: 箱の中の線=中央値 / 箱の下端・上端=下から25%・75%の位置
-#         ひげの先=最小・最大 / ○=とびぬけた値（外れ値）
+# 読み方: 箱の中の線=中央値(50%) / 箱の下端・上端=25%・75%
+#         ひげの先=最小(min)・最大(max) / ○=とびぬけた値（外れ値）
 `;
 const L10 = `# レッスン10: ヒストグラム（甲府・6月1日(晴れ)）
 # 「その値が何回出たか」を数えて棒にした図 = ばらつきが形になって見える
+import pandas as pd
 import matplotlib.pyplot as plt
-import statistics
 
-FILE = "data/kofu_hare.csv"
+df = pd.read_csv("data/kofu_hare.csv")
+values = df["value"]
 
-values = []
-with open(FILE) as f:
-    next(f)
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(float(v))
-
-print("平均:", round(sum(values) / len(values), 2))
-print("標準偏差:", round(statistics.pstdev(values), 2))   # レッスン6と同じ
+print("平均:", round(values.mean(), 2))
+print("標準偏差:", round(values.std(ddof=0), 2))   # ddof=0 で ÷n（レッスン6と同じ計算）
 
 plt.figure(figsize=(6, 3.5))
 plt.hist(values, bins=8)          # bins = 棒の数。変えて形をくらべよう
@@ -1090,29 +1134,20 @@ plt.show()
 # 横に広がっている = 標準偏差が大きい = バラバラ
 `;
 
-// ============================================================
-// STEP2 パート2（スクーミーのデータで体験）
-// ============================================================
 function S5() {
   const name = selPart[2];
   if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
   return `# 体験5: 選んだデータ「${name}」をグラフ化（レッスン8を参考に）
+import pandas as pd
 import matplotlib.pyplot as plt
 
-FILE = "data/uploads/${name}.csv"
+df = pd.read_csv("data/uploads/${name}.csv")
 
-values = []
-with open(FILE) as f:
-    next(f)
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(___)           # ← 体験4と同じ。float(v) を入れよう
-
-print("データの数:", len(values), "個")
-print("平均:", round(sum(values) / len(values), 2))
+print("データの数:", len(df), "個")
+print("平均:", round(df["value"].mean(), 2))
 
 plt.figure(figsize=(8, 3.5))
-plt.plot(___)                        # ← レッスン8を参考に。values を入れよう
+plt.plot(___)                        # ← レッスン8を参考に。df["value"] を入れよう
 plt.xlabel("Number")
 plt.ylabel("Brightness")
 
@@ -1127,24 +1162,15 @@ function S6() {
   const name = selPart[2];
   if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
   return `# 体験6: 選んだデータ「${name}」の箱ひげ図（レッスン9を参考に）
+import pandas as pd
 import matplotlib.pyplot as plt
-import statistics
 
-FILE = "data/uploads/${name}.csv"
+df = pd.read_csv("data/uploads/${name}.csv")
 
-values = []
-with open(FILE) as f:
-    next(f)
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(___)           # ← 体験4と同じ。float(v) を入れよう
-
-print("最大:", max(values))
-print("最小:", min(values))
-print("中央値:", statistics.median(values))
+print(df["value"].describe())        # この表が、そのまま箱ひげ図の形になる
 
 plt.figure(figsize=(4, 4))
-plt.boxplot(___, labels=["${name}"])      # ← レッスン9を参考に。values を入れよう
+plt.boxplot(___, labels=["${name}"])      # ← レッスン9を参考に。df["value"] を入れよう
 plt.ylabel("Brightness")
 plt.grid(axis="y")
 plt.show()
@@ -1156,23 +1182,16 @@ function S7() {
   const name = selPart[2];
   if (!name) return "# 上の「② 使うデータを選ぶ」で自分の班のデータを選んでください";
   return `# 体験7: 選んだデータ「${name}」のヒストグラム（レッスン10を参考に）
+import pandas as pd
 import matplotlib.pyplot as plt
-import statistics
 
-FILE = "data/uploads/${name}.csv"
+df = pd.read_csv("data/uploads/${name}.csv")
 
-values = []
-with open(FILE) as f:
-    next(f)
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(___)           # ← 体験4と同じ。float(v) を入れよう
-
-print("平均:", round(sum(values) / len(values), 2))
-print("標準偏差:", ___)              # ← レッスン6・10を参考に。round(statistics.pstdev(values), 2)
+print("平均:", round(df["value"].mean(), 2))
+print("標準偏差:", ___)              # ← レッスン10を参考に。round(df["value"].std(ddof=0), 2)
 
 plt.figure(figsize=(6, 3.5))
-plt.hist(values, bins=___)           # ← 棒の数を自分で決めよう（8くらいから）
+plt.hist(df["value"], bins=___)      # ← 棒の数を自分で決めよう（8くらいから）
 plt.xlabel("Brightness")
 plt.ylabel("Count")
 plt.grid(axis="y")
@@ -1186,23 +1205,14 @@ plt.show()
 // STEP3 パート1（用意したデータで「くらべる」応用）
 // ============================================================
 const L11 = `# レッスン11: くらべる —— 晴れ(6/1) と くもり(6/4) の箱ひげ図を並べる
+import pandas as pd
 import matplotlib.pyplot as plt
-import statistics
 
-def yomikomi(path):              # 読み込みを関数にまとめた
-    values = []
-    with open(path) as f:
-        next(f)
-        for line in f:
-            t, v = line.strip().split(",")
-            values.append(float(v))
-    return values
+hare   = pd.read_csv("data/kofu_hare.csv")["value"]
+kumori = pd.read_csv("data/kofu_kumori.csv")["value"]
 
-hare   = yomikomi("data/kofu_hare.csv")
-kumori = yomikomi("data/kofu_kumori.csv")
-
-print("晴れ  の中央値:", statistics.median(hare))
-print("くもりの中央値:", statistics.median(kumori))
+print("晴れ  の中央値:", hare.median())
+print("くもりの中央値:", kumori.median())
 
 data   = [hare, kumori]
 labels = ["hare 6/1", "kumori 6/4"]
@@ -1213,28 +1223,19 @@ plt.ylabel("Solar radiation (MJ/m2)")
 plt.grid(axis="y")
 plt.show()
 
-# 変えてみよう: data に yomikomi("data/kofu_1gatsu.csv") を足して3つ並べる
+# 変えてみよう: data に pd.read_csv("data/kofu_1gatsu.csv")["value"] を足して3つ並べる
 #              （labels にも名前を追加すること）
 `;
 const L12 = `# レッスン12: どちらが「安定して晴れる」？
 # 1月と6月(梅雨)のヒストグラムを重ねて、標準偏差でくらべる
+import pandas as pd
 import matplotlib.pyplot as plt
-import statistics
 
-def yomikomi(path):
-    values = []
-    with open(path) as f:
-        next(f)
-        for line in f:
-            t, v = line.strip().split(",")
-            values.append(float(v))
-    return values
+jan = pd.read_csv("data/kofu_1gatsu.csv")["value"]   # 1月・31日分
+jun = pd.read_csv("data/kofu_6gatsu.csv")["value"]   # 6月・20日分（梅雨）
 
-jan = yomikomi("data/kofu_1gatsu.csv")   # 1月・31日分
-jun = yomikomi("data/kofu_6gatsu.csv")   # 6月・20日分（梅雨）
-
-print("1月: 平均", round(sum(jan) / len(jan), 1), "時間 / 標準偏差", round(statistics.pstdev(jan), 2))
-print("6月: 平均", round(sum(jun) / len(jun), 1), "時間 / 標準偏差", round(statistics.pstdev(jun), 2))
+print("1月: 平均", round(jan.mean(), 1), "時間 / 標準偏差", round(jan.std(ddof=0), 2))
+print("6月: 平均", round(jun.mean(), 1), "時間 / 標準偏差", round(jun.std(ddof=0), 2))
 
 plt.figure(figsize=(7, 3.5))
 plt.hist(jan, bins=8, alpha=0.5, label="Jan")   # alpha=0.5 で半透明 → 重なりが見える
@@ -1248,24 +1249,22 @@ plt.show()
 # 標準偏差が小さいほう = 毎日似ている = 安定して晴れる月
 `;
 const L13 = `# レッスン13: ファイル名のリストをforで回して、一気に処理する
-import statistics
-
-def yomikomi(path):
-    values = []
-    with open(path) as f:
-        next(f)
-        for line in f:
-            t, v = line.strip().split(",")
-            values.append(float(v))
-    return values
+import pandas as pd
 
 # ファイルが増えてもコードはこのまま！
 file_list = ["kofu_hare", "kofu_kumori"]
 
+kekka = []
 for name in file_list:
-    values = yomikomi("data/" + name + ".csv")
-    print(name, "の平均:", round(sum(values) / len(values), 2),
-          " 標準偏差:", round(statistics.pstdev(values), 2))
+    df = pd.read_csv("data/" + name + ".csv")
+    kekka.append({
+        "名前": name,
+        "平均": round(df["value"].mean(), 2),
+        "標準偏差": round(df["value"].std(ddof=0), 2),
+    })
+
+matome = pd.DataFrame(kekka)     # 集めた結果を、そのまま表にできる
+print(matome)
 
 # 変えてみよう: file_list に "kofu_1gatsu", "kofu_6gatsu" を追加
 `;
@@ -1281,26 +1280,16 @@ function S8() {
   if (names.length < 2) return "# 上の「② くらべるデータ」で2つ以上えらんでください（体験8は2つ以上のデータが必要）";
   const listStr = names.map(n => `"${n}"`).join(", ");
   return `# 体験8: 選んだ班の箱ひげ図を並べてくらべる（レッスン11を参考に）
+import pandas as pd
 import matplotlib.pyplot as plt
-import statistics
-
-def yomikomi(path):
-    values = []
-    with open(path) as f:
-        next(f)
-        for line in f:
-            t, v = line.strip().split(",")
-            values.append(float(v))
-    return values
 
 namae = [${listStr}]
 
 data = []
 for name in namae:
-    data.append(yomikomi("data/uploads/" + name + ".csv"))
-
-for i in range(len(namae)):
-    print(namae[i], "の中央値:", round(statistics.median(data[i]), 2))
+    df = pd.read_csv("data/uploads/" + name + ".csv")
+    data.append(df["value"])
+    print(name, "の中央値:", round(df["value"].median(), 2))
 
 plt.figure(figsize=(8, 4))
 plt.boxplot(data, labels=namae)
@@ -1318,25 +1307,16 @@ function S9() {
   if (names.length < 2) return "# 上の「② くらべるデータ」で2つ以上えらんでください（体験9は2つ以上のデータが必要）";
   const listStr = names.map(n => `"${n}"`).join(", ");
   return `# 体験9: 選んだ班のヒストグラムを重ねてくらべる（レッスン12を参考に）
+import pandas as pd
 import matplotlib.pyplot as plt
-import statistics
-
-def yomikomi(path):
-    values = []
-    with open(path) as f:
-        next(f)
-        for line in f:
-            t, v = line.strip().split(",")
-            values.append(float(v))
-    return values
 
 namae = [${listStr}]
 
 plt.figure(figsize=(7, 3.5))
 for name in namae:
-    values = yomikomi("data/uploads/" + name + ".csv")
-    print(name, ": 平均", round(sum(values) / len(values), 2),
-          " 標準偏差", round(statistics.pstdev(values), 2))
+    values = pd.read_csv("data/uploads/" + name + ".csv")["value"]
+    print(name, ": 平均", round(values.mean(), 2),
+          " 標準偏差", round(values.std(ddof=0), 2))
     plt.hist(values, bins=8, alpha=0.5, label=name)   # alpha=0.5 で半透明
 
 plt.legend()
@@ -1354,24 +1334,23 @@ function S10() {
   if (names.length < 1) return "# 上の「② くらべるデータ」で1つ以上えらんでください";
   const listStr = names.map(n => `"${n}"`).join(", ");
   return `# 体験10: 選んだデータぜんぶを for で一気に読む（レッスン13を参考に）
-import statistics
-
-def yomikomi(path):
-    values = []
-    with open(path) as f:
-        next(f)
-        for line in f:
-            t, v = line.strip().split(",")
-            values.append(float(v))
-    return values
+import pandas as pd
 
 namae = [${listStr}]
-for name in namae:
-    values = yomikomi("data/uploads/" + name + ".csv")
-    print(name, "の平均:", round(sum(values) / len(values), 2),
-          " 標準偏差:", round(statistics.pstdev(values), 2))
 
-# 変えてみよう: 平均といっしょに max(values), min(values) も表示しよう
+kekka = []
+for name in namae:
+    values = pd.read_csv("data/uploads/" + name + ".csv")["value"]
+    kekka.append({
+        "班": name,
+        "平均": round(values.mean(), 2),
+        "標準偏差": round(values.std(ddof=0), 2),
+        "最大": values.max(),
+        "最小": values.min(),
+    })
+
+matome = pd.DataFrame(kekka)     # 9班ぶんの結果が、1つの表になる
+print(matome)
 `;
 }
 
@@ -1432,43 +1411,30 @@ function freePaths() {
 const FREE_EMPTY = `# まず「① ファイルを入れる」か「② 班データを選ぶ」でデータを置いてから、
 # もう一度テンプレのボタンを押そう（ファイル名が自動で入ります）
 `;
-const FREE_YOMIKOMI = `def yomikomi(path):
-    values = []
-    with open(path) as f:
-        next(f)                          # 見出し行をとばす
-        for line in f:
-            t, v = line.strip().split(",")
-            values.append(float(v))
-    return values
-`;
 function F1() {
   const p = freePaths();
   if (!p.length) return FREE_EMPTY;
   return `# 読み込んで表示
-FILE = "${p[0]}"
+import pandas as pd
 
-values = []
-with open(FILE) as f:
-    next(f)                          # 見出し行をとばす
-    for line in f:
-        t, v = line.strip().split(",")
-        values.append(float(v))
+df = pd.read_csv("${p[0]}")
 
-print(values)
-print("個数:", len(values))
+print(df.head())                 # 最初の5行
+print("個数:", len(df))
+print(df["value"].describe())    # まとめて集計
 `;
 }
 function F2() {
   const p = freePaths();
   if (!p.length) return FREE_EMPTY;
   return `# 折れ線グラフ
+import pandas as pd
 import matplotlib.pyplot as plt
 
-${FREE_YOMIKOMI}
-values = yomikomi("${p[0]}")
+df = pd.read_csv("${p[0]}")
 
 plt.figure(figsize=(8, 3.5))
-plt.plot(values)
+plt.plot(df["value"])
 plt.xlabel("Number")
 plt.grid(True)
 # plt.ylim(0, 100)      # ← 縦軸を自分で決めたいときは # を外す
@@ -1478,15 +1444,18 @@ plt.show()
 function F3() {
   const p = freePaths();
   if (!p.length) return FREE_EMPTY;
-  return `# 集計（平均・最大・最小）
-${FREE_YOMIKOMI}
-values = yomikomi("${p[0]}")
+  return `# 集計（平均・最大・最小・標準偏差）
+import pandas as pd
 
-print("個数:", len(values))
-print("平均:", round(sum(values) / len(values), 2))
-print("最大:", max(values))
-print("最小:", min(values))
-print("範囲(最大-最小):", round(max(values) - min(values), 2))
+values = pd.read_csv("${p[0]}")["value"]
+
+print(values.describe())         # count/mean/std/min/25%/50%/75%/max
+print("---")
+print("平均:", round(values.mean(), 2))
+print("最大:", values.max())
+print("最小:", values.min())
+print("範囲(最大-最小):", round(values.max() - values.min(), 2))
+print("標準偏差:", round(values.std(ddof=0), 2))   # ddof=0 で ÷n
 `;
 }
 function F4() {
@@ -1494,16 +1463,16 @@ function F4() {
   if (p.length < 2) return FREE_EMPTY;
   const listStr = p.map(x => `"${x}"`).join(",\n    ");
   return `# ぜんぶ重ねてくらべる
+import pandas as pd
 import matplotlib.pyplot as plt
 
-${FREE_YOMIKOMI}
 file_list = [
     ${listStr}
 ]
 
 plt.figure(figsize=(8, 4))
 for path in file_list:
-    values = yomikomi(path)
+    values = pd.read_csv(path)["value"]
     plt.plot(values, label=path.split("/")[-1].replace(".csv", ""))
 plt.legend()
 plt.grid(True)
@@ -1515,28 +1484,30 @@ function F5() {
   if (p.length < 2) return FREE_EMPTY;
   const listStr = p.map(x => `"${x}"`).join(",\n    ");
   return `# ぜんぶの平均を棒グラフに
+import pandas as pd
 import matplotlib.pyplot as plt
 
-${FREE_YOMIKOMI}
 file_list = [
     ${listStr}
 ]
 
-namae = []
-averages = []
+kekka = []
 for path in file_list:
-    values = yomikomi(path)
-    namae.append(path.split("/")[-1].replace(".csv", ""))
-    averages.append(sum(values) / len(values))
+    values = pd.read_csv(path)["value"]
+    kekka.append({
+        "名前": path.split("/")[-1].replace(".csv", ""),
+        "平均": round(values.mean(), 2),
+        "標準偏差": round(values.std(ddof=0), 2),
+    })
+
+matome = pd.DataFrame(kekka)
+print(matome)
 
 plt.figure(figsize=(8, 3.5))
-plt.bar(range(len(namae)), averages, color="#3AABA8")
-plt.xticks(range(len(namae)), namae, rotation=45, ha="right")
+plt.bar(matome["名前"], matome["平均"], color="#3AABA8")
+plt.xticks(rotation=45, ha="right")
 plt.grid(axis="y")
 plt.show()
-
-for n, a in zip(namae, averages):
-    print(n, "の平均:", round(a, 2))
 `;
 }
 
