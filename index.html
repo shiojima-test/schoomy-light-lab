@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v6.1 | スクーミー×Python</title>
+<title>教室の光環境ラボ v6.2 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -114,7 +114,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v6.1</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v6.2</span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
 
@@ -229,51 +229,39 @@ print("標準偏差:", round(hyojun, 2))</pre>
 
 <section>
   <h2 class="p2">パート2：スクーミーのデータで体験</h2>
-  <p>今度は<b>自分たちで計測した数字</b>で、パート1と同じことをやってみよう。数字を用意する方法は<b>2つ</b>。手早く試すなら<b>コピペ（A）</b>、みんなの班のデータを保存して使うなら<b>アップロード（B）</b>。どちらでも、下の体験の「▶ ひな形を入れる」で数字がコードに入ります。</p>
+  <p>今度は<b>自分たちで計測した数字</b>で、パート1と同じことをやってみよう。スクーミーで計測して、<b>シリアルモニターに出た数字をコピー</b>して下に貼り付け、<b>班の名前をつけてアップロード</b>すると保存されます。保存すると、<b>自分の班も、ほかの班も</b>、下のメニューから選んで使えます。</p>
 
   <div class="uploadbox">
-    <h3>① 計測した数字を用意する（A か B のどちらか）</h3>
-
-    <p class="note" style="margin-top:2px"><b>A. その場で貼り付ける（かんたん・保存なし）</b></p>
-    <p class="note">シリアルモニターの数字をコピーして、そのまま下に貼り付けよう。</p>
+    <h3>① 計測した数字を貼り付けて、班のデータとして保存</h3>
+    <p class="note">シリアルモニターの数字をコピーして、そのまま下に貼り付けよう。貼ったら、<b>班の名前をつけて「アップロード」</b>。保存せずその場で使いたいだけなら、貼るだけでも体験に使えます。</p>
     <textarea id="serialPaste1" rows="3" placeholder="シリアルモニターの数字をここに貼り付け" oninput="serialChanged()"></textarea>
     <p class="note" id="serialNote1"></p>
-
-    <p class="note" style="margin-top:12px"><b>B. CSVでアップロードする（保存される・STEP2/3と共通）</b></p>
-    <ol class="note" style="margin:2px 0 6px 1.1em; padding:0;">
-      <li>スクーミーで計測し、<b>CSVで保存</b>（またはシリアル出力をコピー）</li>
-      <li><b>名前</b>をつける（例：<code>1班</code>）→ <b>「CSVファイルを選ぶ」</b> → <b>「アップロード」</b></li>
-    </ol>
     <div class="toolbar">
-      <label>名前: <input type="text" class="upName1" placeholder="例: 1班" size="16" maxlength="40"></label>
-      <label class="act blue" style="display:inline-block; cursor:pointer;">📄 CSVファイルを選ぶ<input type="file" accept=".csv,.txt" style="display:none" onchange="loadFile(this, 1)"></label>
-    </div>
-    <textarea class="upData1" rows="3" placeholder="CSVファイルを選ぶか、シリアル出力をここに貼り付け"></textarea>
-    <div class="toolbar">
-      <button class="act orange" onclick="uploadData(1)">アップロード</button>
-      <span class="note upNote1"></span>
+      <label>班の名前: <input type="text" id="upName1" placeholder="例: 1班" size="16" maxlength="40"></label>
+      <button class="act orange" onclick="uploadSerial1()">アップロードして保存</button>
+      <span class="note" id="upNote1"></span>
     </div>
 
     <div class="toolbar" style="background:#eef6fb; border-radius:8px; padding:10px 14px; margin:12px 0 0;">
-      <b style="color:#2c4a6e;">アップロードした班を使う:</b>
+      <b style="color:#2c4a6e;">保存した班のデータを使う:</b>
       <select class="pickOne" data-step="1" onchange="pickChanged(1)" style="font-size:15px; padding:8px 12px; min-width:160px;">
-        <option value="">（コピペを使う／未選択）</option>
+        <option value="">（貼り付けた数字を使う／未選択）</option>
       </select>
       <button class="act blue" onclick="reloadList()">🔄 一覧を更新</button>
-      <span class="note" id="pick1Note">班を選ぶと、その数字が体験に入ります（未選択ならAのコピペを使用）</span>
+      <span class="note" id="pick1Note">班を選ぶと、その班の数字が体験に入ります（未選択なら上に貼り付けた数字を使用）</span>
     </div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験1：計測した数字をリストに入れて表示（レッスン3を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：①で用意した数字（A:貼り付け か B:班を選ぶ）が、リスト <code>values = [ ]</code> に自動で入ります。まずは表示から。</div>
+    <div class="kaisetsu"><b>やること</b>：①で貼り付けた数字（または選んだ班の数字）が、リスト <code>values = [ ]</code> に自動で入ります。まずは表示から。</div>
     <button class="act navy" onclick="setCode('ed1', S1())">▶ ひな形を入れる</button>
     <div class="challenge"><b>ヒント</b>：<code>values[0]</code> の番号を変えると、別の値も取り出せる。</div>
   </div>
 
   <div class="lesson sc">
     <h3>🍊 体験2：個数・合計・最大・最小・平均・標準偏差（レッスン6を参考に）</h3>
-    <div class="kaisetsu"><b>やること</b>：①で用意した数字のリストで、<code>len</code>・<code>sum</code>・<code>max</code>・<code>min</code>・平均・<b>標準偏差</b>を出そう。<code>___</code> を自分で埋めよう。</div>
+    <div class="kaisetsu"><b>やること</b>：①の数字のリストで、<code>len</code>・<code>sum</code>・<code>max</code>・<code>min</code>・平均・<b>標準偏差</b>を出そう。<code>___</code> を自分で埋めよう。</div>
     <button class="act navy" onclick="setCode('ed1', S2())">▶ ひな形を入れる</button>
     <div class="challenge"><b>ヒント</b>：平均は <code>sum(values) / len(values)</code>、最後は <code>math.sqrt(bunsan)</code>（分散のルート）。</div>
   </div>
@@ -616,12 +604,12 @@ print("フリーラボへようこそ！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v6.1 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v6.2 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v6.1";  // v6.1: STEP1①をアップロード対応（A:貼り付け と B:CSVアップロード の両対応）。班選択時はCSV値をvalues=[...]にリテラル展開。STEP2/3のupload機構（loadFile/uploadData/pickChanged）を流用
+const VERSION = "v6.2";  // v6.2: STEP1①のアップロードを「貼り付けた数字を班名で保存」方式に修正（CSVファイル選択UI・CSV文言を削除）。uploadSerial1()新設。保存した班は自分も他班もプルダウンで選べる
 let JP_FONT_OK = false;
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
@@ -1032,6 +1020,36 @@ function parseSerial1() {
   });
   return nums;
 }
+// STEP1: 貼り付けた数字を、班の名前をつけて保存（シリアルモニターの値をそのままアップロード）
+async function uploadSerial1() {
+  const note = document.getElementById("upNote1");
+  const name = (document.getElementById("upName1").value || "").trim();
+  const nums = parseSerial1();               // 貼り付け欄から数値だけ取り出す
+  if (!name) { note.textContent = "⚠ 班の名前を入力してください（例: 1班）"; return; }
+  if (/[\/\\?%*:|"<>#]/.test(name)) { note.textContent = "⚠ 名前に使えない記号があります"; return; }
+  if (!nums.length) { note.textContent = "⚠ 先に数字を貼り付けてください"; return; }
+  // 保存形式（timestamp,value）に整える。timestampは通し番号
+  const csv = "timestamp,value\n" + nums.map((v, i) => (i + 1) + "," + v).join("\n") + "\n";
+  note.textContent = `「${name}」として送信中…（${nums.length}個）`;
+  try {
+    const res = await fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ name: name, csv: csv })
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || "送信失敗");
+    note.textContent = `✅ 「${name}」を保存しました（${nums.length}個）。下のメニューで選べます。`;
+    step1Values[name] = nums.slice();        // すぐ使えるようにキャッシュ
+    await reloadList();
+    selPart[1] = name;                       // 保存した本人はそのまま選択状態に
+    renderPickers();
+    const pn = document.getElementById("pick1Note");
+    if (pn) pn.textContent = `✅ 「${name}」を使います（${nums.length}個）。体験の「▶ ひな形を入れる」を押そう。`;
+  } catch (e) {
+    note.textContent = "❌ 失敗: " + e.message;
+  }
+}
 function serialChanged() {
   const note = document.getElementById("serialNote1");
   if (!note) return;
@@ -1063,7 +1081,7 @@ function serialList1() {
 }
 function S1() {
   const lst = serialList1();
-  const head = lst ? "" : "# まず上の「①」で数字を用意（A:貼り付け か B:班を選ぶ）してから、もう一度ボタンを押そう\n";
+  const head = lst ? "" : "# まず上の「①」で数字を貼り付ける（または保存した班を選ぶ）と、ここに入ります\n";
   return `# 体験1: 計測した数字をリストに入れて表示（レッスン3を参考に）
 ${head}values = [${lst || "___"}]
 
@@ -1073,7 +1091,7 @@ print("さいしょの値:", values[0])
 }
 function S2() {
   const lst = serialList1();
-  const head = lst ? "" : "# まず上の「①」で数字を用意（A:貼り付け か B:班を選ぶ）してから、もう一度ボタンを押そう\n";
+  const head = lst ? "" : "# まず上の「①」で数字を貼り付ける（または保存した班を選ぶ）と、ここに入ります\n";
   return `# 体験2: 個数・合計・最大・最小・平均・標準偏差（レッスン6を参考に）
 import math
 
@@ -1100,7 +1118,7 @@ print("標準偏差:", round(hyojun, 2))
 }
 function S3() {
   const lst = serialList1();
-  const head = lst ? "" : "# まず上の「①」で数字を用意（A:貼り付け か B:班を選ぶ）してから、もう一度ボタンを押そう\n";
+  const head = lst ? "" : "# まず上の「①」で数字を貼り付ける（または保存した班を選ぶ）と、ここに入ります\n";
   return `# 体験3: 各データを1つずつ if で判定（レッスン5を参考に）
 ${head}values = [${lst || "___"}]
 
