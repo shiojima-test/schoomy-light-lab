@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v6.7 | スクーミー×Python</title>
+<title>教室の光環境ラボ v6.8 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -117,7 +117,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v6.7</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v6.8</span>
   <span class="xlink"><a href="bike/">🚲 自転車スピードラボへ</a></span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
@@ -555,7 +555,7 @@ print("フリーラボへようこそ！")</textarea>
   <div style="background:#eef6fb; border-radius:8px; padding:10px 14px; margin:12px 0;">
     <b style="color:#2c4a6e;">② アップ済みの班データも使える（複数えらべる）</b>
     <button class="act blue" onclick="reloadList()" style="margin-left:8px;">🔄 一覧を更新</button>
-    <p class="note">STEP2・3でアップロードしたデータ。チェックすると <code>data/uploads/名前.csv</code> でコードから読めます。<br><b>「⬇ CSV」を押すと、その班のデータをCSVでダウンロード</b>できます（他のチームのデータを保存して、AIに渡して分析させることもできます）。</p>
+    <p class="note">STEP2・3でアップロードしたデータ。チェックすると <code>data/uploads/名前.csv</code> でコードから読めます。<br><b>「⬇ CSV」を押すと、その班のデータをCSVでダウンロード</b>できます（他のチームのデータを保存して、AIに渡して分析させることもできます）。<br><span style="font-size:12px;color:#666;">保存先：パソコンは「ダウンロード」フォルダ／iPad・iPhoneは「ファイル」アプリの「ダウンロード」。</span></p>
     <div id="pickFree" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;">
       <span class="note">まだデータがありません。「一覧を更新」を押してください。</span>
     </div>
@@ -613,12 +613,12 @@ print("フリーラボへようこそ！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v6.7 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v6.8 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v6.7";  // v6.7: フリーラボ②の班データに「⬇ CSV」ダウンロードボタンを追加（他チームがCSV保存→AIに渡せる）。downloadUploaded()。iOS分岐(navigator.share/a.download)・BOM付きUTF-8  // v6.6: 体験10に棒グラフを追加（表＋全班の平均棒グラフでSTEP3を締める）。plt.bar(___,___)を虫食い化  // v6.5: STEP3の体験8-10も虫食い（___）方式に統一（STEP2と作りを揃えた）。S8line/S8/S9/S10のグラフ核心行を___化  // v6.4: STEP3の比較に「折れ線で重ねる」を追加。L11a(晴れ/くもり折れ線)＋L11(箱ひげ)の2段。体験8にS8line()追加。「比べ方は目的で図を選ぶ」  // v6.3: ヘッダーに自転車スピードラボ（bike/）への相互リンクを追加。 v6.2: STEP1①のアップロードを「貼り付けた数字を班名で保存」方式に修正（CSVファイル選択UI・CSV文言を削除）。uploadSerial1()新設。保存した班は自分も他班もプルダウンで選べる
+const VERSION = "v6.8";  // v6.8: CSVダウンロードを全端末で直接ダウンロードに統一（案2）。共有シート分岐を廃止しa.downloadに一本化。iOS Safari13+も直接保存（fetch→Blob→a[download]、setTimeoutで後片付け）  // v6.7: フリーラボ②の班データに「⬇ CSV」ダウンロードボタンを追加（他チームがCSV保存→AIに渡せる）。downloadUploaded()。iOS分岐(navigator.share/a.download)・BOM付きUTF-8  // v6.6: 体験10に棒グラフを追加（表＋全班の平均棒グラフでSTEP3を締める）。plt.bar(___,___)を虫食い化  // v6.5: STEP3の体験8-10も虫食い（___）方式に統一（STEP2と作りを揃えた）。S8line/S8/S9/S10のグラフ核心行を___化  // v6.4: STEP3の比較に「折れ線で重ねる」を追加。L11a(晴れ/くもり折れ線)＋L11(箱ひげ)の2段。体験8にS8line()追加。「比べ方は目的で図を選ぶ」  // v6.3: ヘッダーに自転車スピードラボ（bike/）への相互リンクを追加。 v6.2: STEP1①のアップロードを「貼り付けた数字を班名で保存」方式に修正（CSVファイル選択UI・CSV文言を削除）。uploadSerial1()新設。保存した班は自分も他班もプルダウンで選べる
 let JP_FONT_OK = false;
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
@@ -802,6 +802,7 @@ function freeMultiChanged() {
   freeMulti = Array.from(document.querySelectorAll("#pickFree input:checked")).map(c => c.value);
 }
 // フリーラボ: アップ済みの班データを1件CSVでダウンロード（他チームがAIに渡すなど）
+// 全端末で「直接ダウンロード」に統一（Win/Mac=DLフォルダ、iPad/iPhone=ファイルアプリのダウンロード）
 async function downloadUploaded(name, btn) {
   const label = btn ? btn.textContent : "";
   if (btn) { btn.disabled = true; btn.textContent = "取得中…"; }
@@ -810,17 +811,16 @@ async function downloadUploaded(name, btn) {
     const fname = name + ".csv";
     // BOM付きUTF-8（Excelでも文字化けしない）
     const blob = new Blob(["\uFEFF" + txt], { type: "text/csv;charset=utf-8;" });
-    const file = new File([blob], fname, { type: "text/csv" });
-    // iOS等: 共有シートが使えるなら share、だめなら a.download（wave-gear方式）
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ files: [file], title: fname });
-    } else {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url; a.download = fname;
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }
+    // fetch→Blob→<a download>クリック方式。iOS Safari(13+)でもプレビューにせず直接保存される
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fname;
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    // iOS 13 Safari のクラッシュ回避のため、少し待ってから後片付け
+    setTimeout(() => { a.remove(); URL.revokeObjectURL(url); }, 1000);
   } catch (e) {
     alert("ダウンロードに失敗しました: " + name + "\n（「一覧を更新」してから、もう一度お試しください）");
   } finally {
