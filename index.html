@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教室の光環境ラボ v6.8 | スクーミー×Python</title>
+<title>教室の光環境ラボ v6.9 | スクーミー×Python</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -117,7 +117,7 @@
 </head>
 <body>
 <header>
-  <h1>教室の光環境ラボ</h1><span class="ver">v6.8</span>
+  <h1>教室の光環境ラボ</h1><span class="ver">v6.9</span>
   <span class="xlink"><a href="bike/">🚲 自転車スピードラボへ</a></span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
@@ -613,12 +613,12 @@ print("フリーラボへようこそ！")</textarea>
 
 </main>
 
-<footer>教室の光環境ラボ v6.8 ｜ SchooMy</footer>
+<footer>教室の光環境ラボ v6.9 ｜ SchooMy</footer>
 
 <script>
 const OWNER = "shiojima-test";
 const REPO  = "schoomy-light-lab";
-const VERSION = "v6.8";  // v6.8: CSVダウンロードを全端末で直接ダウンロードに統一（案2）。共有シート分岐を廃止しa.downloadに一本化。iOS Safari13+も直接保存（fetch→Blob→a[download]、setTimeoutで後片付け）  // v6.7: フリーラボ②の班データに「⬇ CSV」ダウンロードボタンを追加（他チームがCSV保存→AIに渡せる）。downloadUploaded()。iOS分岐(navigator.share/a.download)・BOM付きUTF-8  // v6.6: 体験10に棒グラフを追加（表＋全班の平均棒グラフでSTEP3を締める）。plt.bar(___,___)を虫食い化  // v6.5: STEP3の体験8-10も虫食い（___）方式に統一（STEP2と作りを揃えた）。S8line/S8/S9/S10のグラフ核心行を___化  // v6.4: STEP3の比較に「折れ線で重ねる」を追加。L11a(晴れ/くもり折れ線)＋L11(箱ひげ)の2段。体験8にS8line()追加。「比べ方は目的で図を選ぶ」  // v6.3: ヘッダーに自転車スピードラボ（bike/）への相互リンクを追加。 v6.2: STEP1①のアップロードを「貼り付けた数字を班名で保存」方式に修正（CSVファイル選択UI・CSV文言を削除）。uploadSerial1()新設。保存した班は自分も他班もプルダウンで選べる
+const VERSION = "v6.9";  // v6.9: 【重大バグ修正】fetchUploadedをGAS経由からGitHub raw優先に変更。GAS経由は同一timestampがSheets上で1行に統合され行数が激減していた(例880行→34行)。raw.githubusercontent.com(CORS *)から全行取得、GAS未反映時のみフォールバック。ダウンロード・班データ読込・分析すべてが正しい行数に  // v6.8: CSVダウンロードを全端末で直接ダウンロードに統一（案2）。共有シート分岐を廃止しa.downloadに一本化。iOS Safari13+も直接保存（fetch→Blob→a[download]、setTimeoutで後片付け）  // v6.7: フリーラボ②の班データに「⬇ CSV」ダウンロードボタンを追加（他チームがCSV保存→AIに渡せる）。downloadUploaded()。iOS分岐(navigator.share/a.download)・BOM付きUTF-8  // v6.6: 体験10に棒グラフを追加（表＋全班の平均棒グラフでSTEP3を締める）。plt.bar(___,___)を虫食い化  // v6.5: STEP3の体験8-10も虫食い（___）方式に統一（STEP2と作りを揃えた）。S8line/S8/S9/S10のグラフ核心行を___化  // v6.4: STEP3の比較に「折れ線で重ねる」を追加。L11a(晴れ/くもり折れ線)＋L11(箱ひげ)の2段。体験8にS8line()追加。「比べ方は目的で図を選ぶ」  // v6.3: ヘッダーに自転車スピードラボ（bike/）への相互リンクを追加。 v6.2: STEP1①のアップロードを「貼り付けた数字を班名で保存」方式に修正（CSVファイル選択UI・CSV文言を削除）。uploadSerial1()新設。保存した班は自分も他班もプルダウンで選べる
 let JP_FONT_OK = false;
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 let pyodide = null;
@@ -680,11 +680,26 @@ function renderViewer(idx) {
 
 // ---------- データ取得 ----------
 async function fetchUploaded(name) {
-  // アップロード済みファイルをGAS経由で取得
-  const r = await fetch(`${GAS_URL}?file=${encodeURIComponent(name)}`, { cache: "no-store" });
-  const t = await r.text();
-  if (t.trim().startsWith("{")) throw new Error("読み込み失敗: " + name);
-  return t;
+  // まず GitHub の生ファイル(raw)を読む（重複timestampも含め全行そのまま取得できる）。
+  // GAS経由(?file=)はSheets保存の都合で同一timestampが1行に統合され行数が激減するため、
+  // アップロード直後などGitHub未反映のときだけフォールバックする。
+  // raw.githubusercontent.com は Access-Control-Allow-Origin:* なのでブラウザから直接読める。
+  const rawUrl = `https://raw.githubusercontent.com/shiojima-test/schoomy-light-lab/main/data/uploads/${encodeURIComponent(name)}.csv?v=${Date.now()}`;
+  try {
+    const r = await fetch(rawUrl, { cache: "no-store" });
+    if (r.ok) {
+      const t = await r.text();
+      // ヘッダ＋1行以上あれば有効とみなす
+      if (t && t.trim() && !t.trim().startsWith("{") && t.trim().split(/\r?\n/).length >= 2) {
+        return t;
+      }
+    }
+  } catch (e) { /* GitHub未反映などはGASにフォールバック */ }
+  // フォールバック: GAS経由（アップロード直後でGitHub未反映のとき用）
+  const r2 = await fetch(`${GAS_URL}?file=${encodeURIComponent(name)}`, { cache: "no-store" });
+  const t2 = await r2.text();
+  if (t2.trim().startsWith("{")) throw new Error("読み込み失敗: " + name);
+  return t2;
 }
 async function fetchOpen(name) {
   const r = await fetch(`data/${name}?v=${Date.now()}`, { cache: "no-store" });
