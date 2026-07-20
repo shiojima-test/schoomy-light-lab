@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>自転車スピードラボ v2.0 | スクーミー</title>
+<title>自転車スピードラボ v3.0 | スクーミー</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -78,7 +78,7 @@
 <body>
 
 <header>
-  <h1>🚲 自転車スピードラボ</h1><span class="ver">v2.0</span>
+  <h1>🚲 自転車スピードラボ</h1><span class="ver">v3.0</span>
   <span class="xlink"><a href="../">💡 教室の光環境ラボへ</a></span>
 </header>
 <div class="subbar"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div></div>
@@ -86,7 +86,7 @@
 <main>
 
 <div class="howto">
-  <b>このページの使い方</b>：<b>パート1（速度をはかる）</b> ①数字を入れる → ②プログラムをスクーミーに入れる → ③走って計測 → ④貼り付けてグラフでくらべる ／ <b>パート2（からだのデータとくらべる）</b> ⑤2台目のスクーミーを足首につけて計測 → ⑥アップロード → ⑦速度と重ねる → ⑧相関を調べる
+  <b>このページの使い方</b>：<b>パート1（速度をはかる）</b> ①数字を入れる → ②プログラムをスクーミーに入れる → ③走って計測 → ④貼り付けてグラフでくらべる ／ <b>パート2（2つのデータをくらべる）</b> ⑤くらべたい2つのデータを入れる → ⑥グラフの種類を考えて選び、くらべる
 </div>
 
 <!-- ========== ① 数字を入れる ========== -->
@@ -147,92 +147,97 @@
 
 
 <!-- ================== パート2 ================== -->
-<div class="partband"><b>パート2　からだのデータとくらべる</b><span>2つの班で1グループ・スクーミー2台で挑戦</span></div>
+<div class="partband"><b>パート2　2つのデータを自由にくらべる</b><span>組み合わせ方・くらべ方は班で考えよう</span></div>
 
-<!-- ========== ⑤ からだ用プログラム ========== -->
+<!-- ========== ⑤ 2つのデータをくらべる ========== -->
 <section>
-  <h2>⑤ 2台目のプログラム（からだの動きをはかる）</h2>
-  <p>2台目のスクーミーに<b>加速度センサー</b>をつなぎ（A5）、<b>足首</b>にしっかり固定します。ペダルをこぐと足が上下にくり返し動くので、そのリズムが波として記録されます。</p>
-  <p>1台目（速度）は①②のプログラムのまま使います。<b>計測間隔は2秒がおすすめ</b>（パート2では細かいデータのほうが比べやすい）。</p>
-  <div class="toolbar">
-    <button class="act primary" onclick="copyAccelCode()">📋 2台目のプログラムをコピー</button>
-    <span class="note" id="copyNote2"></span>
-  </div>
-  <pre class="code" id="codeView2"></pre>
-  <h3>計測のしかた（たいせつ！）</h3>
-  <p>2台のスクーミーは<b>「せーの！」で同時に電源を入れて</b>計測をスタートします。走り出す前に、足首につけた人が<b>その場でジャンプを1回</b>してから走り出すと、あとでグラフの時間を合わせる目印になります。</p>
-</section>
-
-<!-- ========== ⑥ からだデータのアップロード ========== -->
-<section>
-  <h2 class="p2">⑥ からだのデータをアップロード</h2>
-  <p>2台目のシリアルモニタの数字を全部コピーして貼り付けよう。1行が「時間(ミリ秒),センサーの値」の形で出ています。</p>
-  <textarea id="pasteArea2" rows="7" placeholder="ここに貼り付け（例）&#10;jikan(ms),atai&#10;1020,512&#10;1040,514&#10;1060,530"></textarea>
-  <div class="toolbar">
-    <label>班の名前: <input type="text" id="upName2" placeholder="例: 1班" style="width:130px"></label>
-    <button class="act orange" onclick="uploadAccel()">アップロードして保存</button>
-    <span class="note" id="upNote2"></span>
-  </div>
-  <p class="note">※ 速度データ（④）と同じ班の名前にすると、⑦で組み合わせやすくなります。</p>
-</section>
-
-<!-- ========== ⑦ 重ねグラフ ========== -->
-<section>
-  <h2 class="p2">⑦ 速度と脚の動きを重ねる</h2>
-  <p>自転車の<b>速度</b>（左の軸）と、<b>脚の動きの大きさ</b>（右の軸：1秒ごとのセンサー値のゆれ幅）を1つのグラフに重ねます。</p>
-  <div class="selrow">
-    <label>🚲 速度データ: <select id="selSpeed"></select></label>
-    <label>🦵 からだのデータ: <select id="selAccel"></select></label>
-    <button class="act blue" onclick="reloadCorrLists()">🔄 一覧を更新</button>
-    <button class="act primary" onclick="renderOverlay()">グラフを描く</button>
-  </div>
-  <div class="slidebox">
-    ⏱ 時間のズレ調整: <input type="range" id="offsetSlider" min="-15" max="15" step="0.5" value="0" oninput="onOffsetChange()"><span class="val" id="offsetVal">0.0 秒</span>
-    <div class="note">2台のスタートがずれたときは、ここを動かして波の位置を合わせよう（からだのデータが左右に動きます）</div>
-  </div>
-  <div class="chartwrap"><canvas id="chartOverlay"></canvas></div>
-  <p class="note" id="overlayNote">⑦のグラフで注目：<b>脚が止まっているのに速度が出ている</b>ところはないかな？（＝ペダルをこがずに進んでいる「惰性（だせい）」の区間）</p>
-</section>
-
-<!-- ========== ⑧ 散布図と相関 ========== -->
-<section>
-  <h2 class="p2">⑧ 散布図と相関 〜脚のテンポと速度の関係〜</h2>
-  <p>横軸に<b>脚のテンポ（1分あたりに脚が動いた回数）</b>、縦軸に<b>速度</b>をとって、点をうちます。点が右上がりの直線にならぶほど「相関が強い」＝2つのデータに深い関係があるということ。</p>
-  <div class="toolbar">
-    <div class="toggle2">
-      <button id="tgAll" class="on" onclick="setCorrMode('all')">全区間</button>
-      <button id="tgPedal" onclick="setCorrMode('pedal')">漕いでいる区間だけ</button>
+  <h2>⑤ 2つのデータを入れる</h2>
+  <p>くらべたい2つのデータを貼り付けよう。<b>中身はなんでもOK</b>（自転車の速度、からだにつけた加速度センサー、明るさ…）。計測のプログラムはスクーミーブロックエディタで自分たちで作ろう。</p>
+  <p class="note">形式：シリアルモニタに出た「時間,値」の行をそのままコピペ（1列だけの数字でもOK）。2台で同時に測るときは<b>「せーの！」で同時スタート</b>すると時間が合わせやすい。</p>
+  <div class="numrow">
+    <div class="numbox" style="background:#f0f7fb;border-color:#2E8EC4">
+      <label>📘 データA</label>
+      <input type="text" id="labelA" placeholder="なんのデータ？（例: 自転車の速度）" style="width:100%;font-size:13px;text-align:left;margin-bottom:6px">
+      <textarea id="pasteA" rows="6" placeholder="ここに貼り付け&#10;5,0.0&#10;10,7.7&#10;15,12.9"></textarea>
+      <div class="toolbar">
+        <select id="selA"><option value="">保存済みから選ぶ…</option></select>
+        <button class="act blue" onclick="saveSlot('A')">☁ 保存</button>
+      </div>
+      <div class="note" id="noteA">貼り付けるか、保存済みから選んでね</div>
     </div>
-    <span class="note">切り替えると相関係数はどう変わる？</span>
+    <div class="numbox" style="background:#fff7ec;border-color:#E88A0A">
+      <label>📙 データB</label>
+      <input type="text" id="labelB" placeholder="なんのデータ？（例: からだの動き）" style="width:100%;font-size:13px;text-align:left;margin-bottom:6px">
+      <textarea id="pasteB" rows="6" placeholder="ここに貼り付け&#10;1020,512&#10;1040,514&#10;1060,530"></textarea>
+      <div class="toolbar">
+        <select id="selB"><option value="">保存済みから選ぶ…</option></select>
+        <button class="act orange" onclick="saveSlot('B')">☁ 保存</button>
+      </div>
+      <div class="note" id="noteB">貼り付けるか、保存済みから選んでね</div>
+    </div>
   </div>
-  <div class="statbar">
+  <div class="toolbar">
+    <label>保存するときの名前: <input type="text" id="cmpName" placeholder="例: 1班の速度" style="width:170px"></label>
+    <button class="act primary" onclick="reloadCmpList()">🔄 保存済み一覧を更新</button>
+    <span class="note">☁保存すると、ほかの班のパソコンからも「保存済みから選ぶ」で呼び出せます（パート1の④で保存した速度データもここに出ます）</span>
+  </div>
+</section>
+
+<!-- ========== ⑥ どのグラフでくらべる？ ========== -->
+<section>
+  <h2 class="p2">⑥ どのグラフでくらべる？　考えて選ぼう</h2>
+  <div class="numrow">
+    <div class="numbox">
+      <label>📈 折れ線グラフ（重ねる）</label>
+      <div class="sub"><b>「時間とともにどう変わったか」</b>を見たいとき。2つの線を重ねると、「片方が変わったとき、もう片方はどうなっている？」が読み取れる。<br>例：脚が止まっているのに速度が出ている区間はある？</div>
+    </div>
+    <div class="numbox" style="background:#fff7ec;border-color:#E88A0A">
+      <label>🔵 散布図</label>
+      <div class="sub"><b>「2つのデータのあいだに関係があるか」</b>を見たいとき。横軸にA、縦軸にBをとって点をうつ。点が直線っぽく並ぶほど関係が強い。関係の強さを1つの数字にしたものが<b>相関係数 r</b>（+1に近い＝いっしょに増える強い関係／0＝関係なし／−1に近い＝片方が増えるともう片方が減る関係）。</div>
+    </div>
+  </div>
+  <p class="note">⚠ 相関があっても「原因と結果」とは限らない（アイスの売上と水難事故は相関するが、原因は両方とも「暑さ」）。どちらが原因かはデータの外から考えよう。</p>
+  <div class="toolbar">
+    <button class="act blue" onclick="drawLine()">📈 折れ線で重ねる</button>
+    <button class="act orange" onclick="drawScat()">🔵 散布図で見る</button>
+    <span class="note" id="drawNote"></span>
+  </div>
+  <div class="slidebox" id="offsetBox">
+    ⏱ 時間のズレ調整: <input type="range" id="offsetSlider" min="-15" max="15" step="0.5" value="0" oninput="onOffsetChange()"><span class="val" id="offsetVal">0.0 秒</span>
+    <div class="note">2台のスタートがずれたときはここで合わせよう（データBが左右に動きます）</div>
+  </div>
+  <div class="slidebox" id="aggBox" style="display:none">
+    データBのまとめ方:
+    <select id="aggSel" onchange="drawScat()">
+      <option value="range">ゆれ幅（動きの大きさ）</option>
+      <option value="mean">平均</option>
+    </select>
+    <div class="note">加速度のように細かくゆれるデータは、平均すると波が打ち消されてしまう。「動きの激しさ」を見たいときは<b>ゆれ幅</b>を選ぼう。温度や明るさのようなデータは<b>平均</b>でOK。</div>
+  </div>
+  <div class="statbar" id="scatStats" style="display:none">
     <div class="stat"><div class="rbig" id="rValue">--</div><div class="l">相関係数 r</div></div>
     <div class="stat"><div class="v" id="nPairs">--</div><div class="l">点の数</div></div>
     <div class="stat"><div class="v" id="rComment" style="font-size:15px">--</div><div class="l">よみとり</div></div>
   </div>
-  <div class="chartwrap" style="height:340px"><canvas id="chartScatter"></canvas></div>
-  <h3>🤔 考えてみよう（SmaChariのAIとつなげる）</h3>
-  <p>センサー2つを組み合わせると、自転車の「状況」が下の表のように区別できます。自分たちのデータのそれぞれの区間が、どのマスにあてはまるか探してみよう。</p>
-  <table class="matrix">
-    <tr><th></th><th>速度が出ている</th><th>速度が低い・ゼロ</th></tr>
-    <tr><th>脚が動いている</th><td class="hl">加速・巡航</td><td>走り出し（こぎはじめ）</td></tr>
-    <tr><th>脚が止まっている</th><td class="hl">惰性・下り坂</td><td>停止</td></tr>
-  </table>
-  <p class="note" style="margin-top:8px">SmaChariのAIも、こうやって<b>複数のセンサーの組み合わせ</b>で状況を判断しています（教材03参照）。センサーが1つだけだと、どのマスとどのマスが区別できなくなるか考えてみよう。</p>
+  <div class="chartwrap" style="height:340px"><canvas id="chartCmp"></canvas></div>
+  <p class="note" style="margin-top:8px">🤔 <b>考えてみよう</b>：折れ線と散布図では、同じデータでも「見えること」がどうちがう？　相関が強く出た組み合わせ・出なかった組み合わせ、その理由は？　一部の区間だけで散布図を作ったら r はどう変わる？</p>
 </section>
 
 </main>
 
-<footer>自転車スピードラボ v2.0 ｜ SchooMy</footer>
+<footer>自転車スピードラボ v3.0 ｜ SchooMy</footer>
 
 <script>
-// 自転車スピードラボ v2.0
+// 自転車スピードラボ v3.0
+// v3.0: パート2を汎用比較ツールに全面刷新。任意の2データ（timestamp,value）を貼り付け/保存済み選択で入力し、
+//       折れ線重ね（2軸+ズレ調整）と散布図（相関係数r+回帰直線、Bのまとめ方=ゆれ幅/平均）を生徒が選んで描画。
+//       グラフの選び方・相関係数・相関≠因果の説明を追加。プログラム自動生成とテンポ自動計算は廃止（ブロックエディタで各自作成する方針）
 // v2.0: パート2「からだのデータとくらべる」を追加。加速度センサー用プログラム生成（⑤）、
 //       からだデータのアップロード（⑥ bikecorr_接頭辞）、速度×脚の動きの重ねグラフ（⑦ 2軸+ズレ調整）、
 //       散布図と相関係数（⑧ 全区間/漕いでいる区間の切り替え）
 // v1.0: 初版。半径・計測間隔の2数値入力→スクーミープログラム自動生成（基準値自動計測・チャタリング対策込み）、
 //       シリアル貼り付け→GAS保存（bike_接頭辞で光環境ラボと区別）、Chart.jsで速度折れ線・最高/平均・班比較
-const VERSION = "v2.0";
+const VERSION = "v3.0";
 const GAS_URL = "https://script.google.com/macros/s/AKfycby7AzGZVkE-ld1QfxFMmxA4TKhhXlCvZmY1y1jL-5gmnwfd-Khf_a8ADen24fx1ajFlxA/exec";
 const PREFIX = "bike_";   // 光環境ラボのデータと混ざらないための接頭辞
 
@@ -508,60 +513,60 @@ async function renderChart() {
   }
 }
 
-// ========== パート2: からだのデータとくらべる ==========
-const PREFIX2 = "bikecorr_";   // からだ（加速度）データの接頭辞
+// ========== パート2: 2つのデータを自由にくらべる ==========
+const PREFIX2 = "cmp_";   // パート2で保存するデータの接頭辞
 
-// ---------- ⑤ 2台目プログラム ----------
-const ACCEL_CODE = `#include <SchooMyUtilities.h>
-SchooMyUtilities scmUtils = SchooMyUtilities();
+// ---------- ⑤ データの入力・保存・呼び出し ----------
+const cache2 = {};      // "cmp_名前" or "bike_名前" -> rows
+let chartCmp = null;
+let curA = null, curB = null;   // { rows, label }
 
-// ===== からだの動きロガー（足首につける・A5に加速度センサー） =====
-const unsigned long KANKAKU_MS = 20;   // 20ミリ秒ごとに記録（1秒に50回）
-
-unsigned long mae = 0;
-
-void setup() {
-  Serial.begin(9600);
-  pinMode(A5, INPUT);
-  Serial.println("jikan(ms),atai");
-}
-
-void loop() {
-  unsigned long ima = millis();
-  if (ima - mae >= KANKAKU_MS) {
-    Serial.print(ima);
-    Serial.print(",");
-    Serial.println(analogRead(A5));
-    mae = ima;
-  }
-}`;
-document.getElementById("codeView2").innerHTML = esc(ACCEL_CODE).replace(/(\/\/[^\n]*)/g, '<span class="cm">$1</span>');
-
-async function copyAccelCode() {
-  const note = document.getElementById("copyNote2");
-  try {
-    await navigator.clipboard.writeText(ACCEL_CODE);
-    note.textContent = "✅ コピーしました！2台目のスクーミーに書きこもう。";
-  } catch (e) {
-    const ta = document.createElement("textarea");
-    ta.value = ACCEL_CODE; document.body.appendChild(ta);
-    ta.select(); document.execCommand("copy"); document.body.removeChild(ta);
-    note.textContent = "✅ コピーしました！";
-  }
-}
-
-// ---------- ⑥ からだデータのアップロード ----------
-async function uploadAccel() {
-  const note = document.getElementById("upNote2");
-  const name = (document.getElementById("upName2").value || "").trim();
-  let rows = parsePaste(document.getElementById("pasteArea2").value);
-  if (!name) { note.textContent = "⚠ 班の名前を入力してください（例: 1班）"; return; }
-  if (/[\/\\?%*:|"<>#]/.test(name)) { note.textContent = "⚠ 名前に使えない記号があります"; return; }
-  if (rows.length < 10) { note.textContent = "⚠ 先にシリアルモニタの数字を貼り付けてください"; return; }
-  // 時間がミリ秒なら秒に直す（最初の時刻を0にそろえる）
+// 貼り付けテキスト → rows（ミリ秒っぽければ秒に直し、開始を0秒にそろえる）
+function toRows(txt) {
+  let rows = parsePaste(txt);
+  if (rows.length < 2) return null;
   const t0 = rows[0][0];
-  const looksMs = (rows[rows.length - 1][0] - t0) > 600;   // 記録が600「秒」超は考えにくい→ms判定
-  rows = rows.map(r => [ (r[0] - t0) / (looksMs ? 1000 : 1), r[1] ]);
+  const span = rows[rows.length - 1][0] - t0;
+  const looksMs = span > 600;   // 600「秒」を超える記録は考えにくい → ミリ秒と判定
+  return rows.map(r => [(r[0] - t0) / (looksMs ? 1000 : 1), r[1]]);
+}
+
+// スロットA/Bのデータを取得（貼り付け優先、なければ保存済み選択）
+async function getSlot(slot) {
+  const txt = document.getElementById("paste" + slot).value.trim();
+  const sel = document.getElementById("sel" + slot).value;
+  const label = document.getElementById("label" + slot).value.trim() || ("データ" + slot);
+  if (txt) {
+    const rows = toRows(txt);
+    if (!rows) throw new Error("データ" + slot + "の形式が読み取れません（「時間,値」の行を貼り付けてね）");
+    return { rows, label };
+  }
+  if (sel) {
+    if (!cache2[sel]) {
+      const r = await fetch(`${GAS_URL}?file=${encodeURIComponent(sel)}`, { cache: "no-store" });
+      const t = await r.text();
+      if (t.trim().startsWith("{")) throw new Error("読み込み失敗: " + sel);
+      const rows = [];
+      const lines = t.trim().split("\n");
+      for (let i = 1; i < lines.length; i++) {
+        const [a, b] = lines[i].split(",");
+        if (isFinite(a) && isFinite(b)) rows.push([parseFloat(a), parseFloat(b)]);
+      }
+      cache2[sel] = rows;
+    }
+    const dispName = sel.replace(/^(cmp_|bike_)/, "").replace(/\.csv$/, "");
+    return { rows: cache2[sel], label: label !== ("データ" + slot) ? label : dispName };
+  }
+  throw new Error("データ" + slot + "を貼り付けるか、保存済みから選んでください");
+}
+
+async function saveSlot(slot) {
+  const note = document.getElementById("note" + slot);
+  const name = (document.getElementById("cmpName").value || "").trim();
+  if (!name) { note.textContent = "⚠ 「保存するときの名前」を入力してください"; return; }
+  if (/[\/\\?%*:|"<>#]/.test(name)) { note.textContent = "⚠ 名前に使えない記号があります"; return; }
+  const rows = toRows(document.getElementById("paste" + slot).value);
+  if (!rows) { note.textContent = "⚠ 先にデータを貼り付けてください"; return; }
   const csv = "timestamp,value\n" + rows.map(r => r[0].toFixed(3) + "," + r[1]).join("\n") + "\n";
   note.textContent = `「${name}」として送信中…（${rows.length}件）`;
   try {
@@ -572,175 +577,100 @@ async function uploadAccel() {
     });
     const data = await res.json();
     if (!data.ok) throw new Error(data.error || "送信失敗");
-    note.textContent = `✅ 「${name}」を保存しました（${rows.length}件）。⑦で速度データと組み合わせよう。`;
-    cache2[name] = rows;
-    await reloadCorrLists();
-    document.getElementById("selAccel").value = name;
+    note.textContent = `✅ 「${name}」を保存しました（${rows.length}件）`;
+    cache2[PREFIX2 + name] = rows;
+    await reloadCmpList();
   } catch (e) {
     note.textContent = "❌ 失敗: " + e.message;
   }
 }
 
-// ---------- ⑦ 一覧・重ねグラフ ----------
-const cache2 = {};       // からだデータ 表示名 -> rows
-let accelList = [];
-let chartOv = null, chartSc = null;
-let curSpeedRows = null, curAccelRows = null;   // 描画中データ
-let corrMode = "all";
-
-async function reloadCorrLists() {
+async function reloadCmpList() {
+  let files = [];
   try {
     const r = await fetch(`${GAS_URL}?list=1`, { cache: "no-store" });
     const d = await r.json();
-    const files = (d && d.ok && d.files) ? d.files : [];
-    uploadedList = files.filter(f => f.startsWith(PREFIX)).map(f => f.slice(PREFIX.length).replace(/\.csv$/, ""));
-    accelList = files.filter(f => f.startsWith(PREFIX2)).map(f => f.slice(PREFIX2.length).replace(/\.csv$/, ""));
-  } catch (e) { /* 通信失敗時は現状維持 */ }
-  const mk = (sel, list, icon) => {
+    files = (d && d.ok && d.files) ? d.files : [];
+  } catch (e) { return; }
+  const opts = [];
+  for (const f of files) {
+    const base = f.replace(/\.csv$/, "");
+    if (f.startsWith(PREFIX2)) opts.push({ v: base, t: "📊 " + base.slice(PREFIX2.length) });
+    else if (f.startsWith(PREFIX)) opts.push({ v: base, t: "🚲 " + base.slice(PREFIX.length) + "（パート1の速度）" });
+  }
+  for (const id of ["selA", "selB"]) {
+    const sel = document.getElementById(id);
     const cur = sel.value;
-    sel.innerHTML = "";
-    for (const n of list) {
+    sel.innerHTML = '<option value="">保存済みから選ぶ…</option>';
+    for (const o of opts) {
       const op = document.createElement("option");
-      op.value = n; op.textContent = icon + " " + n;
+      op.value = o.v; op.textContent = o.t;
       sel.appendChild(op);
     }
-    if (list.includes(cur)) sel.value = cur;
-  };
-  mk(document.getElementById("selSpeed"), uploadedList, "🚲");
-  mk(document.getElementById("selAccel"), accelList, "🦵");
-  renderPicks();
-}
-
-async function fetchAccel(name) {
-  if (cache2[name]) return cache2[name];
-  const r = await fetch(`${GAS_URL}?file=${encodeURIComponent(PREFIX2 + name)}`, { cache: "no-store" });
-  const t = await r.text();
-  if (t.trim().startsWith("{")) throw new Error("読み込み失敗: " + name);
-  const rows = [];
-  const lines = t.trim().split("\n");
-  for (let i = 1; i < lines.length; i++) {
-    const [a, b] = lines[i].split(",");
-    if (isFinite(a) && isFinite(b)) rows.push([parseFloat(a), parseFloat(b)]);
+    if (opts.some(o => o.v === cur)) sel.value = cur;
   }
-  cache2[name] = rows;
-  return rows;
 }
 
+// ---------- ⑥ グラフ描画 ----------
 function getOffset() { return parseFloat(document.getElementById("offsetSlider").value) || 0; }
+let lastMode = null;
 function onOffsetChange() {
   document.getElementById("offsetVal").textContent = getOffset().toFixed(1) + " 秒";
-  if (curSpeedRows && curAccelRows) { drawOverlay(); drawScatter(); }
+  if (curA && curB) { if (lastMode === "line") drawLine(true); else if (lastMode === "scat") drawScat(true); }
 }
 
-// 1秒ごとの「ゆれ幅」（最大-最小）: 脚の動きの大きさ
-function ampSeries(rows) {
-  const bins = new Map();
-  for (const [t, v] of rows) {
-    const k = Math.floor(t);
-    if (!bins.has(k)) bins.set(k, { min: v, max: v });
-    const b = bins.get(k);
-    if (v < b.min) b.min = v;
-    if (v > b.max) b.max = v;
+// 折れ線（2軸重ね）
+async function drawLine(keep) {
+  const note = document.getElementById("drawNote");
+  if (!keep) {
+    try { curA = await getSlot("A"); curB = await getSlot("B"); }
+    catch (e) { note.textContent = "⚠ " + e.message; return; }
   }
-  return [...bins.entries()].sort((a, b) => a[0] - b[0]).map(([k, b]) => [k + 0.5, b.max - b.min]);
-}
-
-// 区間[t0,t1)の脚のテンポ（回/分）: なめらか化→中央線を上向きに横切る周期から求める
-// minSwing: これより小さいゆれは「動いていない」とみなす（ノイズを回転と誤認しないため）
-function tempoIn(rows, t0, t1, minSwing) {
-  const seg = rows.filter(r => r[0] >= t0 && r[0] < t1);
-  if (seg.length < 10) return null;
-  const sm = [];
-  for (let i = 2; i < seg.length - 2; i++) {
-    sm.push([seg[i][0], (seg[i-2][1] + seg[i-1][1] + seg[i][1] + seg[i+1][1] + seg[i+2][1]) / 5]);
-  }
-  if (sm.length < 6) return null;
-  const vs = sm.map(r => r[1]);
-  const mid = (Math.max(...vs) + Math.min(...vs)) / 2;
-  const swing = Math.max(...vs) - Math.min(...vs);
-  if (swing < Math.max(4, minSwing || 0)) return 0;   // ほぼ動いていない
-  const crosses = [];
-  for (let i = 1; i < sm.length; i++) {
-    if (sm[i-1][1] < mid && sm[i][1] >= mid) {
-      // 直前の交差から0.15秒未満はノイズとみなして数えない
-      if (crosses.length === 0 || sm[i][0] - crosses[crosses.length - 1] >= 0.15) crosses.push(sm[i][0]);
-    }
-  }
-  if (crosses.length === 0) return 0;
-  if (crosses.length === 1) return 60 / (t1 - t0);   // 区間に1回だけ
-  // 交差と交差の間の平均周期から求める（短い区間でも正確）
-  const period = (crosses[crosses.length - 1] - crosses[0]) / (crosses.length - 1);
-  return 60 / period;
-}
-
-async function renderOverlay() {
-  const note = document.getElementById("overlayNote");
-  const sName = document.getElementById("selSpeed").value;
-  const aName = document.getElementById("selAccel").value;
-  if (!sName || !aName) { note.textContent = "⚠ ⑦の2つのデータを選んでください（一覧を更新→選択）"; return; }
-  try {
-    curSpeedRows = await fetchRun(sName);
-    curAccelRows = await fetchAccel(aName);
-  } catch (e) { note.textContent = "❌ " + e.message; return; }
-  drawOverlay();
-  drawScatter();
-  note.innerHTML = "⑦のグラフで注目：<b>脚が止まっているのに速度が出ている</b>ところはないかな？（＝ペダルをこがずに進んでいる「惰性（だせい）」の区間）";
-}
-
-function drawOverlay() {
+  lastMode = "line";
+  note.textContent = "";
+  document.getElementById("aggBox").style.display = "none";
+  document.getElementById("scatStats").style.display = "none";
   const off = getOffset();
-  const amp = ampSeries(curAccelRows);
-  if (chartOv) chartOv.destroy();
-  chartOv = new Chart(document.getElementById("chartOverlay").getContext("2d"), {
+  if (chartCmp) chartCmp.destroy();
+  chartCmp = new Chart(document.getElementById("chartCmp").getContext("2d"), {
     type: "line",
     data: { datasets: [
-      { label: "🚲 速度（km/h）", yAxisID: "y",
-        data: curSpeedRows.map(r => ({ x: r[0], y: r[1] })),
-        borderColor: "#2E8EC4", backgroundColor: "#2E8EC4", tension: 0.2, pointRadius: 3 },
-      { label: "🦵 脚の動きの大きさ", yAxisID: "y2",
-        data: amp.map(r => ({ x: r[0] + off, y: r[1] })),
+      { label: "📘 " + curA.label, yAxisID: "y",
+        data: curA.rows.map(r => ({ x: r[0], y: r[1] })),
+        borderColor: "#2E8EC4", backgroundColor: "#2E8EC4", tension: 0.2, pointRadius: 2 },
+      { label: "📙 " + curB.label, yAxisID: "y2",
+        data: curB.rows.map(r => ({ x: r[0] + off, y: r[1] })),
         borderColor: "#E88A0A", backgroundColor: "#E88A0A", tension: 0.2, pointRadius: 0, borderWidth: 2 }
     ]},
     options: {
       responsive: true, maintainAspectRatio: false,
       scales: {
         x: { type: "linear", title: { display: true, text: "時間（秒）" } },
-        y:  { min: 0, position: "left",  title: { display: true, text: "速度（km/h）", color: "#2E8EC4" } },
-        y2: { min: 0, position: "right", title: { display: true, text: "脚の動きの大きさ（ゆれ幅）", color: "#E88A0A" }, grid: { drawOnChartArea: false } }
+        y:  { position: "left",  title: { display: true, text: curA.label, color: "#2E8EC4" } },
+        y2: { position: "right", title: { display: true, text: curB.label, color: "#E88A0A" }, grid: { drawOnChartArea: false } }
       }
     }
   });
 }
 
-// ---------- ⑧ 散布図と相関 ----------
-function setCorrMode(m) {
-  corrMode = m;
-  document.getElementById("tgAll").className = (m === "all") ? "on" : "";
-  document.getElementById("tgPedal").className = (m === "pedal") ? "on" : "";
-  if (curSpeedRows && curAccelRows) drawScatter();
-}
-
+// 散布図: Aの計測間隔ごとに区切り、同じ時間帯のBをまとめてペアにする
 function makePairs() {
   const off = getOffset();
-  const ts = curSpeedRows.map(r => r[0]);
+  const ts = curA.rows.map(r => r[0]);
   const diffs = [];
   for (let i = 1; i < ts.length; i++) diffs.push(ts[i] - ts[i-1]);
   diffs.sort((a, b) => a - b);
-  const K = diffs.length ? diffs[Math.floor(diffs.length / 2)] : 2;   // 速度の計測間隔
-  const amp = ampSeries(curAccelRows);
-  const maxAmp = Math.max(...amp.map(a => a[1]), 1);
+  const K = diffs.length ? Math.max(diffs[Math.floor(diffs.length / 2)], 0.5) : 2;
+  const agg = document.getElementById("aggSel").value;
   const pairs = [];
-  for (const [t, v] of curSpeedRows) {
-    // 速度サンプル[t-K, t) に対応する、からだデータの区間（ズレ調整分を引く）
+  for (const [t, v] of curA.rows) {
     const t0 = t - K - off, t1 = t - off;
-    // テンポは前後1秒広げた窓で測る（短い窓でも交差が2回以上入るように）
-    // ゆれ幅が最大の25%未満の区間は「脚が動いていない」と判定
-    const tempo = tempoIn(curAccelRows, t0 - 1, t1 + 1, 0.25 * maxAmp);
-    if (tempo === null) continue;
-    const ampsIn = amp.filter(a => a[0] >= t0 && a[0] < t1).map(a => a[1]);
-    const aMean = ampsIn.length ? ampsIn.reduce((x, y) => x + y, 0) / ampsIn.length : 0;
-    const pedaling = aMean >= 0.3 * maxAmp;   // ゆれ幅が最大の30%以上→漕いでいる
-    pairs.push({ x: tempo, y: v, pedaling });
+    const seg = curB.rows.filter(r => r[0] >= t0 && r[0] < t1).map(r => r[1]);
+    if (!seg.length) continue;
+    let b;
+    if (agg === "range") b = Math.max(...seg) - Math.min(...seg);
+    else b = seg.reduce((x, y) => x + y, 0) / seg.length;
+    pairs.push({ x: v, y: b });
   }
   return pairs;
 }
@@ -756,26 +686,33 @@ function corrcoef(ps) {
   return { r: sxy / Math.sqrt(sxx * syy), slope: sxy / sxx, icept: my - (sxy / sxx) * mx };
 }
 
-function drawScatter() {
-  const all = makePairs();
-  const use = (corrMode === "pedal") ? all.filter(p => p.pedaling && p.x > 0) : all;
-  const c = corrcoef(use);
-  document.getElementById("nPairs").textContent = use.length;
+async function drawScat(keep) {
+  const note = document.getElementById("drawNote");
+  if (!keep) {
+    try { curA = await getSlot("A"); curB = await getSlot("B"); }
+    catch (e) { note.textContent = "⚠ " + e.message; return; }
+  }
+  lastMode = "scat";
+  note.textContent = "";
+  document.getElementById("aggBox").style.display = "";
+  document.getElementById("scatStats").style.display = "";
+  const pairs = makePairs();
+  const c = corrcoef(pairs);
+  document.getElementById("nPairs").textContent = pairs.length;
   const rEl = document.getElementById("rValue"), cm = document.getElementById("rComment");
-  if (!c) { rEl.textContent = "--"; cm.textContent = "点が少なすぎます"; }
+  if (!c) { rEl.textContent = "--"; cm.textContent = "点が足りません"; }
   else {
     rEl.textContent = c.r.toFixed(2);
     const ar = Math.abs(c.r);
-    cm.textContent = ar >= 0.7 ? "強い相関" : ar >= 0.4 ? "中くらいの相関" : "弱い相関";
+    const dir = c.r >= 0 ? "正" : "負";
+    cm.textContent = ar >= 0.7 ? `強い${dir}の相関` : ar >= 0.4 ? `中くらいの${dir}の相関` : "弱い相関";
   }
   const datasets = [{
-    label: (corrMode === "pedal") ? "漕いでいる区間" : "全区間",
-    type: "scatter",
-    data: use.map(p => ({ x: p.x, y: p.y })),
-    backgroundColor: "#3AABA8", pointRadius: 5
+    label: curA.label + " × " + curB.label, type: "scatter",
+    data: pairs, backgroundColor: "#3AABA8", pointRadius: 5
   }];
-  if (c && use.length >= 3) {
-    const xs = use.map(p => p.x);
+  if (c && pairs.length >= 3) {
+    const xs = pairs.map(p => p.x);
     const x0 = Math.min(...xs), x1 = Math.max(...xs);
     datasets.push({
       label: "回帰直線", type: "line",
@@ -783,20 +720,20 @@ function drawScatter() {
       borderColor: "#c0574f", borderWidth: 2, borderDash: [6, 4], pointRadius: 0
     });
   }
-  if (chartSc) chartSc.destroy();
-  chartSc = new Chart(document.getElementById("chartScatter").getContext("2d"), {
+  if (chartCmp) chartCmp.destroy();
+  chartCmp = new Chart(document.getElementById("chartCmp").getContext("2d"), {
     data: { datasets },
     options: {
       responsive: true, maintainAspectRatio: false,
       scales: {
-        x: { type: "linear", min: 0, title: { display: true, text: "脚のテンポ（回/分）" } },
-        y: { min: 0, title: { display: true, text: "速度（km/h）" } }
+        x: { type: "linear", title: { display: true, text: "📘 " + curA.label } },
+        y: { type: "linear", title: { display: true, text: "📙 " + curB.label } }
       }
     }
   });
 }
 
-reloadCorrLists();
+reloadCmpList();
 
 reloadList();
 </script>
